@@ -1,5 +1,5 @@
 {
-  "name": "@htmleditor/react-editor",
+  "name": "@prabhath-tharaka/html-editor",
   "version": "1.0.0",
   "description": "A React-based WYSIWYG continuous HTML editor with rich text formatting and automatic page break insertion",
   "type": "module",
@@ -11,7 +11,7 @@
       "import": "./dist/htmleditor.es.js",
       "require": "./dist/htmleditor.umd.cjs"
     },
-    "./styles": "./dist/react-editor.css"
+    "./styles": "./dist/html-editor.css"
   },
   "files": [
     "dist",

@@ -1,6 +1,6 @@
 # WYSIWYG HTML Editor
 
-[![npm version](https://badge.fury.io/js/%40htmleditor%2Freact-editor.svg)](https://badge.fury.io/js/%40htmleditor%2Freact-editor)
+[![npm version](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor.svg)](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19.1.1-blue.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.7-646CFF.svg)](https://vitejs.dev/)
@@ -42,9 +42,9 @@ A React-based WYSIWYG HTML editor component with rich text formatting capabiliti
 ## 🚀 Installation
 
 ```bash
-npm install @htmleditor/react-editor
+npm install @prabhath-tharaka/html-editor
 # or
-yarn add @htmleditor/react-editor
+yarn add @prabhath-tharaka/html-editor
 ```
 
 ### Peer Dependencies
@@ -56,8 +56,8 @@ npm install react react-dom react-redux @reduxjs/toolkit
 ## 📖 Usage
 
 ```jsx
-import ContentEditableEditor from '@htmleditor/react-editor';
-import '@htmleditor/react-editor/styles';
+import ContentEditableEditor from '@prabhath-tharaka/html-editor';
+import '@prabhath-tharaka/html-editor/styles';
 
 function App() {
   return (

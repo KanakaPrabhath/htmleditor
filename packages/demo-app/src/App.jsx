@@ -1,5 +1,5 @@
-import { StrictMode } from 'react'
-import ContentEditableEditor from './components/editor/ContentEditableEditor.jsx'
+import { ContentEditableEditor } from '@prabhath-tharaka/html-editor'
+import '@prabhath-tharaka/html-editor/styles'
 import './App.css'
 
 function App() {

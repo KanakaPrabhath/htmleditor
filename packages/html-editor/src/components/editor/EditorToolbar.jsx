@@ -1,4 +1,23 @@
 import React from 'react';
+import { 
+  Bold, 
+  Italic, 
+  Underline, 
+  Strikethrough,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  List,
+  ListOrdered,
+  CheckSquare,
+  Link,
+  Table,
+  FileText,
+  Undo,
+  Redo,
+  Image as ImageIcon
+} from 'lucide-react';
 import { saveImage } from '../../lib/storage/local-storage';
 import { logger } from '../../lib/editor/utils/logger';
 
@@ -48,28 +67,28 @@ const EditorToolbar = ({
         className={currentFormat.bold ? 'active' : ''} 
         title="Bold"
       >
-        <strong>B</strong>
+        <Bold size={16} />
       </button>
       <button 
         onClick={() => onFormatText('italic')} 
         className={currentFormat.italic ? 'active' : ''} 
         title="Italic"
       >
-        <em>I</em>
+        <Italic size={16} />
       </button>
       <button 
         onClick={() => onFormatText('underline')} 
         className={currentFormat.underline ? 'active' : ''} 
         title="Underline"
       >
-        <u>U</u>
+        <Underline size={16} />
       </button>
       <button 
         onClick={() => onFormatText('strikethrough')} 
         className={currentFormat.strikethrough ? 'active' : ''} 
         title="Strikethrough"
       >
-        <s>S</s>
+        <Strikethrough size={16} />
       </button>
       
       <div className="toolbar-separator" />
@@ -79,28 +98,28 @@ const EditorToolbar = ({
         className={currentFormat.alignLeft ? 'active' : ''} 
         title="Align Left"
       >
-        ⬅️
+        <AlignLeft size={16} />
       </button>
       <button 
         onClick={() => onFormatText('justifyCenter')} 
         className={currentFormat.alignCenter ? 'active' : ''} 
         title="Align Center"
       >
-        ⬌
+        <AlignCenter size={16} />
       </button>
       <button 
         onClick={() => onFormatText('justifyRight')} 
         className={currentFormat.alignRight ? 'active' : ''} 
         title="Align Right"
       >
-        ➡️ 
+        <AlignRight size={16} />
       </button>
       <button 
         onClick={() => onFormatText('justifyFull')} 
         className={currentFormat.alignJustify ? 'active' : ''} 
         title="Justify"
       >
-        ⬌
+        <AlignJustify size={16} />
       </button>
       
       <div className="toolbar-separator" />
@@ -137,19 +156,19 @@ const EditorToolbar = ({
         onClick={() => onFormatText('insertUnorderedList')} 
         title="Bullet List"
       >
-        • List
+        <List size={16} />
       </button>
       <button 
         onClick={() => onFormatText('insertOrderedList')} 
         title="Numbered List"
       >
-        1. List
+        <ListOrdered size={16} />
       </button>
       <button 
         onClick={() => onFormatText('insertCheckList')} 
         title="Checklist"
       >
-        ☑️ List
+        <CheckSquare size={16} />
       </button>
       
       <div className="toolbar-separator" />
@@ -161,13 +180,13 @@ const EditorToolbar = ({
         }} 
         title="Insert Link"
       >
-        🔗 Link
+        <Link size={16} />
       </button>
       <button 
         onClick={() => onFormatText('insertHTML', '<table border="1"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>')} 
         title="Insert Table"
       >
-        📊 Table
+        <Table size={16} />
       </button>
       
       {onAddPageBreak && (
@@ -175,7 +194,7 @@ const EditorToolbar = ({
           onClick={onAddPageBreak} 
           title="Insert Page Break"
         >
-          📄 Page Break
+          <FileText size={16} />
         </button>
       )}
       
@@ -185,13 +204,13 @@ const EditorToolbar = ({
         onClick={() => onFormatText('undo')} 
         title="Undo"
       >
-        ↶ Undo
+        <Undo size={16} />
       </button>
       <button 
         onClick={() => onFormatText('redo')} 
         title="Redo"
       >
-        ↷ Redo
+        <Redo size={16} />
       </button>
       
       <div className="toolbar-separator" />
@@ -207,7 +226,7 @@ const EditorToolbar = ({
         onClick={() => document.getElementById('image-upload').click()} 
         title="Insert Image"
       >
-        🖼️ Image
+        <ImageIcon size={16} />
       </button>
       
       <div className="toolbar-separator" />

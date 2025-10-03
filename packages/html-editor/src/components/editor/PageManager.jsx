@@ -1,4 +1,5 @@
 import React from 'react';
+import { FileText, Plus, X, Settings } from 'lucide-react';
 
 /**
  * PageManager Component
@@ -27,7 +28,10 @@ export const PageManager = ({
     <div className="page-manager">
       {/* Page Size Selector */}
       <div className="page-size-controls">
-        <label htmlFor="page-size-selector">Page Size:</label>
+        <label htmlFor="page-size-selector">
+          <Settings size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+          Page Size:
+        </label>
         <select
           id="page-size-selector"
           role="combobox"
@@ -50,7 +54,8 @@ export const PageManager = ({
               onClick={() => onNavigate(index)}
               aria-label={`Go to page ${index + 1}`}
             >
-              Page {index + 1}
+              <FileText size={14} />
+              <span>Page {index + 1}</span>
             </button>
             {/* Show delete button for all pages when more than 1 page exists */}
             {!continuousMode && pages.length > 1 && (
@@ -64,7 +69,7 @@ export const PageManager = ({
                 aria-label={`Delete page ${index + 1}`}
                 title="Delete this page and its content"
               >
-                ×
+                <X size={14} />
               </button>
             )}
           </div>
@@ -77,7 +82,8 @@ export const PageManager = ({
           onClick={onAddPage}
           aria-label="Add new page"
         >
-          + Add Page
+          <Plus size={16} />
+          <span>Add Page</span>
         </button>
       )}
     </div>

@@ -30,6 +30,7 @@ const PAGE_DIMENSIONS = {
  * @param {Function} props.onPageSizeChange - Optional callback when page size changes (newSize)
  * @param {boolean} props.showSidebar - Whether to show the sidebar (default: true)
  * @param {boolean} props.showToolbar - Whether to show the toolbar (default: true)
+ * @param {boolean} props.showPageManager - Whether to show the PageManager component (default: true)
  */
 const ContentEditableEditor = ({
   pageManagerComponent = null,
@@ -38,7 +39,8 @@ const ContentEditableEditor = ({
   onDeletePage,
   onPageSizeChange: onPageSizeChangeCallback,
   showSidebar = true,
-  showToolbar = true
+  showToolbar = true,
+  showPageManager = true
 }) => {
   const dispatch = useDispatch();
   const documentState = useSelector((state) => state.document);
@@ -234,39 +236,41 @@ const ContentEditableEditor = ({
           />
         </div>
 
-        {/* Render custom PageManager if provided, otherwise render default */}
-        <div className="page-manager-sidebar">
-          {pageManagerComponent ? (
-            React.cloneElement(pageManagerComponent, {
-              pages: pageBoundaries.map((b, i) => ({ 
-                id: b.id, 
-                index: i,
-                size: pageSize 
-              })),
-              activePage,
-              pageSize,
-              onNavigate: handleNavigatePage,
-              onAddPage: handleAddPage,
-              onDeletePage: handleDeletePage,
-              onPageSizeChange: handlePageSizeChange
-            })
-          ) : (
-            <PageManager
-              pages={pageBoundaries.map((b, i) => ({ 
-                id: b.id, 
-                index: i,
-                size: pageSize 
-              }))}
-              activePage={activePage}
-              pageSize={pageSize}
-              onNavigate={handleNavigatePage}
-              onAddPage={handleAddPage}
-              onDeletePage={handleDeletePage}
-              onPageSizeChange={handlePageSizeChange}
-              continuousMode={false}
-            />
-          )}
-        </div>
+        {/* Render PageManager only if showPageManager is true */}
+        {showPageManager && (
+          <div className="page-manager-sidebar">
+            {pageManagerComponent ? (
+              React.cloneElement(pageManagerComponent, {
+                pages: pageBoundaries.map((b, i) => ({ 
+                  id: b.id, 
+                  index: i,
+                  size: pageSize 
+                })),
+                activePage,
+                pageSize,
+                onNavigate: handleNavigatePage,
+                onAddPage: handleAddPage,
+                onDeletePage: handleDeletePage,
+                onPageSizeChange: handlePageSizeChange
+              })
+            ) : (
+              <PageManager
+                pages={pageBoundaries.map((b, i) => ({ 
+                  id: b.id, 
+                  index: i,
+                  size: pageSize 
+                }))}
+                activePage={activePage}
+                pageSize={pageSize}
+                onNavigate={handleNavigatePage}
+                onAddPage={handleAddPage}
+                onDeletePage={handleDeletePage}
+                onPageSizeChange={handlePageSizeChange}
+                continuousMode={false}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

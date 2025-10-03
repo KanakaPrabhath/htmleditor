@@ -107,8 +107,22 @@ ContentEditableEditor (main coordinator)
 ├── ContinuousPageView (MS Word-like editing surface)
 │   ├── Single contenteditable div (continuous content)
 │   └── Page boundary indicators (visual only)
-└── PageManager (page navigation & size controls)
+└── PageManager (page navigation & size controls) [Optional - can be hidden]
 ```
+
+### Customization Options
+
+**Hide Built-in Components:**
+```jsx
+<ContentEditableEditor 
+  showToolbar={false}      // Hide toolbar
+  showSidebar={false}      // Hide sidebar
+  showPageManager={false}  // Hide page manager (manage pages via Redux)
+/>
+```
+
+**External Page Management:**
+When `showPageManager={false}`, you can manage pages programmatically using Redux actions. See [Page Management Guide](docs/PAGE_MANAGEMENT.md) for detailed instructions.
 
 ### Custom Hooks
 
@@ -211,6 +225,7 @@ Testing includes:
 ## 📚 Documentation
 
 - **[Quick Start Guide](docs/QUICK_START.md)** - Get started quickly
+- **[Page Management Guide](docs/PAGE_MANAGEMENT.md)** - Manage pages via Redux actions
 - **[Implementation Details](docs/CONTINUOUS_MODE_IMPLEMENTATION.md)** - Full technical documentation
 - **[Architecture Guide](.github/copilot-instructions.md)** - Code structure and patterns
 

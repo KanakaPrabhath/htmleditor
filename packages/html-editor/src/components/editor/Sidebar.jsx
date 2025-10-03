@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { 
+  FileText, 
+  Hash, 
+  FileCheck, 
+  ChevronLeft, 
+  ChevronRight,
+  Heading1,
+  Heading2,
+  Heading3,
+  List
+} from 'lucide-react';
 import './Sidebar.css';
 
 /**
@@ -88,14 +99,17 @@ export const Sidebar = ({ editorView, isCollapsed, onToggle, wordCount: propWord
       data-testid="sidebar"
     >
       <div className="sidebar-header">
-        <h2>Document Info</h2>
+        <div className="sidebar-title">
+          <FileText size={18} />
+          <h2>Document Info</h2>
+        </div>
         <button
           className="sidebar-toggle"
           onClick={onToggle}
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {isCollapsed ? '▶' : '◀'}
+          {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
       </div>
 
@@ -104,33 +118,49 @@ export const Sidebar = ({ editorView, isCollapsed, onToggle, wordCount: propWord
           <div className="sidebar-section">
             <h3>Statistics</h3>
             <div className="stat-item">
-              <span className="stat-label">Pages:</span>
+              <div className="stat-label">
+                <FileCheck size={14} />
+                <span>Pages:</span>
+              </div>
               <span className="stat-value">{displayPageCount}</span>
             </div>
             <div className="stat-item" data-testid="word-count">
-              <span className="stat-label">Words:</span>
+              <div className="stat-label">
+                <Hash size={14} />
+                <span>Words:</span>
+              </div>
               <span className="stat-value">{wordCount.toLocaleString()}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">Active Page:</span>
+              <div className="stat-label">
+                <FileText size={14} />
+                <span>Active Page:</span>
+              </div>
               <span className="stat-value">{activePage + 1}</span>
             </div>
           </div>
 
           {outline.length > 0 && (
             <div className="sidebar-section">
-              <h3>Document Outline</h3>
+              <h3>
+                <List size={14} style={{ display: 'inline-block', marginRight: '6px', verticalAlign: 'middle' }} />
+                Document Outline
+              </h3>
               <div className="document-outline" data-testid="outline">
-                {outline.map((heading) => (
-                  <div 
-                    key={heading.id}
-                    className={`outline-item outline-level-${heading.level}`}
-                    style={{ marginLeft: `${(heading.level - 1) * 12}px` }}
-                  >
-                    <span className="outline-text">{heading.text}</span>
-                    <span className="outline-page">p.{heading.page}</span>
-                  </div>
-                ))}
+                {outline.map((heading) => {
+                  const HeadingIcon = heading.level === 1 ? Heading1 : heading.level === 2 ? Heading2 : Heading3;
+                  return (
+                    <div 
+                      key={heading.id}
+                      className={`outline-item outline-level-${heading.level}`}
+                      style={{ marginLeft: `${(heading.level - 1) * 12}px` }}
+                    >
+                      <HeadingIcon size={12} className="outline-icon" />
+                      <span className="outline-text">{heading.text}</span>
+                      <span className="outline-page">p.{heading.page}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

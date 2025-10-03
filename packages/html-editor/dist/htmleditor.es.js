@@ -21,8 +21,8 @@ function Pe() {
     var u = null;
     if (s !== void 0 && (u = "" + s), i.key !== void 0 && (u = "" + i.key), "key" in i) {
       s = {};
-      for (var y in i)
-        y !== "key" && (s[y] = i[y]);
+      for (var k in i)
+        k !== "key" && (s[k] = i[k]);
     } else s = i;
     return i = s.ref, {
       $$typeof: e,
@@ -61,7 +61,7 @@ function _e() {
           return "StrictMode";
         case p:
           return "Suspense";
-        case h:
+        case f:
           return "SuspenseList";
         case O:
           return "Activity";
@@ -70,7 +70,7 @@ function _e() {
         switch (typeof t.tag == "number" && console.error(
           "Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."
         ), t.$$typeof) {
-          case k:
+          case x:
             return "Portal";
           case m:
             return t.displayName || "Context";
@@ -79,7 +79,7 @@ function _e() {
           case g:
             var c = t.render;
             return t = t.displayName, t || (t = c.displayName || c.name || "", t = t !== "" ? "ForwardRef(" + t + ")" : "ForwardRef"), t;
-          case P:
+          case E:
             return c = t.displayName || null, c !== null ? c : e(t.type) || "Memo";
           case A:
             c = t._payload, t = t._init;
@@ -102,11 +102,11 @@ function _e() {
       }
       if (c) {
         c = console;
-        var v = c.error, _ = typeof Symbol == "function" && Symbol.toStringTag && t[Symbol.toStringTag] || t.constructor.name || "Object";
+        var v = c.error, P = typeof Symbol == "function" && Symbol.toStringTag && t[Symbol.toStringTag] || t.constructor.name || "Object";
         return v.call(
           c,
           "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
-          _
+          P
         ), a(t);
       }
     }
@@ -135,7 +135,7 @@ function _e() {
       }
       return t.key !== void 0;
     }
-    function y(t, c) {
+    function k(t, c) {
       function v() {
         J || (J = !0, console.error(
           "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
@@ -147,23 +147,23 @@ function _e() {
         configurable: !0
       });
     }
-    function f() {
+    function h() {
       var t = e(this.type);
       return U[t] || (U[t] = !0, console.error(
         "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
       )), t = this.props.ref, t !== void 0 ? t : null;
     }
-    function x(t, c, v, _, K, ie) {
+    function y(t, c, v, P, K, ie) {
       var M = v.ref;
       return t = {
         $$typeof: L,
         type: t,
         key: c,
         props: v,
-        _owner: _
+        _owner: P
       }, (M !== void 0 ? M : null) !== null ? Object.defineProperty(t, "ref", {
         enumerable: !1,
-        get: f
+        get: h
       }) : Object.defineProperty(t, "ref", { enumerable: !1, value: null }), t._store = {}, Object.defineProperty(t._store, "validated", {
         configurable: !1,
         enumerable: !1,
@@ -186,13 +186,13 @@ function _e() {
         value: ie
       }), Object.freeze && (Object.freeze(t.props), Object.freeze(t)), t;
     }
-    function E(t, c, v, _, K, ie) {
+    function _(t, c, v, P, K, ie) {
       var M = c.children;
       if (M !== void 0)
-        if (_)
+        if (P)
           if (B(M)) {
-            for (_ = 0; _ < M.length; _++)
-              j(M[_]);
+            for (P = 0; P < M.length; P++)
+              j(M[P]);
             Object.freeze && Object.freeze(M);
           } else
             console.error(
@@ -204,28 +204,28 @@ function _e() {
         var H = Object.keys(c).filter(function(Se) {
           return Se !== "key";
         });
-        _ = 0 < H.length ? "{key: someKey, " + H.join(": ..., ") + ": ...}" : "{key: someKey}", Z[M + _] || (H = 0 < H.length ? "{" + H.join(": ..., ") + ": ...}" : "{}", console.error(
+        P = 0 < H.length ? "{key: someKey, " + H.join(": ..., ") + ": ...}" : "{key: someKey}", Z[M + P] || (H = 0 < H.length ? "{" + H.join(": ..., ") + ": ...}" : "{}", console.error(
           `A props object containing a "key" prop is being spread into JSX:
   let props = %s;
   <%s {...props} />
 React keys must be passed directly to JSX without using spread:
   let props = %s;
   <%s key={someKey} {...props} />`,
-          _,
+          P,
           M,
           H,
           M
-        ), Z[M + _] = !0);
+        ), Z[M + P] = !0);
       }
       if (M = null, v !== void 0 && (r(v), M = "" + v), u(c) && (r(c.key), M = "" + c.key), "key" in c) {
         v = {};
         for (var se in c)
           se !== "key" && (v[se] = c[se]);
       } else v = c;
-      return M && y(
+      return M && k(
         v,
         typeof t == "function" ? t.displayName || t.name || "Unknown" : t
-      ), x(
+      ), y(
         t,
         M,
         v,
@@ -240,7 +240,7 @@ React keys must be passed directly to JSX without using spread:
     function N(t) {
       return typeof t == "object" && t !== null && t.$$typeof === L;
     }
-    var R = be, L = Symbol.for("react.transitional.element"), k = Symbol.for("react.portal"), T = Symbol.for("react.fragment"), I = Symbol.for("react.strict_mode"), l = Symbol.for("react.profiler"), d = Symbol.for("react.consumer"), m = Symbol.for("react.context"), g = Symbol.for("react.forward_ref"), p = Symbol.for("react.suspense"), h = Symbol.for("react.suspense_list"), P = Symbol.for("react.memo"), A = Symbol.for("react.lazy"), O = Symbol.for("react.activity"), C = Symbol.for("react.client.reference"), w = R.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, S = Object.prototype.hasOwnProperty, B = Array.isArray, $ = console.createTask ? console.createTask : function() {
+    var R = be, L = Symbol.for("react.transitional.element"), x = Symbol.for("react.portal"), T = Symbol.for("react.fragment"), I = Symbol.for("react.strict_mode"), l = Symbol.for("react.profiler"), d = Symbol.for("react.consumer"), m = Symbol.for("react.context"), g = Symbol.for("react.forward_ref"), p = Symbol.for("react.suspense"), f = Symbol.for("react.suspense_list"), E = Symbol.for("react.memo"), A = Symbol.for("react.lazy"), O = Symbol.for("react.activity"), C = Symbol.for("react.client.reference"), w = R.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, S = Object.prototype.hasOwnProperty, B = Array.isArray, $ = console.createTask ? console.createTask : function() {
       return null;
     };
     R = {
@@ -253,24 +253,24 @@ React keys must be passed directly to JSX without using spread:
       s
     )(), X = $(o(s)), Z = {};
     G.Fragment = T, G.jsx = function(t, c, v) {
-      var _ = 1e4 > w.recentlyCreatedOwnerStacks++;
-      return E(
+      var P = 1e4 > w.recentlyCreatedOwnerStacks++;
+      return _(
         t,
         c,
         v,
         !1,
-        _ ? Error("react-stack-top-frame") : F,
-        _ ? $(o(t)) : X
+        P ? Error("react-stack-top-frame") : F,
+        P ? $(o(t)) : X
       );
     }, G.jsxs = function(t, c, v) {
-      var _ = 1e4 > w.recentlyCreatedOwnerStacks++;
-      return E(
+      var P = 1e4 > w.recentlyCreatedOwnerStacks++;
+      return _(
         t,
         c,
         v,
         !0,
-        _ ? Error("react-stack-top-frame") : F,
-        _ ? $(o(t)) : X
+        P ? Error("react-stack-top-frame") : F,
+        P ? $(o(t)) : X
       );
     };
   })()), G;
@@ -400,8 +400,8 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
         const o = document.createElement("div");
         o.innerHTML = e.continuousContent;
         const i = o.querySelectorAll('page-break, [data-page-break="true"]');
-        i[r] && i[r].remove(), o.querySelectorAll('page-break, [data-page-break="true"]').forEach((u, y) => {
-          u.setAttribute("data-page-number", String(y + 2));
+        i[r] && i[r].remove(), o.querySelectorAll('page-break, [data-page-break="true"]').forEach((u, k) => {
+          u.setAttribute("data-page-number", String(k + 2));
         }), e.continuousContent = o.innerHTML, e.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
       }
     },
@@ -468,16 +468,16 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
   }, [e]), Y(() => () => {
     o.current && clearTimeout(o.current), i.current && clearTimeout(i.current);
   }, []);
-  const y = z((l, d) => {
+  const k = z((l, d) => {
     let m = 0;
     for (let g = 0; g < l.length; g++) {
-      const p = l[g], h = p.getBoundingClientRect().height;
-      if (m + h > d)
+      const p = l[g], f = p.getBoundingClientRect().height;
+      if (m + f > d)
         return { overflowIndex: g, overflowElement: p, accumulatedHeight: m };
-      m += h;
+      m += f;
     }
     return null;
-  }, []), f = z((l, d) => {
+  }, []), h = z((l, d) => {
     if (!l || !a?.current)
       return !1;
     try {
@@ -486,25 +486,25 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
     } catch (m) {
       return console.warn("[insertPageBreakBefore] Failed to insert page break:", m), !1;
     }
-  }, [a]), x = z(() => {
+  }, [a]), y = z(() => {
     if (!(!a?.current || u.current))
       try {
         u.current = !0;
-        const l = a.current, d = s.current || "A4", g = (te[d] || te.A4).height - fe.top - fe.bottom, p = Array.from(l.children), h = p.filter(
+        const l = a.current, d = s.current || "A4", g = (te[d] || te.A4).height - fe.top - fe.bottom, p = Array.from(l.children), f = p.filter(
           (C) => C.tagName === "PAGE-BREAK" || C.getAttribute("data-page-break") === "true"
-        ), P = [];
+        ), E = [];
         let A = [];
         for (const C of p)
-          C.tagName === "PAGE-BREAK" || C.getAttribute("data-page-break") === "true" ? A.length > 0 && (P.push(A), A = []) : A.push(C);
-        A.length > 0 && P.push(A), P.length === 0 && p.length > 0 && P.push(p.filter(
+          C.tagName === "PAGE-BREAK" || C.getAttribute("data-page-break") === "true" ? A.length > 0 && (E.push(A), A = []) : A.push(C);
+        A.length > 0 && E.push(A), E.length === 0 && p.length > 0 && E.push(p.filter(
           (C) => !(C.tagName === "PAGE-BREAK" || C.getAttribute("data-page-break") === "true")
         ));
         let O = !1;
-        for (let C = 0; C < P.length; C++) {
-          const w = P[C], S = y(w, g);
+        for (let C = 0; C < E.length; C++) {
+          const w = E[C], S = k(w, g);
           if (S && S.overflowIndex > 0) {
             const B = C + 2;
-            if (f(S.overflowElement, B)) {
+            if (h(S.overflowElement, B)) {
               O = !0;
               break;
             }
@@ -521,30 +521,30 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
       } finally {
         u.current = !1;
       }
-  }, [a, y, f, r]), E = z((l = 500) => {
+  }, [a, k, h, r]), _ = z((l = 500) => {
     i.current && clearTimeout(i.current), i.current = setTimeout(() => {
-      i.current = null, x();
+      i.current = null, y();
     }, l);
-  }, [x]), j = z((l = {}) => {
+  }, [y]), j = z((l = {}) => {
     if (!a?.current || typeof document > "u")
       return [];
-    const d = l.pageSize || s.current || "A4", m = te[d] || te.A4, g = a.current, p = g.querySelectorAll('page-break, [data-page-break="true"]'), h = [];
-    return h.push({
+    const d = l.pageSize || s.current || "A4", m = te[d] || te.A4, g = a.current, p = g.querySelectorAll('page-break, [data-page-break="true"]'), f = [];
+    return f.push({
       id: "page-0",
       pageNumber: 1,
       top: 0,
       height: m.height
       // No breakElement for first page
-    }), p.forEach((P, A) => {
-      const O = P.getBoundingClientRect(), C = g.getBoundingClientRect(), w = O.top - C.top + g.scrollTop;
-      h.push({
+    }), p.forEach((E, A) => {
+      const O = E.getBoundingClientRect(), C = g.getBoundingClientRect(), w = O.top - C.top + g.scrollTop;
+      f.push({
         id: `page-${A + 1}`,
         pageNumber: A + 2,
         top: w,
         height: m.height
         // Don't store breakElement - not serializable
       });
-    }), h;
+    }), f;
   }, [a]), N = z((l = {}) => {
     const d = j(l);
     return r(Re(d)), d;
@@ -567,16 +567,16 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
       if (p.length === 0)
         return 0;
       for (; g && g !== m; ) {
-        for (let h = p.length - 1; h >= 0; h--)
-          if (p[h].compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING)
-            return h + 1;
+        for (let f = p.length - 1; f >= 0; f--)
+          if (p[f].compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING)
+            return f + 1;
         g = g.parentNode;
       }
       return 0;
     } catch (d) {
       return console.warn("[getCurrentPage] Failed to calculate page:", d), 0;
     }
-  }, [a]), k = z((l, d) => {
+  }, [a]), x = z((l, d) => {
     if (!d?.current || !a?.current)
       return;
     a.current;
@@ -597,12 +597,12 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
       if (l === 0)
         m = d.firstChild, g = 0;
       else {
-        const h = d.querySelectorAll('page-break, [data-page-break="true"]')[l - 1];
-        h && h.nextSibling && (m = h.nextSibling, g = 0);
+        const f = d.querySelectorAll('page-break, [data-page-break="true"]')[l - 1];
+        f && f.nextSibling && (m = f.nextSibling, g = 0);
       }
       if (m) {
-        const p = document.createRange(), h = window.getSelection();
-        m.nodeType === Node.TEXT_NODE ? p.setStart(m, g) : p.setStart(m, 0), p.collapse(!0), h.removeAllRanges(), h.addRange(p);
+        const p = document.createRange(), f = window.getSelection();
+        m.nodeType === Node.TEXT_NODE ? p.setStart(m, g) : p.setStart(m, 0), p.collapse(!0), f.removeAllRanges(), f.addRange(p);
       }
     } catch (m) {
       console.warn("[positionCursorAtPage] Failed to position cursor:", m);
@@ -618,14 +618,14 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
       if (l > g.length)
         return console.warn("[removePageAndContent] Invalid page index"), !1;
       const p = window.getSelection();
-      let h = !1, P = [], A = null;
+      let f = !1, E = [], A = null;
       if (l === 0) {
         const w = g[0];
         if (!w)
           return console.warn("[removePageAndContent] No page break found for first page"), !1;
         let S = d.firstChild;
         for (; S && S !== w; )
-          P.push(S), S = S.nextSibling;
+          E.push(S), S = S.nextSibling;
         A = w;
       } else {
         const w = g[l - 1];
@@ -634,22 +634,22 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
         const S = g[l];
         let B = w.nextSibling;
         for (; B && B !== S; )
-          P.push(B), B = B.nextSibling;
+          E.push(B), B = B.nextSibling;
         A = w;
       }
       if (p && p.rangeCount > 0) {
         const S = p.getRangeAt(0).startContainer;
-        for (const B of P)
+        for (const B of E)
           if (B.contains(S) || B === S) {
-            h = !0;
+            f = !0;
             break;
           }
       }
-      A && A.parentNode && A.remove(), P.forEach((w) => {
+      A && A.parentNode && A.remove(), E.forEach((w) => {
         w.parentNode && w.remove();
       }), d.querySelectorAll('page-break, [data-page-break="true"]').forEach((w, S) => {
         w.setAttribute("data-page-number", String(S + 2));
-      }), h && setTimeout(() => {
+      }), f && setTimeout(() => {
         T(0);
       }, 50);
       const C = d.innerHTML;
@@ -665,10 +665,10 @@ const oe = "A4", D = "<p><br></p>", W = (e, a = oe) => ({
     checkAndUpdateBoundaries: R,
     updateBoundaries: N,
     getCurrentPage: L,
-    scrollToPage: k,
+    scrollToPage: x,
     positionCursorAtPage: T,
-    checkAndReflow: x,
-    triggerAutoReflow: E,
+    checkAndReflow: y,
+    triggerAutoReflow: _,
     removePageAndContent: I,
     boundaryTimeoutRef: o,
     reflowTimeoutRef: i
@@ -723,22 +723,22 @@ const qe = ye(
     className: i = "",
     children: s,
     iconNode: u,
-    ...y
-  }, f) => le(
+    ...k
+  }, h) => le(
     "svg",
     {
-      ref: f,
+      ref: h,
       ...He,
       width: a,
       height: a,
       stroke: e,
       strokeWidth: o ? Number(r) * 24 / Number(a) : r,
       className: Ne("lucide", i),
-      ...!s && !De(y) && { "aria-hidden": "true" },
-      ...y
+      ...!s && !De(k) && { "aria-hidden": "true" },
+      ...k
     },
     [
-      ...u.map(([x, E]) => le(x, E)),
+      ...u.map(([y, _]) => le(y, _)),
       ...Array.isArray(s) ? s : [s]
     ]
   )
@@ -1069,18 +1069,18 @@ const $t = [
   ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
   ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ], Dt = b("x", $t), Ht = ({ editorView: e, isCollapsed: a, onToggle: r, wordCount: o, pageCount: i }) => {
-  const s = je((k) => k.document), { pages: u, activePage: y, continuousContent: f, editorMode: x } = s, [E, j] = ae(0), [N, R] = ae([]);
+  const s = je((x) => x.document), { pages: u, activePage: k, continuousContent: h, editorMode: y } = s, [_, j] = ae(0), [N, R] = ae([]);
   Y(() => {
     if (o !== void 0 && i !== void 0) {
-      if (j(o), f) {
+      if (j(o), h) {
         const I = document.createElement("div");
-        I.innerHTML = f;
+        I.innerHTML = h;
         const l = I.querySelectorAll("h1, h2, h3, h4, h5, h6"), d = Array.from(l).map((m, g) => {
-          const p = parseInt(m.tagName.charAt(1)), h = m.textContent.trim();
-          return h ? {
+          const p = parseInt(m.tagName.charAt(1)), f = m.textContent.trim();
+          return f ? {
             id: `heading-${g}`,
             level: p,
-            text: h,
+            text: f,
             page: 1
             // Continuous mode doesn't have meaningful page numbers for headings
           } : null;
@@ -1089,25 +1089,25 @@ const $t = [
       }
       return;
     }
-    let k = 0;
+    let x = 0;
     const T = [];
     u.forEach((I, l) => {
       if (I.content) {
         const d = document.createElement("div");
         d.innerHTML = I.content;
-        const g = (d.textContent || d.innerText || "").trim().split(/\s+/).filter((h) => h.length > 0);
-        k += g.length, d.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((h, P) => {
-          const A = parseInt(h.tagName.charAt(1)), O = h.textContent.trim();
+        const g = (d.textContent || d.innerText || "").trim().split(/\s+/).filter((f) => f.length > 0);
+        x += g.length, d.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((f, E) => {
+          const A = parseInt(f.tagName.charAt(1)), O = f.textContent.trim();
           O && T.push({
-            id: `heading-${l}-${P}`,
+            id: `heading-${l}-${E}`,
             level: A,
             text: O,
             page: l + 1
           });
         });
       }
-    }), j(k), R(T);
-  }, [u, o, i, f]);
+    }), j(x), R(T);
+  }, [u, o, i, h]);
   const L = i !== void 0 ? i : u.length;
   return /* @__PURE__ */ n.jsxs(
     "aside",
@@ -1148,14 +1148,14 @@ const $t = [
                 /* @__PURE__ */ n.jsx(Qe, { size: 14 }),
                 /* @__PURE__ */ n.jsx("span", { children: "Words:" })
               ] }),
-              /* @__PURE__ */ n.jsx("span", { className: "stat-value", children: E.toLocaleString() })
+              /* @__PURE__ */ n.jsx("span", { className: "stat-value", children: _.toLocaleString() })
             ] }),
             /* @__PURE__ */ n.jsxs("div", { className: "stat-item", children: [
               /* @__PURE__ */ n.jsxs("div", { className: "stat-label", children: [
                 /* @__PURE__ */ n.jsx(re, { size: 14 }),
                 /* @__PURE__ */ n.jsx("span", { children: "Active Page:" })
               ] }),
-              /* @__PURE__ */ n.jsx("span", { className: "stat-value", children: y + 1 })
+              /* @__PURE__ */ n.jsx("span", { className: "stat-value", children: k + 1 })
             ] })
           ] }),
           N.length > 0 && /* @__PURE__ */ n.jsxs("div", { className: "sidebar-section", children: [
@@ -1163,23 +1163,23 @@ const $t = [
               /* @__PURE__ */ n.jsx(we, { size: 14, style: { display: "inline-block", marginRight: "6px", verticalAlign: "middle" } }),
               "Document Outline"
             ] }),
-            /* @__PURE__ */ n.jsx("div", { className: "document-outline", "data-testid": "outline", children: N.map((k) => {
-              const T = k.level === 1 ? tt : k.level === 2 ? at : ot;
+            /* @__PURE__ */ n.jsx("div", { className: "document-outline", "data-testid": "outline", children: N.map((x) => {
+              const T = x.level === 1 ? tt : x.level === 2 ? at : ot;
               return /* @__PURE__ */ n.jsxs(
                 "div",
                 {
-                  className: `outline-item outline-level-${k.level}`,
-                  style: { marginLeft: `${(k.level - 1) * 12}px` },
+                  className: `outline-item outline-level-${x.level}`,
+                  style: { marginLeft: `${(x.level - 1) * 12}px` },
                   children: [
                     /* @__PURE__ */ n.jsx(T, { size: 12, className: "outline-icon" }),
-                    /* @__PURE__ */ n.jsx("span", { className: "outline-text", children: k.text }),
+                    /* @__PURE__ */ n.jsx("span", { className: "outline-text", children: x.text }),
                     /* @__PURE__ */ n.jsxs("span", { className: "outline-page", children: [
                       "p.",
-                      k.page
+                      x.page
                     ] })
                   ]
                 },
-                k.id
+                x.id
               );
             }) })
           ] }),
@@ -1217,10 +1217,10 @@ function Ut(e) {
         return;
       }
       try {
-        const x = `editor-image-${qt()}`;
-        localStorage.setItem(x, u), a(x);
-      } catch (x) {
-        x.name === "QuotaExceededError" ? r(new Error("Storage quota exceeded")) : r(x);
+        const y = `editor-image-${qt()}`;
+        localStorage.setItem(y, u), a(y);
+      } catch (y) {
+        y.name === "QuotaExceededError" ? r(new Error("Storage quota exceeded")) : r(y);
       }
     }, i.onerror = () => {
       r(new Error("Error reading image file"));
@@ -1303,10 +1303,10 @@ const xe = new Vt("Editor"), Gt = ({
         alert("Image exceeds maximum size of 5MB");
         return;
       }
-      const f = await Ut(u), x = localStorage.getItem(f);
-      x && (document.execCommand("insertImage", !1, x), xe.info("Image inserted", { key: f }));
-    } catch (y) {
-      xe.error("Error uploading image", y);
+      const h = await Ut(u), y = localStorage.getItem(h);
+      y && (document.execCommand("insertImage", !1, y), xe.info("Image inserted", { key: h }));
+    } catch (k) {
+      xe.error("Error uploading image", k);
     }
   };
   return /* @__PURE__ */ n.jsxs("div", { className: "editor-toolbar", children: [
@@ -1528,19 +1528,19 @@ const xe = new Vt("Editor"), Gt = ({
   editorRef: i,
   onInput: s,
   onKeyDown: u,
-  onClick: y,
-  onScroll: f
+  onClick: k,
+  onScroll: h
 }) => {
-  const x = {
+  const y = {
     top: 60,
     bottom: 100,
     left: 72,
     right: 72
-  }, E = (j) => {
+  }, _ = (j) => {
     const N = window.getSelection();
     if (!N || N.rangeCount === 0) return;
-    const R = N.getRangeAt(0), { startContainer: L, endContainer: k } = R, T = (I) => I ? I.nodeType === Node.ELEMENT_NODE ? I.tagName === "PAGE-BREAK" || I.getAttribute("data-page-break") === "true" : I.parentElement && T(I.parentElement) : !1;
-    if ((j.key === "Backspace" || j.key === "Delete") && (T(L) || T(k)))
+    const R = N.getRangeAt(0), { startContainer: L, endContainer: x } = R, T = (I) => I ? I.nodeType === Node.ELEMENT_NODE ? I.tagName === "PAGE-BREAK" || I.getAttribute("data-page-break") === "true" : I.parentElement && T(I.parentElement) : !1;
+    if ((j.key === "Backspace" || j.key === "Delete") && (T(L) || T(x)))
       return j.preventDefault(), !1;
     u && u(j);
   };
@@ -1568,7 +1568,7 @@ const xe = new Vt("Editor"), Gt = ({
             zIndex: 1,
             minHeight: `${a.height}px`,
             backgroundColor: "white",
-            padding: `${x.top}px ${x.right}px ${x.bottom}px ${x.left}px`,
+            padding: `${y.top}px ${y.right}px ${y.bottom}px ${y.left}px`,
             boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
             outline: "none",
             cursor: "text",
@@ -1582,9 +1582,9 @@ const xe = new Vt("Editor"), Gt = ({
             border: "1px solid #e0e0e0"
           },
           onInput: s,
-          onKeyDown: E,
-          onClick: y,
-          onScroll: f,
+          onKeyDown: _,
+          onClick: k,
+          onScroll: h,
           "data-testid": "continuous-editor"
         }
       )
@@ -1597,8 +1597,7 @@ const xe = new Vt("Editor"), Gt = ({
   onNavigate: o,
   onAddPage: i,
   onDeletePage: s,
-  onPageSizeChange: u,
-  continuousMode: y = !1
+  onPageSizeChange: u
 }) => /* @__PURE__ */ n.jsxs("div", { className: "page-manager", children: [
   /* @__PURE__ */ n.jsxs("div", { className: "page-size-controls", children: [
     /* @__PURE__ */ n.jsxs("label", { htmlFor: "page-size-selector", children: [
@@ -1612,7 +1611,7 @@ const xe = new Vt("Editor"), Gt = ({
         role: "combobox",
         "aria-label": "Page size selector",
         value: r,
-        onChange: (f) => u(f.target.value),
+        onChange: (k) => u(k.target.value),
         children: [
           /* @__PURE__ */ n.jsx("option", { value: "A4", children: "A4" }),
           /* @__PURE__ */ n.jsx("option", { value: "Letter", children: "Letter" }),
@@ -1621,38 +1620,38 @@ const xe = new Vt("Editor"), Gt = ({
       }
     )
   ] }),
-  /* @__PURE__ */ n.jsx("div", { className: "page-list", children: e.map((f, x) => /* @__PURE__ */ n.jsxs("div", { className: "page-item", children: [
+  /* @__PURE__ */ n.jsx("div", { className: "page-list", children: e.map((k, h) => /* @__PURE__ */ n.jsxs("div", { className: "page-item", children: [
     /* @__PURE__ */ n.jsxs(
       "button",
       {
         type: "button",
-        className: `page-button ${x === a ? "active" : ""}`,
-        onClick: () => o(x),
-        "aria-label": `Go to page ${x + 1}`,
+        className: `page-button ${h === a ? "active" : ""}`,
+        onClick: () => o(h),
+        "aria-label": `Go to page ${h + 1}`,
         children: [
           /* @__PURE__ */ n.jsx(re, { size: 14 }),
           /* @__PURE__ */ n.jsxs("span", { children: [
             "Page ",
-            x + 1
+            h + 1
           ] })
         ]
       }
     ),
-    !y && e.length > 1 && /* @__PURE__ */ n.jsx(
+    e.length > 1 && /* @__PURE__ */ n.jsx(
       "button",
       {
         type: "button",
         className: "delete-page-button",
-        onClick: (E) => {
-          E.stopPropagation(), s(x);
+        onClick: (y) => {
+          y.stopPropagation(), s(h);
         },
-        "aria-label": `Delete page ${x + 1}`,
+        "aria-label": `Delete page ${h + 1}`,
         title: "Delete this page and its content",
         children: /* @__PURE__ */ n.jsx(Dt, { size: 14 })
       }
     )
-  ] }, f.id)) }),
-  !y && /* @__PURE__ */ n.jsxs(
+  ] }, k.id)) }),
+  /* @__PURE__ */ n.jsxs(
     "button",
     {
       type: "button",
@@ -1677,66 +1676,66 @@ const xe = new Vt("Editor"), Gt = ({
   onPageSizeChange: i,
   showSidebar: s = !0,
   showToolbar: u = !0,
-  showPageManager: y = !0
+  showPageManager: k = !0
 }) => {
-  const f = ve(), x = je((t) => t.document), { pageSize: E, continuousContent: j, pageBoundaries: N, activePage: R } = x, L = q(null), k = q(null), { currentFormat: T, formatText: I } = Be(), {
+  const h = ve(), y = je((t) => t.document), { pageSize: _, continuousContent: j, pageBoundaries: N, activePage: R } = y, L = q(null), x = q(null), { currentFormat: T, formatText: I } = Be(), {
     checkAndUpdateBoundaries: l,
     getCurrentPage: d,
     scrollToPage: m,
     positionCursorAtPage: g,
     updateBoundaries: p,
-    triggerAutoReflow: h,
-    removePageAndContent: P
-  } = Le(E, k), A = ke[E] || ke.A4, [O, C] = ae(!1);
+    triggerAutoReflow: f,
+    removePageAndContent: E
+  } = Le(_, x), A = ke[_] || ke.A4, [O, C] = ae(!1);
   Y(() => {
-    k.current && k.current.innerHTML !== j && (k.current.innerHTML = j, setTimeout(() => {
+    x.current && x.current.innerHTML !== j && (x.current.innerHTML = j, setTimeout(() => {
       p();
     }, 100));
   }, [j, p]), Y(() => {
     const t = setTimeout(() => {
-      k.current && k.current.focus();
+      x.current && x.current.focus();
     }, 200);
     return () => clearTimeout(t);
   }, []);
   const w = z((t) => {
     const c = t.currentTarget.innerHTML;
-    f(ue(c)), l(), h();
+    h(ue(c)), l(), f();
     const v = d();
-    v !== R && f(ee(v));
-  }, [l, f, d, R, h]), S = z((t) => {
-    f(ze(t)), p({ pageSize: t }), i && i(t);
-  }, [f, p, i]), B = z((t) => {
-    f(ee(t)), m(t, L), a && a(t);
-  }, [f, m, a]), $ = z(() => {
-    f(Ie({ position: "end" })), setTimeout(() => {
+    v !== R && h(ee(v));
+  }, [l, h, d, R, f]), S = z((t) => {
+    h(ze(t)), p({ pageSize: t }), i && i(t);
+  }, [h, p, i]), B = z((t) => {
+    h(ee(t)), m(t, L), a && a(t);
+  }, [h, m, a]), $ = z(() => {
+    h(Ie({ position: "end" })), setTimeout(() => {
       p();
     }, 100), r && r();
-  }, [f, p, r]), J = z(() => {
+  }, [h, p, r]), J = z(() => {
     const t = window.getSelection();
     if (t && t.rangeCount > 0) {
-      if (!k?.current) return;
-      const _ = `<page-break data-page-break="true" contenteditable="false" data-page-number="${k.current.querySelectorAll('page-break, [data-page-break="true"]').length + 2}"></page-break><p><br></p>`;
-      document.execCommand("insertHTML", !1, _), setTimeout(() => {
+      if (!x?.current) return;
+      const P = `<page-break data-page-break="true" contenteditable="false" data-page-number="${x.current.querySelectorAll('page-break, [data-page-break="true"]').length + 2}"></page-break><p><br></p>`;
+      document.execCommand("insertHTML", !1, P), setTimeout(() => {
         p();
       }, 100);
     }
-  }, [p, k]), U = z((t) => {
+  }, [p, x]), U = z((t) => {
     if (N.length <= 1) {
       console.warn("Cannot delete the only page");
       return;
     }
-    P(t) && (f(ee(0)), o && o(t));
-  }, [N.length, P, f, o]), F = z(() => {
-    if (!L.current || !k.current) return;
+    E(t) && (h(ee(0)), o && o(t));
+  }, [N.length, E, h, o]), F = z(() => {
+    if (!L.current || !x.current) return;
     const t = d();
-    t !== R && f(ee(t));
-  }, [d, R, f]), X = j ? (j.replace(/<[^>]*>/g, " ").match(/\b\w+\b/g) || []).length : 0, Z = N.length || 1;
+    t !== R && h(ee(t));
+  }, [d, R, h]), X = j ? (j.replace(/<[^>]*>/g, " ").match(/\b\w+\b/g) || []).length : 0, Z = N.length || 1;
   return /* @__PURE__ */ n.jsxs("div", { className: "multi-page-editor", children: [
     u && /* @__PURE__ */ n.jsx(
       Gt,
       {
         currentFormat: T,
-        pageSize: E,
+        pageSize: _,
         onFormatText: I,
         onPageSizeChange: S,
         onAddPageBreak: J
@@ -1764,23 +1763,23 @@ const xe = new Vt("Editor"), Gt = ({
             {
               content: j,
               dimensions: A,
-              pageSize: E,
+              pageSize: _,
               pageBoundaries: N,
-              editorRef: k,
+              editorRef: x,
               onInput: w,
-              onClick: () => k.current?.focus()
+              onClick: () => x.current?.focus()
             }
           )
         }
       ),
-      y && /* @__PURE__ */ n.jsx("div", { className: "page-manager-sidebar", children: e ? be.cloneElement(e, {
+      k && /* @__PURE__ */ n.jsx("div", { className: "page-manager-sidebar", children: e ? be.cloneElement(e, {
         pages: N.map((t, c) => ({
           id: t.id,
           index: c,
-          size: E
+          size: _
         })),
         activePage: R,
-        pageSize: E,
+        pageSize: _,
         onNavigate: B,
         onAddPage: $,
         onDeletePage: U,
@@ -1791,15 +1790,14 @@ const xe = new Vt("Editor"), Gt = ({
           pages: N.map((t, c) => ({
             id: t.id,
             index: c,
-            size: E
+            size: _
           })),
           activePage: R,
-          pageSize: E,
+          pageSize: _,
           onNavigate: B,
           onAddPage: $,
           onDeletePage: U,
-          onPageSizeChange: S,
-          continuousMode: !1
+          onPageSizeChange: S
         }
       ) })
     ] })

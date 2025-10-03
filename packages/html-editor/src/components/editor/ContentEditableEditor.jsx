@@ -266,7 +266,6 @@ const ContentEditableEditor = ({
                 onAddPage={handleAddPage}
                 onDeletePage={handleDeletePage}
                 onPageSizeChange={handlePageSizeChange}
-                continuousMode={false}
               />
             )}
           </div>

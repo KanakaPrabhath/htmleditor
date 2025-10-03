@@ -9,10 +9,9 @@ import { FileText, Plus, X, Settings } from 'lucide-react';
  * @param {number} props.activePage - Index of the currently active page
  * @param {string} props.pageSize - Current page size setting
  * @param {Function} props.onNavigate - Callback when page selection changes
- * @param {Function} props.onAddPage - Callback to add a new page (paged mode only)
- * @param {Function} props.onDeletePage - Callback to delete a page (paged mode only)
+ * @param {Function} props.onAddPage - Callback to add a new page
+ * @param {Function} props.onDeletePage - Callback to delete a page
  * @param {Function} props.onPageSizeChange - Callback to change page size
- * @param {boolean} props.continuousMode - Whether in continuous mode (hides add/delete buttons)
  */
 export const PageManager = ({ 
   pages, 
@@ -21,8 +20,7 @@ export const PageManager = ({
   onNavigate, 
   onAddPage,
   onDeletePage,
-  onPageSizeChange,
-  continuousMode = false
+  onPageSizeChange
 }) => {
   return (
     <div className="page-manager">
@@ -58,7 +56,7 @@ export const PageManager = ({
               <span>Page {index + 1}</span>
             </button>
             {/* Show delete button for all pages when more than 1 page exists */}
-            {!continuousMode && pages.length > 1 && (
+            {pages.length > 1 && (
               <button
                 type="button"
                 className="delete-page-button"
@@ -75,17 +73,15 @@ export const PageManager = ({
           </div>
         ))}
       </div>
-      {!continuousMode && (
-        <button
-          type="button"
-          className="add-page-button"
-          onClick={onAddPage}
-          aria-label="Add new page"
-        >
-          <Plus size={16} />
-          <span>Add Page</span>
-        </button>
-      )}
+      <button
+        type="button"
+        className="add-page-button"
+        onClick={onAddPage}
+        aria-label="Add new page"
+      >
+        <Plus size={16} />
+        <span>Add Page</span>
+      </button>
     </div>
   );
 };

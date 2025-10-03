@@ -3,6 +3,20 @@
   height: 100vh;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#app-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+#editor-container {
+  flex: 1;
+  overflow: hidden;
 }
 
 .logo {

@@ -9,7 +9,7 @@
 }
 
 .sidebar.collapsed {
-  width: 24px;
+  width: 48px;
 }
 
 .sidebar-header {
@@ -20,6 +20,11 @@
   border-bottom: 1px solid #dee2e6;
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar.collapsed .sidebar-header {
+  padding: 8px;
+  justify-content: center;
 }
 
 .sidebar-title {
@@ -53,10 +58,8 @@
   background-color: #f8f9fa;
 }
 
-.sidebar.collapsed .sidebar-toggle {
-  padding: 8px 4px;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
+.sidebar.collapsed .sidebar-title {
+  display: none;
 }
 
 .sidebar-content {
@@ -149,19 +152,21 @@
 
 /* Responsive behavior per FR-011 */
 @media (max-width: 1024px) {
-  .sidebar:not(.collapsed) {
-    width: 24px;
+  .sidebar {
+    width: 48px;
   }
   
-  .sidebar-header h2,
+  .sidebar-title {
+    display: none;
+  }
+  
   .sidebar-content {
     display: none;
   }
   
-  .sidebar-toggle {
-    padding: 8px 4px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
+  .sidebar-header {
+    padding: 8px;
+    justify-content: center;
   }
 }
 

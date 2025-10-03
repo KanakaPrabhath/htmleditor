@@ -1,29 +1,30 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
+import { ContentEditableEditor, documentReducer } from '@prabhath-tharaka/html-editor';
 
-// Mock the hooks and components
-vi.mock('../../packages/html-editor/src/hooks', () => ({
-  useFormatting: () => ({
-    currentFormat: {},
-    formatText: vi.fn()
-  }),
-  useContinuousReflow: () => ({
-    checkAndUpdateBoundaries: vi.fn(),
-    getCurrentPage: vi.fn(() => 0),
-    scrollToPage: vi.fn(),
-    positionCursorAtPage: vi.fn(),
-    updateBoundaries: vi.fn(),
-    triggerAutoReflow: vi.fn(),
-    removePageAndContent: vi.fn()
-  })
-}));
-
-// Import after mocking
-const ContentEditableEditor = (await import('../../packages/html-editor/src/components/editor/ContentEditableEditor')).default;
-const documentReducer = (await import('../../packages/html-editor/src/store/slices/documentSlice')).default;
+// Mock the hooks to prevent actual DOM manipulations during tests
+vi.mock('@prabhath-tharaka/html-editor', async () => {
+  const actual = await vi.importActual('@prabhath-tharaka/html-editor');
+  return {
+    ...actual,
+    useFormatting: () => ({
+      currentFormat: {},
+      formatText: vi.fn()
+    }),
+    useContinuousReflow: () => ({
+      checkAndUpdateBoundaries: vi.fn(),
+      getCurrentPage: vi.fn(() => 0),
+      scrollToPage: vi.fn(),
+      positionCursorAtPage: vi.fn(),
+      updateBoundaries: vi.fn(),
+      triggerAutoReflow: vi.fn(),
+      removePageAndContent: vi.fn()
+    })
+  };
+});
 
 const createTestStore = () => {
   return configureStore({

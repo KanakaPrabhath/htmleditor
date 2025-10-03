@@ -1,11 +1,11 @@
-# WYSIWYG HTML Editor
+# HTML Editor
 
 [![npm version](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor.svg)](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19.1.1-blue.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.7-646CFF.svg)](https://vitejs.dev/)
 
-A React-based WYSIWYG HTML editor component with rich text formatting capabilities and automatic multi-page content reflow. Built with Vite, React 19, and Redux Toolkit.
+A React-based WYSIWYG HTML editor library with rich text formatting capabilities and automatic multi-page content reflow. Built with Vite, React 19, and Redux Toolkit.
 
 ## 📋 Table of Contents
 

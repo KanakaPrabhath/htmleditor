@@ -138,7 +138,7 @@ const EditorToolbar = ({
       
       <select 
         onChange={(e) => onFormatText('fontSize', e.target.value)}
-        defaultValue="16px"
+        defaultValue="12px"
         title="Font Size"
       >
         <option value="10px">10</option>

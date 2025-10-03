@@ -15,14 +15,42 @@ export const useFormatting = () => {
     alignRight: false,
     alignJustify: false,
     fontFamily: 'Arial',
-    fontSize: '16px'
+    fontSize: '12px'
   });
 
   /**
    * Format text using document.execCommand
    */
   const formatText = useCallback((command, value = null) => {
-    document.execCommand(command, false, value);
+    // Handle fontSize with proper font size number (1-7 scale)
+    if (command === 'fontSize') {
+      // Convert px value to font size number for execCommand
+      const sizeMap = {
+        '10px': '1',
+        '12px': '2',
+        '14px': '3',
+        '16px': '4',
+        '18px': '5',
+        '24px': '6',
+        '32px': '7'
+      };
+      const sizeNumber = sizeMap[value] || '2';
+      document.execCommand('fontSize', false, sizeNumber);
+      
+      // Then set the actual pixel size using style
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const selectedText = range.toString();
+        if (selectedText) {
+          const span = document.createElement('span');
+          span.style.fontSize = value;
+          range.surroundContents(span);
+        }
+      }
+    } else {
+      document.execCommand(command, false, value);
+    }
     
     // Update format state
     if (command === 'bold') {
@@ -41,6 +69,8 @@ export const useFormatting = () => {
       setCurrentFormat(prev => ({ ...prev, alignLeft: false, alignCenter: false, alignRight: true, alignJustify: false }));
     } else if (command === 'justifyFull') {
       setCurrentFormat(prev => ({ ...prev, alignLeft: false, alignCenter: false, alignRight: false, alignJustify: true }));
+    } else if (command === 'fontSize') {
+      setCurrentFormat(prev => ({ ...prev, fontSize: value }));
     }
   }, []);
 

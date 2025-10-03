@@ -23,8 +23,15 @@ const ContinuousPageView = ({
     right: 72
   };
 
-  // Prevent deletion of page-break elements
+  // Prevent deletion of page-break elements and handle Tab key
   const handleKeyDown = (event) => {
+    // Handle Tab key to insert tab character
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+      return false;
+    }
+
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
@@ -80,8 +87,8 @@ const ContinuousPageView = ({
           outline: 'none',
           cursor: 'text',
           fontFamily: 'Arial, sans-serif',
-          fontSize: '16px',
-          lineHeight: '1.6',
+          fontSize: '12px',
+          lineHeight: '1.15',
           color: '#333',
           wordWrap: 'break-word',
           whiteSpace: 'pre-wrap',

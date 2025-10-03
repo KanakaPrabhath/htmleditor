@@ -1,6 +1,25 @@
 # HTML Editor
 
-[![npm version](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor.svg)](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor)
+[![npm## ✨ Features
+
+- ✨ Real-time HTML editing with contentEditable
+- 🖼️ Image insertion and local storage persistence
+- 📄 Multi-page document support with automatic content reflow
+- 🛠️ Rich text formatting:
+  - Basic: Bold, Italic, Underline, Strikethrough
+  - Font Family: Arial, Times New Roman, Courier New, Georgia, Verdana
+  - Font Size: 10pt - 32pt (default: 12pt)
+  - Lists: Ordered, Unordered, Checklist
+- 🔄 Automatic page overflow handling
+- 📑 Page management (add, delete, navigate)
+- 📏 Multiple page sizes (A4, Letter, Legal)
+- ⌨️ Keyboard shortcuts (Ctrl+B, Ctrl+I, Ctrl+U, Tab for indentation)
+- ↩️ Undo/Redo functionality
+- 📊 Document outline sidebar with word count
+- 🎨 Dark toolbar theme
+- ⚡ Real-time updates with 300ms debounced reflow
+- ✨ Smooth animations with Framer Motion
+- 📝 Default formatting: 12pt font size, 1.15 line heightadge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor.svg)](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19.1.1-blue.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.7-646CFF.svg)](https://vitejs.dev/)
@@ -176,6 +195,7 @@ Page navigation sidebar.
 - `Ctrl+B` - Toggle Bold
 - `Ctrl+I` - Toggle Italic
 - `Ctrl+U` - Toggle Underline
+- `Tab` - Insert indentation (4 spaces)
 
 ## ⚡ Performance
 

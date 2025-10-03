@@ -1,6 +1,14 @@
 # HTML Editor Demo App
 
-This is a demo application showcasing the `@prabhath-tharaka/html-editor` library.
+This is a demo application showcasing the `@prabhath-tharaka/html-editor` library with the latest features.
+
+## ✨ Latest Features
+
+- **Tab Key Support**: Press Tab to insert indentation (4 spaces) instead of losing focus
+- **Fixed Font Sizing**: Font size dropdown now properly applies sizes to selected text
+- **Default Formatting**: 12pt font size and 1.15 line height for better readability
+- **Real-time Rich Text Editing**: Instant formatting and content updates
+- **Multi-page Continuous Editing**: Like Microsoft Word - content flows seamlessly across pages
 
 ## 🚀 Quick Start
 

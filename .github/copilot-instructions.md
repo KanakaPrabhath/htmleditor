@@ -1,6 +1,6 @@
 # HTML Editor - AI Coding Assistant Instructions
 
-This is a **React-based WYSIWYG continuous HTML editor** with rich text formatting capabilities and automatic page break insertion. Built with Vite, React 19, and Redux Toolkit.
+This is a **React-based WYSIWYG continuous HTML editor** with rich text formatting capabilities and automatic page break insertion. Built with Vite, React 19, and Redux Toolkit as a monorepo structure.
 
 ## Architecture Overview
 
@@ -12,7 +12,7 @@ This is a **React-based WYSIWYG continuous HTML editor** with rich text formatti
 
 ### Key Integration Points
 - **ContentEditable**: Handles rich text editing with browser-native contenteditable on each page
-- **Redux Toolkit**: Manages continuous document state with page boundaries and reflow logic (`src/store/slices/documentSlice.js`)
+- **Redux Toolkit**: Manages continuous document state with page boundaries and reflow logic (`packages/html-editor/src/store/slices/documentSlice.js`)
 - **Automatic Reflow**: Content automatically flows with page breaks inserted when content exceeds page dimensions, with DOM-based height calculations
 - **Page Management**: Add, delete, and navigate between pages with persistent content and automatic page break management
 
@@ -77,11 +77,15 @@ dispatch(updatePageBoundaries(boundariesArray));
 
 ### Local Development
 ```bash
-npm run dev          # Vite dev server on :5173
-npm test             # Vitest unit tests
-npm run test:e2e     # Playwright E2E tests
-npm run build        # Production build
-npm run preview      # Preview production build
+npm run dev:demo      # Vite dev server for demo app on :5173
+npm run build:lib     # Build the HTML editor library
+npm run build:demo    # Build the demo application
+npm run preview:demo  # Preview production build of demo app
+npm test              # Vitest unit tests
+npm run test:e2e      # Playwright E2E tests
+npm run test:e2e:ui   # Playwright E2E tests with UI
+npm run test:e2e:debug # Playwright E2E tests in debug mode
+npm run lint          # ESLint linting
 ```
 
 ### Performance Requirements
@@ -110,7 +114,7 @@ The editor follows a **custom hooks pattern** for clean code organization:
 - Executes `document.execCommand` for rich text operations
 - Tracks current format for toolbar button active states
 - Font family and size control
-- Located: `src/hooks/useFormatting.js`
+- Located: `packages/html-editor/src/hooks/useFormatting.js`
 
 **`useContinuousReflow()`** - Automatic content reflow engine for continuous mode
 - DOM-based overflow detection using `scrollHeight` vs `maxHeight`
@@ -118,7 +122,7 @@ The editor follows a **custom hooks pattern** for clean code organization:
 - Calculates page boundaries based on page break positions
 - Handles page navigation and cursor positioning
 - Manages page addition/deletion in continuous content
-- Located: `src/hooks/useContinuousReflow.js`
+- Located: `packages/html-editor/src/hooks/useContinuousReflow.js`
 
 **Hook Integration Pattern:**
 ```javascript
@@ -135,25 +139,25 @@ const {
 ## Project-Specific Conventions
 
 ### File Organization
-- **Components**: `src/components/editor/` - React UI components
+- **Components**: `packages/html-editor/src/components/editor/` - React UI components
   - `ContentEditableEditor.jsx` - Main orchestrator with hooks integration
   - `ContinuousPageView.jsx` - Single continuous contenteditable surface with page breaks
   - `EditorToolbar.jsx` - Formatting toolbar with dark theme
   - `Sidebar.jsx` - Collapsible document info panel
   - `PageManager.jsx` - Page navigation and controls
   - `MultiPageEditor.css` - Shared editor styles
-- **Hooks**: `src/hooks/` - Custom React hooks for separated concerns
+- **Hooks**: `packages/html-editor/src/hooks/` - Custom React hooks for separated concerns
   - `useContinuousReflow.js` - Automatic content reflow engine for continuous mode
   - `useFormatting.js` - Text formatting state and commands
   - `index.js` - Centralized hook exports
-- **Storage**: `src/lib/storage/` - LocalStorage persistence for images
+- **Storage**: `packages/html-editor/src/lib/storage/` - LocalStorage persistence for images
   - `local-storage.js` - Image storage utilities
-- **Editor Logic**: `src/lib/editor/` - Business logic and models
+- **Editor Logic**: `packages/html-editor/src/lib/editor/` - Business logic and models
   - `utils/` - Logger and utilities
-- **Store**: `src/store/` - Redux store configuration and slices
+- **Store**: `packages/html-editor/src/store/` - Redux store configuration and slices
   - `store.js` - Redux store with middleware configuration
   - `slices/documentSlice.js` - Document state management
-- **Utils**: `src/utils/` - Utility functions (reset-editor.js)
+- **Utils**: `packages/html-editor/src/utils/` - Utility functions (reset-editor.js)
 - **Tests**: `tests/{unit,integration,e2e,performance}/` - Comprehensive test coverage
 - **Docs**: `docs/` - Architecture docs, test results, specifications
 
@@ -165,7 +169,7 @@ const {
 - Runtime errors: Cannot delete last page, invalid page navigation
 
 ### Image Storage Convention
-- Images saved to localStorage via `saveImage()` in `src/lib/storage/local-storage.js`
+- Images saved to localStorage via `saveImage()` in `packages/html-editor/src/lib/storage/local-storage.js`
 - Return localStorage key as image URL for contenteditable integration
 - Handle uploads in `ContentEditableEditor.handleImageUpload()` with validation
 
@@ -184,7 +188,7 @@ middleware: (getDefaultMiddleware) =>
 ## Common Implementation Gotchas
 
 ### Custom Hooks Pattern
-- Always import hooks from `src/hooks/index.js` for consistency
+- Always import hooks from `packages/html-editor/src/hooks/index.js` for consistency
 - Hooks extract and encapsulate specific concerns from main component
 - `useContinuousReflow` returns reflow status to coordinate cursor restoration
 - Hook dependencies must be carefully managed to prevent infinite loops

@@ -4,34 +4,35 @@
 
 ### Running the Application
 ```bash
-npm run dev          # Start dev server at http://localhost:5173
+npm run dev:demo      # Start demo app dev server at http://localhost:5173
 npm test             # Run unit tests
-npm run build        # Production build
+npm run build:lib    # Build the library
+npm run build:demo   # Build demo app for production
 ```
 
 ### Key Files to Understand
 
 #### 1. Main Editor Component
-**File**: `src/components/editor/ContentEditableEditor.jsx`
+**File**: `packages/html-editor/src/components/editor/ContentEditableEditor.jsx`
 - Entry point for editor
 - Integrates toolbar, sidebar, page manager
 - Uses `useContinuousReflow` hook
 - Single `ContinuousPageView` component
 
 #### 2. Continuous Page View
-**File**: `src/components/editor/ContinuousPageView.jsx`
+**File**: `packages/html-editor/src/components/editor/ContinuousPageView.jsx`
 - Single contenteditable surface
 - Visual page boundaries overlay
 - No hard page breaks
 
 #### 3. Boundary Calculation Hook
-**File**: `src/hooks/useContinuousReflow.js`
+**File**: `packages/html-editor/src/hooks/useContinuousReflow.js`
 - Calculates where page lines should appear
 - Based on content height measurements
 - Debounced for performance
 
 #### 4. Redux State
-**File**: `src/store/slices/documentSlice.js`
+**File**: `packages/html-editor/src/store/slices/documentSlice.js`
 - `continuousContent`: Single HTML string
 - `pageBoundaries`: Array of boundary positions
 - `editorMode`: 'continuous' or 'paged'
@@ -40,12 +41,12 @@ npm run build        # Production build
 
 #### Add a New Formatting Button
 ```javascript
-// In EditorToolbar.jsx
+// In packages/html-editor/src/components/editor/EditorToolbar.jsx
 <button onClick={() => onFormatText('formatName')}>
   Icon
 </button>
 
-// In useFormatting.js
+// In packages/html-editor/src/hooks/useFormatting.js
 const formatText = (format) => {
   if (format === 'formatName') {
     document.execCommand('commandName', false, value);
@@ -55,7 +56,7 @@ const formatText = (format) => {
 
 #### Modify Page Dimensions
 ```javascript
-// In ContentEditableEditor.jsx or useContinuousReflow.js
+// In packages/html-editor/src/components/editor/ContentEditableEditor.jsx or packages/html-editor/src/hooks/useContinuousReflow.js
 const PAGE_DIMENSIONS = {
   A4: { width: 794, height: 1123 },    // Modify these
   Letter: { width: 816, height: 1056 },
@@ -65,7 +66,7 @@ const PAGE_DIMENSIONS = {
 
 #### Change Content Padding
 ```javascript
-// In ContinuousPageView.jsx
+// In packages/html-editor/src/components/editor/ContinuousPageView.jsx
 const padding = {
   top: 60,      // Modify these values
   bottom: 100,
@@ -76,7 +77,7 @@ const padding = {
 
 #### Adjust Boundary Calculation Timing
 ```javascript
-// In useContinuousReflow.js
+// In packages/html-editor/src/hooks/useContinuousReflow.js
 const delay = 300; // Change this value (milliseconds)
 ```
 
@@ -95,7 +96,7 @@ console.log({
 
 #### Force Boundary Recalculation
 ```javascript
-// In ContentEditableEditor.jsx, add:
+// In packages/html-editor/src/components/editor/ContentEditableEditor.jsx, add:
 useEffect(() => {
   updateBoundaries();
 }, [/* trigger dependency */]);
@@ -160,7 +161,7 @@ const calculatePageBoundaries = useCallback((options = {}) => {
 
 #### Monitor Content Size
 ```javascript
-// Add to ContentEditableEditor.jsx
+// Add to packages/html-editor/src/components/editor/ContentEditableEditor.jsx
 useEffect(() => {
   console.log({
     contentLength: continuousContent.length,
@@ -240,7 +241,7 @@ test('updates boundaries after typing', async () => {
 
 #### Add Page Background Color
 ```javascript
-// In ContinuousPageView.jsx
+// In packages/html-editor/src/components/editor/ContinuousPageView.jsx
 <div
   ref={editorRef}
   contentEditable={true}
@@ -265,13 +266,13 @@ const LineNumbers = ({ lineCount }) => (
 
 #### Custom Page Size
 ```javascript
-// Add to PAGE_DIMENSIONS
+// Add to PAGE_DIMENSIONS in packages/html-editor/src/components/editor/ContentEditableEditor.jsx
 const PAGE_DIMENSIONS = {
   // ... existing sizes ...
   Custom: { width: 1000, height: 1400 }
 };
 
-// Add to select options in PageManager
+// Add to select options in packages/html-editor/src/components/editor/PageManager.jsx
 <option value="Custom">Custom</option>
 ```
 

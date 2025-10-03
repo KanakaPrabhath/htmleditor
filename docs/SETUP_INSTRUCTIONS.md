@@ -1,6 +1,8 @@
-# HTML Editor Monorepo - Setup Instructions
+# HTML Editor Monorepo - Setup Instructions (Reference)
 
-## 🚀 Initial Setup
+**Note:** This monorepo is already configured. These instructions are for reference or for setting up from scratch.
+
+## 🚀 Initial Setup (For New Projects)
 
 This guide will help you set up the restructured monorepo for the first time.
 
@@ -11,16 +13,20 @@ This guide will help you set up the restructured monorepo for the first time.
 Copy-Item package-lock.json package-lock.json.backup -ErrorAction SilentlyContinue
 ```
 
-### Step 2: Replace Root package.json
+### Step 2: Verify Root package.json
 
-The current `package.json` in the root needs to be replaced with the monorepo workspace configuration:
+The root `package.json` should already contain the monorepo workspace configuration with:
 
-```powershell
-# Backup current package.json
-Copy-Item package.json package.json.old
-
-# Rename the new workspace package.json
-Move-Item package-root.json package.json -Force
+```json
+{
+  "name": "htmleditor-monorepo",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build:lib": "npm run build --workspace=packages/html-editor",
+    "dev:demo": "npm run dev --workspace=packages/demo-app",
+    // ... other scripts
+  }
+}
 ```
 
 ### Step 3: Clean and Install Dependencies
@@ -77,9 +83,9 @@ Get-ChildItem packages\html-editor\dist
 npm run dev:demo
 ```
 
-## 📁 What Changed?
+## 📁 Current Project Structure
 
-### New Structure
+The monorepo structure is already in place:
 
 ```
 htmleditor/
@@ -95,16 +101,10 @@ htmleditor/
 │       ├── package.json       # Demo-specific config
 │       └── vite.config.js     # App build config
 │
-├── package.json               # Root workspace config (NEW)
+├── package.json               # Root workspace config
 ├── tests/                     # Shared tests
 └── docs/                      # Documentation
 ```
-
-### Old Files (Can be removed after verification)
-
-These files are now in `packages/` and can be deleted:
-- `src/` (now in `packages/html-editor/src/` and `packages/demo-app/src/`)
-- `package.json.old` (backup of old root package.json)
 
 ## 🔧 Common Commands
 
@@ -126,7 +126,7 @@ npm run test:e2e              # E2E tests
 npm run publish:lib           # Build and publish library to npm
 ```
 
-## 🎯 Next Steps
+## 🎯 Development Workflow
 
 1. **Verify everything works**
    - Build library: `npm run build:lib`
@@ -137,15 +137,6 @@ npm run publish:lib           # Build and publish library to npm
    - Read `PUBLISHING_GUIDE.md`
    - Update version in `packages/html-editor/package.json`
    - Build and verify: `npm run build:lib`
-
-3. **Cleanup old files** (after verification)
-   ```powershell
-   # Remove old source directory
-   Remove-Item -Recurse -Force src
-   
-   # Remove old package.json backup
-   Remove-Item package.json.old
-   ```
 
 ## ❗ Troubleshooting
 

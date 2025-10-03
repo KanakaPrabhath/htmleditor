@@ -157,7 +157,7 @@ htmleditor/
 │
 ├── tests/                     # Shared tests
 ├── docs/                      # Documentation
-├── package-root.json          # Root package.json (workspace config)
+├── package.json               # Root package.json (workspace config)
 ├── vitest.config.js           # Vitest configuration
 ├── playwright.config.js       # Playwright configuration
 └── README.md                  # This file

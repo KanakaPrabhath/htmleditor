@@ -8,9 +8,9 @@ This library provides a React-based WYSIWYG continuous HTML editor with rich tex
 
 ### Option 1: From npm (when published)
 ```bash
-npm install @htmleditor/react-editor
+npm install @prabhath-tharaka/html-editor
 # or
-yarn add @htmleditor/react-editor
+yarn add @prabhath-tharaka/html-editor
 ```
 
 ### Option 2: Local Installation (for development)
@@ -32,7 +32,7 @@ First, integrate the `documentReducer` into your Redux store:
 ```javascript
 // store.js
 import { configureStore } from '@reduxjs/toolkit';
-import { documentReducer } from '@htmleditor/react-editor';
+import { documentReducer } from '@prabhath-tharaka/html-editor';
 
 export const store = configureStore({
   reducer: {
@@ -70,13 +70,13 @@ function App() {
 Import the editor styles in your main CSS or component:
 
 ```javascript
-import '@htmleditor/react-editor/styles';
+import '@prabhath-tharaka/html-editor/styles';
 ```
 
 ### 4. Use the Editor Component
 
 ```javascript
-import { ContentEditableEditor } from '@htmleditor/react-editor';
+import { ContentEditableEditor } from '@prabhath-tharaka/html-editor';
 
 function MyEditor() {
   return (
@@ -145,7 +145,7 @@ export default YourCustomPageManager;
 ### Use Custom PageManager with Editor
 
 ```javascript
-import { ContentEditableEditor } from '@htmleditor/react-editor';
+import { ContentEditableEditor } from '@prabhath-tharaka/html-editor';
 import YourCustomPageManager from './YourCustomPageManager';
 
 function MyEditor() {
@@ -218,7 +218,7 @@ import {
   ContinuousPageView,
   useFormatting,
   useContinuousReflow
-} from '@htmleditor/react-editor';
+} from '@prabhath-tharaka/html-editor';
 
 function CustomEditor() {
   const { currentFormat, formatText } = useFormatting();
@@ -244,7 +244,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { 
   updateContinuousContent, 
   setActivePage 
-} from '@htmleditor/react-editor';
+} from '@prabhath-tharaka/html-editor';
 
 function MyComponent() {
   const dispatch = useDispatch();
@@ -266,7 +266,7 @@ function MyComponent() {
 ### Using Custom Hooks
 
 ```javascript
-import { useFormatting, useContinuousReflow } from '@htmleditor/react-editor';
+import { useFormatting, useContinuousReflow } from '@prabhath-tharaka/html-editor';
 
 function MyEditor() {
   const editorRef = useRef(null);
@@ -290,7 +290,7 @@ function MyEditor() {
 ### Page Dimensions
 
 ```javascript
-import { PAGE_DIMENSIONS } from '@htmleditor/react-editor';
+import { PAGE_DIMENSIONS } from '@prabhath-tharaka/html-editor';
 
 console.log(PAGE_DIMENSIONS.A4);     // { width: 794, height: 1123 }
 console.log(PAGE_DIMENSIONS.Letter); // { width: 816, height: 1056 }
@@ -300,7 +300,7 @@ console.log(PAGE_DIMENSIONS.Legal);  // { width: 816, height: 1344 }
 ### Image Storage
 
 ```javascript
-import { saveImage, getImage, deleteImage } from '@htmleditor/react-editor';
+import { saveImage, getImage, deleteImage } from '@prabhath-tharaka/html-editor';
 
 // Save image to localStorage
 const imageKey = await saveImage(file);
@@ -322,8 +322,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { 
   ContentEditableEditor, 
   documentReducer 
-} from '@htmleditor/react-editor';
-import '@htmleditor/react-editor/styles';
+} from '@prabhath-tharaka/html-editor';
+import '@prabhath-tharaka/html-editor/styles';
 import YourCustomPageManager from './YourCustomPageManager';
 
 // Setup store
@@ -367,7 +367,7 @@ Type definitions will be generated automatically during the build process (plann
 
 The library exports its styles separately. You can:
 
-1. Import the default styles: `import '@htmleditor/react-editor/styles'`
+1. Import the default styles: `import '@prabhath-tharaka/html-editor/styles'`
 2. Override CSS variables in your own stylesheet
 3. Provide your own custom styles by not importing the default stylesheet
 

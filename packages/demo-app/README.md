@@ -31,7 +31,7 @@ npm run preview
 The demo shows a minimal integration of the HTML Editor:
 
 ```jsx
-import ContentEditableEditor from '@prabhath-tharaka/html-editor'
+import { ContentEditableEditor } from '@prabhath-tharaka/html-editor'
 import '@prabhath-tharaka/html-editor/styles'
 
 function App() {

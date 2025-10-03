@@ -1,0 +1,353 @@
+:root {
+  --toolbar-primary: #2D3748;
+  --toolbar-text: #FFFFFF;
+  --toolbar-hover: #4A5568;
+  --toolbar-active: #1A202C;
+}
+
+.multi-page-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.editor-toolbar {
+  background-color: var(--toolbar-primary);
+  color: var(--toolbar-text);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+}
+
+.editor-toolbar button,
+.editor-toolbar select {
+  background-color: transparent;
+  color: var(--toolbar-text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.editor-toolbar button:hover:not(:disabled),
+.editor-toolbar select:hover:not(:disabled) {
+  background-color: var(--toolbar-hover);
+  transition: background-color 0.2s ease-in-out;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.editor-toolbar button:focus-visible,
+.editor-toolbar select:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.editor-toolbar button:active,
+.editor-toolbar select:active {
+  background-color: var(--toolbar-active);
+}
+
+.editor-toolbar button.active {
+  background-color: var(--toolbar-hover);
+  border-color: var(--toolbar-text);
+}
+
+.editor-toolbar button:disabled,
+.editor-toolbar select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Toolbar button groups with visual separators */
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toolbar-group:last-child {
+  border-right: none;
+}
+
+.toolbar-button {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toolbar-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* File upload button styling */
+.file-upload {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+/* Page controls styling */
+.page-controls {
+  margin-left: auto;
+}
+
+.page-size-selector {
+  min-width: 80px;
+}
+
+.editor-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  background-color: #f5f5f5;
+  color: black;
+}
+
+.editor-viewport {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  background-color: #f5f5f5;
+  scroll-behavior: smooth;
+}
+
+/* Continuous scroll mode */
+.editor-viewport.continuous-scroll {
+  padding: 40px 0;
+}
+
+.editor-content {
+  /* Contenteditable editor container */
+  width: 100%;
+  min-height: 100%;
+  outline: none;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+/* Continuous content mode */
+.editor-content.continuous {
+  position: relative;
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Page boundaries overlay */
+.page-boundaries {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-boundary {
+  margin-bottom: 20px;
+}
+
+/* Continuous contenteditable surface */
+.continuous-content {
+  position: relative;
+  z-index: 1;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.continuous-content:focus {
+  outline: none;
+}
+
+.continuous-content p {
+  margin: 0 0 16px 0;
+  min-height: 1.6em;
+}
+
+.continuous-content p:last-child {
+  margin-bottom: 0;
+}
+
+.pages-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 20px;
+  background-color: #f5f5f5;
+  min-height: 100%;
+}
+
+.page-content {
+  padding: 60px 72px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  outline: none;
+  cursor: text;
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+.page-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.page-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.page-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.page-break-indicator {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 2;
+  color: #718096;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.page-break-indicator::before,
+.page-break-indicator::after {
+  content: '';
+  flex: 1;
+  border-top: 1px dashed #cbd5e0;
+}
+
+.page-break-indicator span {
+  background: #f5f5f5;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .page-manager-sidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-manager-sidebar {
+    display: none;
+  }
+  
+  .editor-container {
+    flex-direction: column;
+  }
+}
+
+/* Page Break Elements */
+page-break,
+[data-page-break="true"] {
+  display: block !important;
+  height: 40px !important;
+  border: none !important;
+  border-top: 2px dashed #cbd5e0 !important;
+  margin: 40px 0 !important;
+  page-break-after: always !important;
+  position: relative !important;
+  cursor: default !important;
+  user-select: none !important;
+  background: transparent !important;
+}
+
+page-break::before,
+[data-page-break="true"]::before {
+  content: '--- Page ' attr(data-page-number) ' Break ---';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f5f5f5;
+  padding: 2px 12px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #e2e8f0;
+  pointer-events: none;
+}
+
+/* Prevent page breaks from being editable */
+page-break,
+[data-page-break="true"] {
+  -webkit-user-modify: read-only !important;
+  -moz-user-modify: read-only !important;
+  pointer-events: none !important;
+}
+
+/* Hide page break in print */
+@media print {
+  page-break,
+  [data-page-break="true"] {
+    display: none !important;
+  }
+}

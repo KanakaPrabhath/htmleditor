@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { 
   Bold, 
   Italic, 
@@ -242,6 +243,29 @@ const EditorToolbar = ({
       </select>
     </div>
   );
+};
+
+EditorToolbar.propTypes = {
+  currentFormat: PropTypes.shape({
+    bold: PropTypes.bool,
+    italic: PropTypes.bool,
+    underline: PropTypes.bool,
+    strikethrough: PropTypes.bool,
+    alignLeft: PropTypes.bool,
+    alignCenter: PropTypes.bool,
+    alignRight: PropTypes.bool,
+    alignJustify: PropTypes.bool,
+    fontFamily: PropTypes.string,
+    fontSize: PropTypes.string
+  }).isRequired,
+  pageSize: PropTypes.oneOf(['A4', 'Letter', 'Legal']).isRequired,
+  onFormatText: PropTypes.func.isRequired,
+  onPageSizeChange: PropTypes.func.isRequired,
+  onAddPageBreak: PropTypes.func
+};
+
+EditorToolbar.defaultProps = {
+  onAddPageBreak: undefined
 };
 
 export default EditorToolbar;

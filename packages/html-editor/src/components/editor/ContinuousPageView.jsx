@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * ContinuousPageView - MS Word-like continuous contenteditable surface
@@ -105,6 +106,37 @@ const ContinuousPageView = ({
       </div>
     </div>
   );
+};
+
+ContinuousPageView.propTypes = {
+  content: PropTypes.string.isRequired,
+  dimensions: PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired
+  }).isRequired,
+  pageSize: PropTypes.oneOf(['A4', 'Letter', 'Legal']).isRequired,
+  pageBoundaries: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      pageNumber: PropTypes.number.isRequired,
+      top: PropTypes.number,
+      height: PropTypes.number
+    })
+  ),
+  editorRef: PropTypes.shape({
+    current: PropTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object)
+  }).isRequired,
+  onInput: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func,
+  onClick: PropTypes.func,
+  onScroll: PropTypes.func
+};
+
+ContinuousPageView.defaultProps = {
+  pageBoundaries: [],
+  onKeyDown: undefined,
+  onClick: undefined,
+  onScroll: undefined
 };
 
 export default ContinuousPageView;

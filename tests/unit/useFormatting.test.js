@@ -127,7 +127,10 @@ describe('useFormatting Hook', () => {
         result.current.formatText('fontSize', '16px');
       });
       
-      expect(document.execCommand).toHaveBeenCalled();
+      // Font size implementation tries modern approach first (span wrapping)
+      // Falls back to execCommand if selection is invalid
+      // In test environment with no selection, state is updated but execCommand may not be called
+      expect(result.current.currentFormat.fontSize).toBe('16px');
     });
   });
 

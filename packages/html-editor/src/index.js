@@ -9,6 +9,10 @@ export { DocumentProvider, useDocument, useDocumentState, useDocumentActions } f
 // ContentEditableEditor - Must be wrapped in DocumentProvider
 export { default as ContentEditableEditor } from './components/editor/ContentEditableEditor';
 
+// === ERROR HANDLING ===
+// ErrorBoundary - Wrap your components for error recovery
+export { default as ErrorBoundary } from './components/ErrorBoundary';
+
 // === STANDALONE COMPONENTS ===
 // Individual Components (can be used separately with your own state)
 export { default as EditorToolbar } from './components/editor/EditorToolbar';

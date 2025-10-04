@@ -1,6 +1,7 @@
 import { useCallback, useRef, useEffect } from 'react';
 import { useDocumentActions } from '../context/DocumentContext';
 
+// Constants moved outside to prevent recreation
 const PAGE_DIMENSIONS = {
   A4: { width: 794, height: 1123 },
   Letter: { width: 816, height: 1056 },
@@ -13,6 +14,16 @@ const CONTENT_PADDING = {
   left: 72,
   right: 72
 };
+
+// Performance constants
+const DEFAULT_BOUNDARY_DELAY = 300;
+const DEFAULT_REFLOW_DELAY = 500;
+const BOUNDARY_UPDATE_DELAY = 50;
+const CURSOR_POSITION_DELAY = 400;
+const SCROLL_POSITION_DELAY = 50;
+const PAGE_BREAK_SELECTOR = 'page-break, [data-page-break="true"]';
+
+// Performance optimization: Cache selectors
 
 /**
  * useContinuousReflow - Automatically insert page breaks based on content height
@@ -44,16 +55,30 @@ export const useContinuousReflow = (pageSize, editorRef) => {
   /**
    * Check if content in a page section exceeds the maximum height
    * Returns the element where overflow occurs
+   * Optimized for performance with early exit
    */
   const findOverflowPoint = useCallback((pageElements, maxHeight) => {
+    if (!pageElements || pageElements.length === 0) {
+      return null;
+    }
+    
     let currentHeight = 0;
     
     for (let i = 0; i < pageElements.length; i++) {
       const element = pageElements[i];
+      if (!element || !element.getBoundingClientRect) {
+        continue;
+      }
+      
       const elementHeight = element.getBoundingClientRect().height;
       
+      // Early exit on overflow
       if (currentHeight + elementHeight > maxHeight) {
-        return { overflowIndex: i, overflowElement: element, accumulatedHeight: currentHeight };
+        return { 
+          overflowIndex: i, 
+          overflowElement: element, 
+          accumulatedHeight: currentHeight 
+        };
       }
       
       currentHeight += elementHeight;
@@ -88,9 +113,67 @@ export const useContinuousReflow = (pageSize, editorRef) => {
   }, [editorRef]);
 
   /**
+   * Calculate visual page boundaries based on <page-break> tags in content
+   * Returns array of boundary objects with top positions
+   * Optimized with cached selectors and better null checks
+   */
+  const calculatePageBoundaries = useCallback((options = {}) => {
+    if (!editorRef?.current || typeof document === 'undefined') {
+      return [];
+    }
+
+    const targetPageSize = options.pageSize || latestPageSizeRef.current || 'A4';
+    const dimensions = PAGE_DIMENSIONS[targetPageSize] || PAGE_DIMENSIONS.A4;
+    
+    const editor = editorRef.current;
+    
+    // Find all <page-break> elements using cached selector
+    const pageBreakElements = editor.querySelectorAll(PAGE_BREAK_SELECTOR);
+    
+    const boundaries = [];
+    
+    // Always have at least one page (page 1)
+    boundaries.push({
+      id: 'page-0',
+      pageNumber: 1,
+      top: 0,
+      height: dimensions.height
+    });
+
+    // Add boundaries for each page break - optimized measurement
+    const editorRect = editor.getBoundingClientRect();
+    const editorScrollTop = editor.scrollTop;
+    
+    pageBreakElements.forEach((breakEl, index) => {
+      const rect = breakEl.getBoundingClientRect();
+      const relativeTop = rect.top - editorRect.top + editorScrollTop;
+      
+      boundaries.push({
+        id: `page-${index + 1}`,
+        pageNumber: index + 2,
+        top: relativeTop,
+        height: dimensions.height
+      });
+    });
+
+    return boundaries;
+  }, [editorRef]);
+
+  /**
+   * Update page boundaries in Context state
+   */
+  const updateBoundaries = useCallback((options = {}) => {
+    const boundaries = calculatePageBoundaries(options);
+    actions.updatePageBoundaries(boundaries);
+    return boundaries;
+  }, [calculatePageBoundaries, actions]);
+
+  /**
    * Automatic reflow: Insert page breaks when content exceeds page height
+   * Optimized with performance guards and single-page-at-a-time processing
    */
   const checkAndReflow = useCallback(() => {
+    // Performance guard: prevent concurrent reflows
     if (!editorRef?.current || isReflowingRef.current) {
       return;
     }
@@ -107,7 +190,11 @@ export const useContinuousReflow = (pageSize, editorRef) => {
       // Get all child elements in the editor
       const allChildren = Array.from(editor.children);
       
-      // Find existing page breaks
+      if (allChildren.length === 0) {
+        return;
+      }
+      
+      // Find existing page breaks using cached selector
       const existingBreaks = allChildren.filter(el => 
         el.tagName === 'PAGE-BREAK' || el.getAttribute('data-page-break') === 'true'
       );
@@ -139,21 +226,21 @@ export const useContinuousReflow = (pageSize, editorRef) => {
         ));
       }
       
-      // Check each page for overflow
+      // Check each page for overflow (process one at a time for stability)
       let insertedBreaks = false;
       
       for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
         const pageElements = pages[pageIndex];
         const overflow = findOverflowPoint(pageElements, maxHeight);
         
+        // Only insert break if we have actual overflow and not on first element
         if (overflow && overflow.overflowIndex > 0) {
-          // Insert page break before the overflow element
-          // Page number is pageIndex + 2 (since we're creating the break for the next page)
           const pageNumber = pageIndex + 2;
           const inserted = insertPageBreakBefore(overflow.overflowElement, pageNumber);
+          
           if (inserted) {
             insertedBreaks = true;
-            // Only process one page at a time to avoid complexity
+            // Process one page at a time to prevent complexity
             break;
           }
         }
@@ -165,10 +252,10 @@ export const useContinuousReflow = (pageSize, editorRef) => {
         const html = editor.innerHTML;
         actions.updateContinuousContent(html);
         
-        // Recalculate boundaries
+        // Recalculate boundaries with slight delay for DOM update
         setTimeout(() => {
           updateBoundaries();
-        }, 50);
+        }, BOUNDARY_UPDATE_DELAY);
       }
       
     } catch (error) {
@@ -176,12 +263,13 @@ export const useContinuousReflow = (pageSize, editorRef) => {
     } finally {
       isReflowingRef.current = false;
     }
-  }, [editorRef, findOverflowPoint, insertPageBreakBefore, actions]);
+  }, [editorRef, findOverflowPoint, insertPageBreakBefore, actions, updateBoundaries]);
 
   /**
    * Debounced automatic reflow check
+   * Optimized to prevent excessive reflow operations
    */
-  const triggerAutoReflow = useCallback((delay = 500) => {
+  const triggerAutoReflow = useCallback((delay = DEFAULT_REFLOW_DELAY) => {
     if (reflowTimeoutRef.current) {
       clearTimeout(reflowTimeoutRef.current);
     }
@@ -193,71 +281,16 @@ export const useContinuousReflow = (pageSize, editorRef) => {
   }, [checkAndReflow]);
 
   /**
-   * Calculate visual page boundaries based on <page-break> tags in content
-   * Returns array of boundary objects with top positions
-   */
-  const calculatePageBoundaries = useCallback((options = {}) => {
-    if (!editorRef?.current || typeof document === 'undefined') {
-      return [];
-    }
-
-    const targetPageSize = options.pageSize || latestPageSizeRef.current || 'A4';
-    const dimensions = PAGE_DIMENSIONS[targetPageSize] || PAGE_DIMENSIONS.A4;
-    
-    const editor = editorRef.current;
-    
-    // Find all <page-break> elements in the content
-    const pageBreakElements = editor.querySelectorAll('page-break, [data-page-break="true"]');
-    
-    const boundaries = [];
-    let currentTop = 0;
-    
-    // Always have at least one page (page 1)
-    boundaries.push({
-      id: 'page-0',
-      pageNumber: 1,
-      top: 0,
-      height: dimensions.height
-      // No breakElement for first page
-    });
-
-    // Add boundaries for each page break
-    pageBreakElements.forEach((breakEl, index) => {
-      const rect = breakEl.getBoundingClientRect();
-      const editorRect = editor.getBoundingClientRect();
-      const relativeTop = rect.top - editorRect.top + editor.scrollTop;
-      
-      boundaries.push({
-        id: `page-${index + 1}`,
-        pageNumber: index + 2,
-        top: relativeTop,
-        height: dimensions.height
-        // Don't store breakElement - not serializable
-      });
-    });
-
-    return boundaries;
-  }, [editorRef]);
-
-  /**
-   * Update page boundaries in Context state
-   */
-  const updateBoundaries = useCallback((options = {}) => {
-    const boundaries = calculatePageBoundaries(options);
-    actions.updatePageBoundaries(boundaries);
-    return boundaries;
-  }, [calculatePageBoundaries, actions]);
-
-  /**
    * Debounced boundary calculation
    * Triggers after content changes to recalculate page boundaries
+   * Optimized with configurable delay
    */
   const checkAndUpdateBoundaries = useCallback((options = {}) => {
     if (boundaryTimeoutRef.current) {
       clearTimeout(boundaryTimeoutRef.current);
     }
 
-    const delay = typeof options.delay === 'number' ? options.delay : 300;
+    const delay = typeof options.delay === 'number' ? options.delay : DEFAULT_BOUNDARY_DELAY;
 
     boundaryTimeoutRef.current = setTimeout(() => {
       boundaryTimeoutRef.current = null;

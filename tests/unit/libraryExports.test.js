@@ -230,6 +230,7 @@ describe('Library Exports', () => {
         'useDocumentState',
         'useDocumentActions',
         'ContentEditableEditor',
+        'ErrorBoundary',
         'EditorToolbar',
         'Sidebar',
         'ContinuousPageView',

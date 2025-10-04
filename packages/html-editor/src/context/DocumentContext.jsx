@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useReducer, useCallback, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+// Constants moved outside for performance
 const DEFAULT_PAGE_SIZE = 'A4';
 const EMPTY_PARAGRAPH = '<p><br></p>';
+const DEFAULT_EDITOR_MODE = 'continuous';
 
 const PAGE_DIMENSIONS = {
   A4: { width: 794, height: 1123 },
@@ -10,7 +12,7 @@ const PAGE_DIMENSIONS = {
   Legal: { width: 816, height: 1344 }
 };
 
-// Helper functions
+// Helper functions moved outside reducer for better performance and reusability
 const createEmptyPage = (index, size = DEFAULT_PAGE_SIZE) => ({
   id: uuidv4(),
   index,
@@ -39,18 +41,20 @@ const withMinimumPage = (pages, pageSize = DEFAULT_PAGE_SIZE) => {
   }));
 };
 
-const buildInitialState = (overrides = {}) => {
-  const now = new Date().toISOString();
-  const pageSize = overrides.pageSize || DEFAULT_PAGE_SIZE;
-  const pages = withMinimumPage(overrides.pages || [createEmptyPage(0, pageSize)], pageSize);
+const createDefaultBoundary = (pageSize = DEFAULT_PAGE_SIZE) => {
   const dimensions = PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4;
-
-  const defaultBoundaries = [{
+  return [{
     id: 'page-0',
     pageNumber: 1,
     top: 0,
     height: dimensions.height
   }];
+};
+
+const buildInitialState = (overrides = {}) => {
+  const now = new Date().toISOString();
+  const pageSize = overrides.pageSize || DEFAULT_PAGE_SIZE;
+  const pages = withMinimumPage(overrides.pages || [createEmptyPage(0, pageSize)], pageSize);
 
   return {
     id: uuidv4(),
@@ -62,9 +66,9 @@ const buildInitialState = (overrides = {}) => {
     activePage: overrides.activePage && overrides.activePage < pages.length ? overrides.activePage : 0,
     pageBreaks: overrides.pageBreaks || [],
     totalPages: pages.length,
-    editorMode: overrides.editorMode || 'continuous',
+    editorMode: overrides.editorMode || DEFAULT_EDITOR_MODE,
     continuousContent: overrides.continuousContent || EMPTY_PARAGRAPH,
-    pageBoundaries: overrides.pageBoundaries || defaultBoundaries
+    pageBoundaries: overrides.pageBoundaries || createDefaultBoundary(pageSize)
   };
 };
 
@@ -221,22 +225,42 @@ const documentReducer = (state, action) => {
 
     case ActionTypes.SET_ACTIVE_PAGE: {
       const pageIndex = action.payload;
+      
+      // Early exit if same page
+      if (pageIndex === state.activePage) {
+        return state;
+      }
+      
       const maxPage = state.editorMode === 'continuous' 
         ? state.pageBoundaries.length 
         : state.pages.length;
       
-      if (pageIndex >= 0 && pageIndex < maxPage) {
-        return {
-          ...state,
-          activePage: pageIndex,
-          updatedAt: now
-        };
+      // Validate page index
+      if (pageIndex < 0 || pageIndex >= maxPage) {
+        return state;
       }
-      return state;
+      
+      return {
+        ...state,
+        activePage: pageIndex,
+        updatedAt: now
+      };
     }
 
     case ActionTypes.UPDATE_PAGE_SIZE: {
       const newSize = action.payload;
+      
+      // Early exit if size hasn't changed
+      if (newSize === state.pageSize) {
+        return state;
+      }
+      
+      // Validate page size
+      if (!PAGE_DIMENSIONS[newSize]) {
+        console.warn(`Invalid page size: ${newSize}`);
+        return state;
+      }
+      
       const updatedPages = state.pages.map((page, index) => ({
         ...page,
         index,
@@ -260,15 +284,30 @@ const documentReducer = (state, action) => {
     case ActionTypes.RESET_DOCUMENT:
       return buildInitialState();
 
-    case ActionTypes.UPDATE_CONTINUOUS_CONTENT:
+    case ActionTypes.UPDATE_CONTINUOUS_CONTENT: {
+      const newContent = sanitizeContent(action.payload);
+      // Early exit if content hasn't changed
+      if (newContent === state.continuousContent) {
+        return state;
+      }
       return {
         ...state,
-        continuousContent: sanitizeContent(action.payload),
+        continuousContent: newContent,
         updatedAt: now
       };
+    }
 
     case ActionTypes.UPDATE_PAGE_BOUNDARIES: {
-      const boundaries = action.payload || [];
+      const boundaries = Array.isArray(action.payload) ? action.payload : [];
+      
+      // Early exit if boundaries haven't changed (deep comparison on length and first/last)
+      if (boundaries.length === state.pageBoundaries.length && 
+          boundaries.length > 0 &&
+          boundaries[0].id === state.pageBoundaries[0]?.id &&
+          boundaries[boundaries.length - 1].id === state.pageBoundaries[boundaries.length - 1]?.id) {
+        return state;
+      }
+      
       const newActivePage = state.activePage >= boundaries.length 
         ? Math.max(0, boundaries.length - 1)
         : state.activePage;

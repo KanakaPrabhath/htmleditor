@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FileText, Plus, X, Settings } from 'lucide-react';
 
 /**
@@ -129,6 +130,33 @@ export const PageManager = ({
       </button>
     </div>
   );
+};
+
+PageManager.propTypes = {
+  pageBoundaries: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      pageNumber: PropTypes.number.isRequired,
+      top: PropTypes.number,
+      height: PropTypes.number
+    })
+  ),
+  activePage: PropTypes.number,
+  pageSize: PropTypes.oneOf(['A4', 'Letter', 'Legal']),
+  onNavigate: PropTypes.func,
+  onAddPage: PropTypes.func,
+  onDeletePage: PropTypes.func,
+  onPageSizeChange: PropTypes.func
+};
+
+PageManager.defaultProps = {
+  pageBoundaries: [{ id: 'page-0', pageNumber: 1 }],
+  activePage: 0,
+  pageSize: 'A4',
+  onNavigate: undefined,
+  onAddPage: undefined,
+  onDeletePage: undefined,
+  onPageSizeChange: undefined
 };
 
 export default React.memo(PageManager);

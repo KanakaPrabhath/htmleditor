@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState, useMemo, forwardRef, useImperativeHandle } from 'react';
+import PropTypes from 'prop-types';
 import { useDocumentState, useDocumentActions } from '../../context/DocumentContext';
 import { useFormatting, useContinuousReflow } from '../../hooks';
 import Sidebar from './Sidebar';
@@ -6,11 +7,20 @@ import EditorToolbar from './EditorToolbar';
 import ContinuousPageView from './ContinuousPageView';
 import PageManager from './PageManager';
 import './MultiPageEditor.css';
+
+// Constants moved outside component to prevent recreation
 const PAGE_DIMENSIONS = {
   A4: { width: 794, height: 1123 },
   Letter: { width: 816, height: 1056 },
   Legal: { width: 816, height: 1344 }
 };
+
+const INITIAL_BOUNDARY_DELAY = 50;
+const BOUNDARY_UPDATE_DELAY = 50;
+const NAVIGATION_DELAY = 50;
+const SCROLL_DEBOUNCE = 100;
+const FOCUS_DELAY = 200;
+const NAVIGATION_LOCK_TIMEOUT = 500;
 
 /**
  * ContentEditableEditor - Main WYSIWYG HTML Editor Component
@@ -67,45 +77,51 @@ const ContentEditableEditor = forwardRef(({
   const addingPageRef = useRef(false);
   const isNavigatingRef = useRef(false);
 
-  // Initialize editor content
+  // Initialize editor content and sync programmatic updates
   const contentSetRef = useRef(false);
+  const lastContentRef = useRef(continuousContent);
+  
   useEffect(() => {
-    if (editorRef.current && !contentSetRef.current) {
+    if (!editorRef.current) return;
+    
+    // Initial setup
+    if (!contentSetRef.current) {
       editorRef.current.innerHTML = continuousContent;
       contentSetRef.current = true;
-      // Calculate initial boundaries after content is set
-      // Use shorter delay to ensure PageManager displays immediately
+      lastContentRef.current = continuousContent;
+      
       const timer = setTimeout(() => {
         updateBoundaries();
-      }, 50);
+      }, INITIAL_BOUNDARY_DELAY);
       return () => clearTimeout(timer);
     }
-  }, [continuousContent, updateBoundaries]);
-
-  // Sync Redux content changes to DOM (for programmatic updates like addPageBreak)
-  const lastContentRef = useRef(continuousContent);
-  useEffect(() => {
-    if (editorRef.current && contentSetRef.current && lastContentRef.current !== continuousContent) {
-      // Only update DOM if content actually changed and it's not from user input
-      // (user input already updates DOM via contenteditable)
+    
+    // Sync programmatic content changes to DOM
+    if (lastContentRef.current !== continuousContent) {
       const currentDOMContent = editorRef.current.innerHTML;
+      
+      // Only update if DOM is out of sync (prevents user input loops)
       if (currentDOMContent !== continuousContent) {
         editorRef.current.innerHTML = continuousContent;
-        // Recalculate boundaries after DOM update
-        setTimeout(() => {
+        
+        const timer = setTimeout(() => {
           updateBoundaries();
           
-          // If we just added a page, navigate to it
           if (addingPageRef.current) {
             addingPageRef.current = false;
+            const newPageIndex = Math.max(0, pageBoundaries.length - 1);
+            actions.setActivePage(newPageIndex);
+            
             setTimeout(() => {
-              const newPageIndex = pageBoundaries.length > 0 ? pageBoundaries.length - 1 : 0;
-              actions.setActivePage(newPageIndex);
               scrollToPage(newPageIndex, containerRef);
-            }, 50);
+            }, NAVIGATION_DELAY);
           }
-        }, 50);
+        }, BOUNDARY_UPDATE_DELAY);
+        
+        lastContentRef.current = continuousContent;
+        return () => clearTimeout(timer);
       }
+      
       lastContentRef.current = continuousContent;
     }
   }, [continuousContent, updateBoundaries, pageBoundaries.length, actions, scrollToPage]);
@@ -148,19 +164,6 @@ const ContentEditableEditor = forwardRef(({
     }
   }), [continuousContent, actions, updateBoundaries]);
 
-  // Ensure boundaries are calculated on mount, even if content hasn't changed
-  const mountRef = useRef(false);
-  useEffect(() => {
-    if (!mountRef.current && editorRef.current) {
-      mountRef.current = true;
-      // Force boundary calculation on mount to ensure PageManager shows pages
-      const timer = setTimeout(() => {
-        updateBoundaries();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [updateBoundaries]);
-
   // Focus editor on mount
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -200,6 +203,11 @@ const ContentEditableEditor = forwardRef(({
   }, [actions, updateBoundaries, onPageSizeChangeCallback]);
 
   const handleNavigatePage = useCallback((pageIndex) => {
+    // Validate page index
+    if (pageIndex < 0 || pageIndex >= pageBoundaries.length) {
+      return;
+    }
+    
     // Set flag to prevent handleScroll from interfering during navigation
     isNavigatingRef.current = true;
     
@@ -212,13 +220,13 @@ const ContentEditableEditor = forwardRef(({
     // Clear the navigation flag after scroll completes
     setTimeout(() => {
       isNavigatingRef.current = false;
-    }, 500);
+    }, NAVIGATION_LOCK_TIMEOUT);
     
     // Call parent callback if provided
     if (onNavigatePage) {
       onNavigatePage(pageIndex);
     }
-  }, [actions, scrollToPage, onNavigatePage]);
+  }, [actions, scrollToPage, onNavigatePage, pageBoundaries.length]);
 
   const handleAddPage = useCallback(() => {
     // Set flag to indicate we're adding a page
@@ -282,32 +290,33 @@ const ContentEditableEditor = forwardRef(({
   }, [pageBoundaries.length, removePageAndContent, actions, onDeletePage]);
 
   const handleScroll = useCallback(() => {
-    if (!containerRef.current || !editorRef.current) return;
-
-    // Skip updating active page if we're manually navigating
-    if (isNavigatingRef.current) {
+    // Early exit if refs not ready or navigating
+    if (!containerRef.current || !editorRef.current || isNavigatingRef.current) {
       return;
     }
 
-    // Debounce scroll handler to prevent excessive updates
+    // Clear existing timeout for debouncing
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
     scrollTimeoutRef.current = setTimeout(() => {
-      // Double-check we're not navigating
+      // Double-check navigation state after debounce
       if (isNavigatingRef.current) {
         scrollTimeoutRef.current = null;
         return;
       }
       
       const currentPage = getCurrentPage(containerRef);
-      if (currentPage !== activePage) {
+      
+      // Only update if page actually changed
+      if (currentPage !== activePage && currentPage >= 0) {
         actions.setActivePage(currentPage);
       }
+      
       scrollTimeoutRef.current = null;
-    }, 100);
-  }, [getCurrentPage, activePage, actions, containerRef]);
+    }, SCROLL_DEBOUNCE);
+  }, [getCurrentPage, activePage, actions]);
 
   // Word count for sidebar - memoized to prevent expensive regex on every render
   const wordCount = useMemo(() => {
@@ -396,5 +405,29 @@ const ContentEditableEditor = forwardRef(({
 });
 
 ContentEditableEditor.displayName = 'ContentEditableEditor';
+
+ContentEditableEditor.propTypes = {
+  pageManagerComponent: PropTypes.element,
+  onNavigatePage: PropTypes.func,
+  onAddPage: PropTypes.func,
+  onDeletePage: PropTypes.func,
+  onPageSizeChange: PropTypes.func,
+  onChange: PropTypes.func,
+  showSidebar: PropTypes.bool,
+  showToolbar: PropTypes.bool,
+  showPageManager: PropTypes.bool
+};
+
+ContentEditableEditor.defaultProps = {
+  pageManagerComponent: null,
+  onNavigatePage: undefined,
+  onAddPage: undefined,
+  onDeletePage: undefined,
+  onPageSizeChange: undefined,
+  onChange: undefined,
+  showSidebar: true,
+  showToolbar: true,
+  showPageManager: true
+};
 
 export default ContentEditableEditor;

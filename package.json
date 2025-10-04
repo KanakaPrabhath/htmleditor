@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "htmleditor-monorepo",
   "version": "1.0.0",
   "private": true,
@@ -7,10 +8,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build:lib": "npm run build --workspace=packages/html-editor",
-    "dev:demo": "npm run dev --workspace=packages/demo-app",
-    "build:demo": "npm run build --workspace=packages/demo-app",
-    "preview:demo": "npm run preview --workspace=packages/demo-app",
+    "build:lib": "npm run build -w packages/html-editor",
+    "dev:demo": "npm run dev -w packages/demo-app",
+    "build:demo": "npm run build -w packages/demo-app",
+    "preview:demo": "npm run preview -w packages/demo-app",
     "test": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

@@ -120,6 +120,17 @@ describe('useFormatting Hook', () => {
       expect(document.execCommand).toHaveBeenCalledWith('fontName', false, 'Arial');
     });
 
+    it('should handle formatBlock for headings', () => {
+      const { result } = renderHook(() => useFormatting());
+      
+      act(() => {
+        result.current.formatText('formatBlock', 'h1');
+      });
+      
+      expect(document.execCommand).toHaveBeenCalledWith('formatBlock', false, 'h1');
+      expect(result.current.currentFormat.headingLevel).toBe('h1');
+    });
+
     it('should handle font size with value parameter', () => {
       const { result } = renderHook(() => useFormatting());
       

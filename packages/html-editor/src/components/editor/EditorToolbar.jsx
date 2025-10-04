@@ -11,7 +11,6 @@ import {
   AlignJustify,
   List,
   ListOrdered,
-  CheckSquare,
   Link,
   Table,
   FileText,
@@ -164,6 +163,20 @@ const EditorToolbar = ({
         <option value="32px">32</option>
       </select>
       
+      <select 
+        onChange={(e) => onFormatText('formatBlock', e.target.value)}
+        value={currentFormat.headingLevel || 'p'}
+        title="Heading Level"
+      >
+        <option value="p">Normal</option>
+        <option value="h1">Heading 1</option>
+        <option value="h2">Heading 2</option>
+        <option value="h3">Heading 3</option>
+        <option value="h4">Heading 4</option>
+        <option value="h5">Heading 5</option>
+        <option value="h6">Heading 6</option>
+      </select>
+      
       <div className="toolbar-separator" />
       
       <button 
@@ -177,12 +190,6 @@ const EditorToolbar = ({
         title="Numbered List"
       >
         <ListOrdered size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('insertCheckList')} 
-        title="Checklist"
-      >
-        <CheckSquare size={16} />
       </button>
       
       <div className="toolbar-separator" />
@@ -240,7 +247,8 @@ EditorToolbar.propTypes = {
     alignRight: PropTypes.bool,
     alignJustify: PropTypes.bool,
     fontFamily: PropTypes.string,
-    fontSize: PropTypes.string
+    fontSize: PropTypes.string,
+    headingLevel: PropTypes.string
   }).isRequired,
   onFormatText: PropTypes.func.isRequired,
   onAddPageBreak: PropTypes.func

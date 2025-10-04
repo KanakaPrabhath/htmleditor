@@ -130,6 +130,31 @@ test.describe('Core Text Editing - User Scenarios', () => {
       expect(contentAfter).toMatch(/<(i|em)>/);
     });
 
+    test('should support heading formatting (FR-012)', async ({ page }) => {
+      const editor = page.locator('.continuous-content[contenteditable="true"]');
+      
+      await editor.click();
+      await page.keyboard.type('This is a heading');
+      await page.keyboard.press('Control+a');
+      
+      // Wait for toolbar to be visible
+      const toolbar = page.locator('.editor-toolbar');
+      await expect(toolbar).toBeVisible();
+      
+      // Count select elements
+      const selects = toolbar.locator('select');
+      const selectCount = await selects.count();
+      console.log(`Found ${selectCount} select elements`);
+      
+      // Find the heading select - it should be the third one
+      const headingSelect = selects.nth(2);
+      await expect(headingSelect).toBeVisible();
+      await headingSelect.selectOption('h1');
+      
+      const content = await editor.innerHTML();
+      expect(content).toMatch(/<h1>.*This is a heading.*<\/h1>/);
+    });
+
     test('should be a standalone functional component', async ({ page }) => {
       const editorComponent = page.locator('.multi-page-editor').first();
       await expect(editorComponent).toBeVisible();

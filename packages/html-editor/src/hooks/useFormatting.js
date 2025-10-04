@@ -21,7 +21,8 @@ const DEFAULT_FORMAT = {
   alignRight: false,
   alignJustify: false,
   fontFamily: 'Arial',
-  fontSize: '12px'
+  fontSize: '12px',
+  headingLevel: 'p' // Add heading level tracking
 };
 
 /**
@@ -148,6 +149,9 @@ export const useFormatting = () => {
           break;
         case 'fontName':
           setCurrentFormat(prev => ({ ...prev, fontFamily: value }));
+          break;
+        case 'formatBlock':
+          setCurrentFormat(prev => ({ ...prev, headingLevel: value }));
           break;
         default:
           // Commands like insertUnorderedList, createLink, etc. don't need state updates

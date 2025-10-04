@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setActivePage,
@@ -60,17 +60,21 @@ const ContentEditableEditor = ({
     removePageAndContent
   } = useContinuousReflow(pageSize, editorRef);
 
-  const dimensions = PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4;
+  const dimensions = useMemo(() => PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4, [pageSize]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const scrollTimeoutRef = useRef(null);
 
   // Initialize editor content
+  const contentSetRef = useRef(false);
   useEffect(() => {
-    if (editorRef.current && editorRef.current.innerHTML !== continuousContent) {
+    if (editorRef.current && !contentSetRef.current) {
       editorRef.current.innerHTML = continuousContent;
+      contentSetRef.current = true;
       // Calculate initial boundaries after content is set
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         updateBoundaries();
       }, 100);
+      return () => clearTimeout(timer);
     }
   }, [continuousContent, updateBoundaries]);
 
@@ -88,10 +92,10 @@ const ContentEditableEditor = ({
     const html = event.currentTarget.innerHTML;
     dispatch(updateContinuousContent(html));
     
-    // Update page boundaries after content change
+    // Update page boundaries after content change (already debounced in hook)
     checkAndUpdateBoundaries();
     
-    // Trigger automatic reflow to insert page breaks when content overflows
+    // Trigger automatic reflow to insert page breaks when content overflows (already debounced)
     triggerAutoReflow();
     
     // Update active page based on cursor position
@@ -103,7 +107,7 @@ const ContentEditableEditor = ({
 
   const handlePageSizeChange = useCallback((newSize) => {
     dispatch(updatePageSize(newSize));
-    // Recalculate boundaries with new page size
+    // Recalculate boundaries with new page size (debounced in hook)
     updateBoundaries({ pageSize: newSize });
     
     // Call parent callback if provided
@@ -127,7 +131,7 @@ const ContentEditableEditor = ({
     dispatch(addPageBreak({ position: 'end' }));
     
     // Update boundaries after adding page break
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       updateBoundaries();
     }, 100);
     
@@ -135,6 +139,8 @@ const ContentEditableEditor = ({
     if (onAddPage) {
       onAddPage();
     }
+    
+    return () => clearTimeout(timer);
   }, [dispatch, updateBoundaries, onAddPage]);
 
   const handleAddPageBreak = useCallback(() => {
@@ -153,11 +159,13 @@ const ContentEditableEditor = ({
       document.execCommand('insertHTML', false, pageBreakHTML);
       
       // Update boundaries after a short delay
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         updateBoundaries();
       }, 100);
+      
+      return () => clearTimeout(timer);
     }
-  }, [updateBoundaries, editorRef]);
+  }, [updateBoundaries]);
 
   const handleDeletePage = useCallback((pageIndex) => {
     if (pageBoundaries.length <= 1) {
@@ -183,19 +191,38 @@ const ContentEditableEditor = ({
   const handleScroll = useCallback(() => {
     if (!containerRef.current || !editorRef.current) return;
 
-    // Update active page based on scroll position
-    const currentPage = getCurrentPage();
-    if (currentPage !== activePage) {
-      dispatch(setActivePage(currentPage));
+    // Debounce scroll handler to prevent excessive updates
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
     }
+
+    scrollTimeoutRef.current = setTimeout(() => {
+      const currentPage = getCurrentPage();
+      if (currentPage !== activePage) {
+        dispatch(setActivePage(currentPage));
+      }
+      scrollTimeoutRef.current = null;
+    }, 100);
   }, [getCurrentPage, activePage, dispatch]);
 
-  // Word count for sidebar
-  const wordCount = continuousContent
-    ? (continuousContent.replace(/<[^>]*>/g, ' ').match(/\b\w+\b/g) || []).length
-    : 0;
+  // Word count for sidebar - memoized to prevent expensive regex on every render
+  const wordCount = useMemo(() => {
+    if (!continuousContent) return 0;
+    const text = continuousContent.replace(/<[^>]*>/g, ' ');
+    const words = text.match(/\b\w+\b/g);
+    return words ? words.length : 0;
+  }, [continuousContent]);
 
   const totalPages = pageBoundaries.length || 1;
+
+  // Cleanup scroll timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="multi-page-editor">
@@ -244,16 +271,14 @@ const ContentEditableEditor = ({
                 onNavigate: handleNavigatePage,
                 onAddPage: handleAddPage,
                 onDeletePage: handleDeletePage,
-                onPageSizeChange: handlePageSizeChange,
-                scrollContainerRef: containerRef
+                onPageSizeChange: handlePageSizeChange
               })
             ) : (
               <PageManager
-                onNavigate={onNavigatePage}
-                onAddPage={onAddPage}
-                onDeletePage={onDeletePage}
-                onPageSizeChange={onPageSizeChangeCallback}
-                scrollContainerRef={containerRef}
+                onNavigate={handleNavigatePage}
+                onAddPage={handleAddPage}
+                onDeletePage={handleDeletePage}
+                onPageSizeChange={handlePageSizeChange}
               />
             )}
           </div>

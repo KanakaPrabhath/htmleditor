@@ -179,6 +179,33 @@ describe('documentSlice Redux Store', () => {
       expect(state.pageBoundaries.length).toBe(1);
       expect(state.pageBoundaries[0].height).toBe(1056);
     });
+
+    it('should clamp activePage when boundaries are reduced', () => {
+      // Set up 3 pages
+      const boundaries = [
+        { id: 'page-0', pageNumber: 1, top: 0, height: 1123 },
+        { id: 'page-1', pageNumber: 2, top: 1200, height: 1123 },
+        { id: 'page-2', pageNumber: 3, top: 2400, height: 1123 }
+      ];
+      
+      store.dispatch(updatePageBoundaries(boundaries));
+      store.dispatch(setActivePage(2)); // Go to page 3
+      
+      let state = store.getState().document;
+      expect(state.activePage).toBe(2);
+      
+      // Reduce to 2 pages
+      const newBoundaries = [
+        { id: 'page-0', pageNumber: 1, top: 0, height: 1123 },
+        { id: 'page-1', pageNumber: 2, top: 1200, height: 1123 }
+      ];
+      
+      store.dispatch(updatePageBoundaries(newBoundaries));
+      
+      state = store.getState().document;
+      expect(state.activePage).toBe(1); // Clamped to last valid page
+      expect(state.totalPages).toBe(2);
+    });
   });
 
   describe('setActivePage Action', () => {
@@ -205,6 +232,43 @@ describe('documentSlice Redux Store', () => {
       
       // Active page should be a valid index
       expect(state.activePage).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should set active page in continuous mode with page boundaries', () => {
+      // Set up page boundaries for 3 pages
+      const boundaries = [
+        { id: 'page-0', pageNumber: 1, top: 0, height: 1123 },
+        { id: 'page-1', pageNumber: 2, top: 1200, height: 1123 },
+        { id: 'page-2', pageNumber: 3, top: 2400, height: 1123 }
+      ];
+      
+      store.dispatch(updatePageBoundaries(boundaries));
+      
+      // Set active page to page 2 (index 2)
+      store.dispatch(setActivePage(2));
+      
+      const state = store.getState().document;
+      expect(state.activePage).toBe(2);
+      expect(state.totalPages).toBe(3);
+    });
+
+    it('should allow setting same page again in continuous mode', () => {
+      const boundaries = [
+        { id: 'page-0', pageNumber: 1, top: 0, height: 1123 },
+        { id: 'page-1', pageNumber: 2, top: 1200, height: 1123 }
+      ];
+      
+      store.dispatch(updatePageBoundaries(boundaries));
+      store.dispatch(setActivePage(1));
+      
+      let state = store.getState().document;
+      expect(state.activePage).toBe(1);
+      
+      // Setting the same page again should work
+      store.dispatch(setActivePage(1));
+      
+      state = store.getState().document;
+      expect(state.activePage).toBe(1);
     });
   });
 

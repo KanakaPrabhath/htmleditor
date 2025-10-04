@@ -25,7 +25,8 @@ describe('Library Exports', () => {
 
     it('should export PageManager component', () => {
       expect(HtmlEditor.PageManager).toBeDefined();
-      expect(typeof HtmlEditor.PageManager).toBe('function');
+      // PageManager is wrapped in React.memo, which returns an object
+      expect(['function', 'object']).toContain(typeof HtmlEditor.PageManager);
     });
   });
 
@@ -267,7 +268,8 @@ describe('Library Exports', () => {
       expect(typeof HtmlEditor.EditorToolbar).toBe('function');
       expect(typeof HtmlEditor.Sidebar).toBe('function');
       expect(typeof HtmlEditor.ContinuousPageView).toBe('function');
-      expect(typeof HtmlEditor.PageManager).toBe('function');
+      // PageManager is wrapped in React.memo, which returns an object
+      expect(['function', 'object']).toContain(typeof HtmlEditor.PageManager);
       
       // Hooks should be functions
       expect(typeof HtmlEditor.useFormatting).toBe('function');

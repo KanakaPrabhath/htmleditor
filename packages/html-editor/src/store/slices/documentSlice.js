@@ -153,7 +153,12 @@ export const documentSlice = createSlice({
 
     setActivePage: (state, action) => {
       const pageIndex = action.payload;
-      if (pageIndex >= 0 && pageIndex < state.pages.length && pageIndex !== state.activePage) {
+      // In continuous mode, check against pageBoundaries; otherwise check against pages
+      const maxPage = state.editorMode === 'continuous' 
+        ? state.pageBoundaries.length 
+        : state.pages.length;
+      
+      if (pageIndex >= 0 && pageIndex < maxPage) {
         state.activePage = pageIndex;
         state.updatedAt = new Date().toISOString();
       }
@@ -185,6 +190,12 @@ export const documentSlice = createSlice({
     updatePageBoundaries: (state, action) => {
       state.pageBoundaries = action.payload || [];
       state.totalPages = state.pageBoundaries.length;
+      
+      // Ensure activePage is within valid range
+      if (state.activePage >= state.pageBoundaries.length) {
+        state.activePage = Math.max(0, state.pageBoundaries.length - 1);
+      }
+      
       state.updatedAt = new Date().toISOString();
     },
 

@@ -296,7 +296,22 @@ import '@prabhath-tharaka/html-editor/dist/html-editor.css';
 
 ## 📚 Full Documentation
 
-See [HOW_TO_USE_IN_YOUR_APP.md](./HOW_TO_USE_IN_YOUR_APP.md) for complete documentation with examples.
+- **[API & Usage Guide](./API_AND_USAGE.md)** - Complete API reference
+- **[PageManager API](./PAGEMANAGER_API.md)** - Page navigation component reference
+- **[Architecture](./ARCHITECTURE.md)** - System architecture and design patterns
+- **[Development Guide](./DEVELOPMENT.md)** - Contributing and development workflow
+- **[Testing Guide](./TESTING.md)** - Test setup and best practices
+
+### Recent Updates
+
+#### PageManager Simplification (October 2025)
+The PageManager component has been simplified for better reliability:
+- **40% code reduction** - Easier to understand and maintain
+- **Removed duplicate logic** - Navigation now handled by hooks
+- **Better reliability** - Single source of truth for page operations
+- **All tests passing** - 93 unit tests + 29 E2E tests
+
+See [PageManager Simplification](./PAGEMANAGER_SIMPLIFICATION.md) for details.
 
 ## 🔗 Resources
 

@@ -266,6 +266,11 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🆕 Changelog
 
+### v1.1.1
+- Published to npm registry with public access
+- Improved build process and distribution
+- Enhanced package configuration
+
 ### v1.1.0
 - Added automatic page reflow functionality
 - Improved performance with debounced operations

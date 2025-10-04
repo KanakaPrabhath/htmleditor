@@ -7,7 +7,7 @@
 
 A React-based WYSIWYG HTML editor with automatic page reflow, rich text formatting, and multi-page document management. Perfect for creating documents, reports, and rich content editors.
 
-![HTML Editor Screenshot](docs/screenshot.png)
+![HTML Editor Screenshot](https://raw.githubusercontent.com/Prabhath-Tharaka/htmleditor/main/docs/screenshot.png)
 
 ## ✨ Features
 
@@ -268,7 +268,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📋 Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes.
+See [CHANGELOG.md](https://github.com/Prabhath-Tharaka/htmleditor/blob/main/CHANGELOG.md) for a detailed list of changes.
 
 ---
 

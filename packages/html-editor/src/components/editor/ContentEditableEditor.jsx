@@ -241,31 +241,19 @@ const ContentEditableEditor = ({
           <div className="page-manager-sidebar">
             {pageManagerComponent ? (
               React.cloneElement(pageManagerComponent, {
-                pages: pageBoundaries.map((b, i) => ({ 
-                  id: b.id, 
-                  index: i,
-                  size: pageSize 
-                })),
-                activePage,
-                pageSize,
                 onNavigate: handleNavigatePage,
                 onAddPage: handleAddPage,
                 onDeletePage: handleDeletePage,
-                onPageSizeChange: handlePageSizeChange
+                onPageSizeChange: handlePageSizeChange,
+                scrollContainerRef: containerRef
               })
             ) : (
               <PageManager
-                pages={pageBoundaries.map((b, i) => ({ 
-                  id: b.id, 
-                  index: i,
-                  size: pageSize 
-                }))}
-                activePage={activePage}
-                pageSize={pageSize}
-                onNavigate={handleNavigatePage}
-                onAddPage={handleAddPage}
-                onDeletePage={handleDeletePage}
-                onPageSizeChange={handlePageSizeChange}
+                onNavigate={onNavigatePage}
+                onAddPage={onAddPage}
+                onDeletePage={onDeletePage}
+                onPageSizeChange={onPageSizeChangeCallback}
+                scrollContainerRef={containerRef}
               />
             )}
           </div>

@@ -31,7 +31,10 @@ export {
   updatePageBoundaries,
   addPageBreak,
   removePageBreak,
-  setEditorMode
+  setEditorMode,
+  insertPageAt,
+  movePageTo,
+  duplicatePage
 } from './store/slices/documentSlice';
 
 // Storage utilities

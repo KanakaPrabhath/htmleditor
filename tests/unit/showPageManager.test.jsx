@@ -149,4 +149,39 @@ describe('ContentEditableEditor - showPageManager prop', () => {
     const contenteditable = document.querySelector('[contenteditable="true"]');
     expect(contenteditable).toBeTruthy();
   });
+
+  it('should render PageManager with page counter and navigation', () => {
+    const store = createTestStore();
+    
+    render(
+      <Provider store={store}>
+        <ContentEditableEditor />
+      </Provider>
+    );
+    
+    // Page counter should be visible
+    const pageCounter = document.querySelector('.page-counter');
+    expect(pageCounter).toBeTruthy();
+    expect(pageCounter.textContent).toContain('Page 1 of');
+    
+    // Navigation buttons should exist
+    const navButtons = document.querySelectorAll('.nav-button');
+    expect(navButtons.length).toBe(2); // Previous and Next buttons
+  });
+
+  it('should connect PageManager directly to Redux state', () => {
+    const store = createTestStore();
+    
+    render(
+      <Provider store={store}>
+        <ContentEditableEditor />
+      </Provider>
+    );
+    
+    // PageManager should display correct page size from Redux state
+    const pageSize = store.getState().document.pageSize;
+    const pageSizeSelector = document.querySelector('#page-size-selector');
+    expect(pageSizeSelector).toBeTruthy();
+    expect(pageSizeSelector.value).toBe(pageSize);
+  });
 });

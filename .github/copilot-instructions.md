@@ -2,6 +2,10 @@
 
 This is a **React-based WYSIWYG continuous HTML editor** with rich text formatting capabilities and automatic page break insertion. Built with Vite, React 19, and Redux Toolkit as a monorepo structure.
 
+## Important Guidelines
+
+**Do not create or initialize documents automatically.** Only create documents when explicitly instructed by the user. Wait for clear direction before generating any document content or structure.
+
 ## Architecture Overview
 
 ### Core Design Pattern: Continuous Content Flow with Automatic Page Breaks

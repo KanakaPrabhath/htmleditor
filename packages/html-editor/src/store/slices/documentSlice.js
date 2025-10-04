@@ -190,7 +190,7 @@ export const documentSlice = createSlice({
 
     // Manual page operations for continuous mode
     addPageBreak: (state, action) => {
-      const { position = 'end' } = action.payload || {};
+      const { position = 'end', pageIndex } = action.payload || {};
       
       // Create page break tag
       const pageBreakTag = '<page-break data-page-break="true" style="display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;"></page-break>';
@@ -203,6 +203,36 @@ export const documentSlice = createSlice({
         const before = state.continuousContent.substring(0, position);
         const after = state.continuousContent.substring(position);
         state.continuousContent = before + pageBreakTag + after;
+      } else if (typeof pageIndex === 'number') {
+        // Insert page break after a specific page
+        if (typeof document !== 'undefined') {
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = state.continuousContent;
+          
+          const pageBreaks = tempDiv.querySelectorAll('page-break, [data-page-break="true"]');
+          
+          if (pageIndex === 0 && pageBreaks.length === 0) {
+            // First page, add at end
+            state.continuousContent = state.continuousContent + pageBreakTag + '<p><br></p>';
+          } else if (pageIndex < pageBreaks.length) {
+            // Insert after the specified page break
+            const targetBreak = pageBreaks[pageIndex];
+            const newBreak = document.createElement('page-break');
+            newBreak.setAttribute('data-page-break', 'true');
+            newBreak.setAttribute('style', 'display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;');
+            
+            const newParagraph = document.createElement('p');
+            newParagraph.innerHTML = '<br>';
+            
+            targetBreak.parentNode.insertBefore(newBreak, targetBreak.nextSibling);
+            newBreak.parentNode.insertBefore(newParagraph, newBreak.nextSibling);
+            
+            state.continuousContent = tempDiv.innerHTML;
+          } else {
+            // Add at end
+            state.continuousContent = state.continuousContent + pageBreakTag + '<p><br></p>';
+          }
+        }
       }
       
       state.updatedAt = new Date().toISOString();
@@ -263,6 +293,178 @@ export const documentSlice = createSlice({
         
         state.updatedAt = new Date().toISOString();
       }
+    },
+
+    // Bulk page operations
+    insertPageAt: (state, action) => {
+      const { pageIndex, content = EMPTY_PARAGRAPH } = action.payload || {};
+      
+      if (typeof pageIndex !== 'number' || pageIndex < 0) {
+        return;
+      }
+
+      // In continuous mode, insert a page break at the appropriate position
+      if (state.editorMode === 'continuous') {
+        if (typeof document !== 'undefined') {
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = state.continuousContent;
+          
+          const pageBreaks = tempDiv.querySelectorAll('page-break, [data-page-break="true"]');
+          const pageBreakTag = '<page-break data-page-break="true" style="display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;"></page-break>';
+          
+          if (pageIndex === 0) {
+            // Insert at beginning
+            state.continuousContent = content + pageBreakTag + state.continuousContent;
+          } else if (pageIndex >= pageBreaks.length) {
+            // Insert at end
+            state.continuousContent = state.continuousContent + pageBreakTag + content;
+          } else {
+            // Insert at specific position
+            const targetBreak = pageBreaks[pageIndex - 1];
+            const newContent = document.createElement('div');
+            newContent.innerHTML = content;
+            
+            const newBreak = document.createElement('page-break');
+            newBreak.setAttribute('data-page-break', 'true');
+            newBreak.setAttribute('style', 'display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;');
+            
+            targetBreak.parentNode.insertBefore(newContent, targetBreak.nextSibling);
+            targetBreak.parentNode.insertBefore(newBreak, newContent.nextSibling);
+            
+            state.continuousContent = tempDiv.innerHTML;
+          }
+        }
+      }
+      
+      state.updatedAt = new Date().toISOString();
+    },
+
+    movePageTo: (state, action) => {
+      const { fromIndex, toIndex } = action.payload || {};
+      
+      if (typeof fromIndex !== 'number' || typeof toIndex !== 'number') {
+        return;
+      }
+
+      if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) {
+        return;
+      }
+
+      // In continuous mode, we need to rearrange content between page breaks
+      if (state.editorMode === 'continuous' && typeof document !== 'undefined') {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = state.continuousContent;
+        
+        const pageBreaks = Array.from(tempDiv.querySelectorAll('page-break, [data-page-break="true"]'));
+        
+        // Extract page content segments
+        const segments = [];
+        let currentNode = tempDiv.firstChild;
+        let currentSegment = [];
+        
+        while (currentNode) {
+          const isPageBreak = currentNode.nodeType === 1 && 
+            (currentNode.tagName.toLowerCase() === 'page-break' || 
+             currentNode.getAttribute('data-page-break') === 'true');
+          
+          if (isPageBreak) {
+            segments.push(currentSegment);
+            currentSegment = [];
+          } else {
+            currentSegment.push(currentNode.cloneNode(true));
+          }
+          
+          currentNode = currentNode.nextSibling;
+        }
+        
+        // Add last segment
+        if (currentSegment.length > 0) {
+          segments.push(currentSegment);
+        }
+        
+        // Validate indices
+        if (fromIndex >= segments.length || toIndex >= segments.length) {
+          return;
+        }
+        
+        // Move the segment
+        const [movedSegment] = segments.splice(fromIndex, 1);
+        segments.splice(toIndex, 0, movedSegment);
+        
+        // Rebuild content
+        const newContent = [];
+        segments.forEach((segment, index) => {
+          segment.forEach(node => newContent.push(node.outerHTML || node.textContent));
+          if (index < segments.length - 1) {
+            newContent.push('<page-break data-page-break="true" style="display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;"></page-break>');
+          }
+        });
+        
+        state.continuousContent = newContent.join('');
+      }
+      
+      state.updatedAt = new Date().toISOString();
+    },
+
+    duplicatePage: (state, action) => {
+      const { pageIndex } = action.payload || {};
+      
+      if (typeof pageIndex !== 'number' || pageIndex < 0) {
+        return;
+      }
+
+      // In continuous mode, duplicate content of a specific page
+      if (state.editorMode === 'continuous' && typeof document !== 'undefined') {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = state.continuousContent;
+        
+        const pageBreaks = Array.from(tempDiv.querySelectorAll('page-break, [data-page-break="true"]'));
+        
+        // Extract page content
+        let pageContent = [];
+        let currentNode = tempDiv.firstChild;
+        let currentPageIndex = 0;
+        
+        while (currentNode) {
+          const isPageBreak = currentNode.nodeType === 1 && 
+            (currentNode.tagName.toLowerCase() === 'page-break' || 
+             currentNode.getAttribute('data-page-break') === 'true');
+          
+          if (isPageBreak) {
+            if (currentPageIndex === pageIndex) {
+              break;
+            }
+            currentPageIndex++;
+            pageContent = [];
+          } else if (currentPageIndex === pageIndex) {
+            pageContent.push(currentNode.cloneNode(true));
+          }
+          
+          currentNode = currentNode.nextSibling;
+        }
+        
+        // Insert duplicated content
+        if (pageContent.length > 0 && pageIndex < pageBreaks.length) {
+          const targetBreak = pageBreaks[pageIndex];
+          const pageBreakTag = '<page-break data-page-break="true" style="display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;"></page-break>';
+          
+          const contentHTML = pageContent.map(node => node.outerHTML || node.textContent).join('');
+          const duplicateContent = contentHTML + pageBreakTag;
+          
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = duplicateContent;
+          
+          let insertAfter = targetBreak;
+          Array.from(wrapper.children).forEach(child => {
+            insertAfter.parentNode.insertBefore(child.cloneNode(true), insertAfter.nextSibling);
+            insertAfter = insertAfter.nextSibling;
+          });
+          
+          state.continuousContent = tempDiv.innerHTML;
+        }
+      }
+      
+      state.updatedAt = new Date().toISOString();
     }
   }
 });
@@ -281,7 +483,10 @@ export const {
   updatePageBoundaries,
   addPageBreak,
   removePageBreak,
-  setEditorMode
+  setEditorMode,
+  insertPageAt,
+  movePageTo,
+  duplicatePage
 } = documentSlice.actions;
 
 export default documentSlice.reducer;

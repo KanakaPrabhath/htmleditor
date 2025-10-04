@@ -63,6 +63,7 @@ const ContentEditableEditor = ({
   const dimensions = useMemo(() => PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4, [pageSize]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const scrollTimeoutRef = useRef(null);
+  const addingPageRef = useRef(false);
 
   // Initialize editor content
   const contentSetRef = useRef(false);
@@ -71,12 +72,54 @@ const ContentEditableEditor = ({
       editorRef.current.innerHTML = continuousContent;
       contentSetRef.current = true;
       // Calculate initial boundaries after content is set
+      // Use shorter delay to ensure PageManager displays immediately
+      const timer = setTimeout(() => {
+        updateBoundaries();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [continuousContent, updateBoundaries]);
+
+  // Sync Redux content changes to DOM (for programmatic updates like addPageBreak)
+  const lastContentRef = useRef(continuousContent);
+  useEffect(() => {
+    if (editorRef.current && contentSetRef.current && lastContentRef.current !== continuousContent) {
+      // Only update DOM if content actually changed and it's not from user input
+      // (user input already updates DOM via contenteditable)
+      const currentDOMContent = editorRef.current.innerHTML;
+      if (currentDOMContent !== continuousContent) {
+        editorRef.current.innerHTML = continuousContent;
+        // Recalculate boundaries after DOM update
+        setTimeout(() => {
+          updateBoundaries();
+          
+          // If we just added a page, navigate to it
+          if (addingPageRef.current) {
+            addingPageRef.current = false;
+            setTimeout(() => {
+              const newPageIndex = pageBoundaries.length > 0 ? pageBoundaries.length - 1 : 0;
+              dispatch(setActivePage(newPageIndex));
+              scrollToPage(newPageIndex, containerRef);
+            }, 50);
+          }
+        }, 50);
+      }
+      lastContentRef.current = continuousContent;
+    }
+  }, [continuousContent, updateBoundaries, pageBoundaries.length, dispatch, scrollToPage]);
+
+  // Ensure boundaries are calculated on mount, even if content hasn't changed
+  const mountRef = useRef(false);
+  useEffect(() => {
+    if (!mountRef.current && editorRef.current) {
+      mountRef.current = true;
+      // Force boundary calculation on mount to ensure PageManager shows pages
       const timer = setTimeout(() => {
         updateBoundaries();
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [continuousContent, updateBoundaries]);
+  }, [updateBoundaries]);
 
   // Focus editor on mount
   useEffect(() => {
@@ -127,21 +170,19 @@ const ContentEditableEditor = ({
   }, [dispatch, scrollToPage, onNavigatePage]);
 
   const handleAddPage = useCallback(() => {
-    // Add a page break at the end
+    // Set flag to indicate we're adding a page
+    addingPageRef.current = true;
+    
+    // Add a page break at the end - this updates Redux state
     dispatch(addPageBreak({ position: 'end' }));
     
-    // Update boundaries after adding page break
-    const timer = setTimeout(() => {
-      updateBoundaries();
-    }, 100);
+    // The useEffect above will sync the content to DOM, update boundaries, and navigate
     
     // Call parent callback if provided
     if (onAddPage) {
       onAddPage();
     }
-    
-    return () => clearTimeout(timer);
-  }, [dispatch, updateBoundaries, onAddPage]);
+  }, [dispatch, onAddPage]);
 
   const handleAddPageBreak = useCallback(() => {
     // Insert page break at current cursor position
@@ -158,14 +199,15 @@ const ContentEditableEditor = ({
       // Insert the page break
       document.execCommand('insertHTML', false, pageBreakHTML);
       
-      // Update boundaries after a short delay
-      const timer = setTimeout(() => {
-        updateBoundaries();
-      }, 100);
-      
-      return () => clearTimeout(timer);
+      // Update boundaries after a short delay and ensure PageManager updates
+      setTimeout(() => {
+        const newBoundaries = updateBoundaries();
+        // Get current page and stay on it
+        const currentPage = getCurrentPage();
+        dispatch(setActivePage(currentPage));
+      }, 150);
     }
-  }, [updateBoundaries]);
+  }, [updateBoundaries, getCurrentPage, dispatch]);
 
   const handleDeletePage = useCallback((pageIndex) => {
     if (pageBoundaries.length <= 1) {

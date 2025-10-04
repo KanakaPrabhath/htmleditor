@@ -37,6 +37,22 @@ const buildInitialState = (overrides = {}) => {
   const pageSize = overrides.pageSize || DEFAULT_PAGE_SIZE;
   const pages = withMinimumPage(overrides.pages || [createEmptyPage(0, pageSize)], pageSize);
 
+  // Calculate initial page dimensions for boundaries
+  const PAGE_DIMENSIONS = {
+    A4: { width: 794, height: 1123 },
+    Letter: { width: 816, height: 1056 },
+    Legal: { width: 816, height: 1344 }
+  };
+  const dimensions = PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4;
+
+  // Ensure at least one page boundary exists on initialization
+  const defaultBoundaries = [{
+    id: 'page-0',
+    pageNumber: 1,
+    top: 0,
+    height: dimensions.height
+  }];
+
   return {
     id: uuidv4(),
     title: overrides.title || 'Untitled Document',
@@ -50,7 +66,7 @@ const buildInitialState = (overrides = {}) => {
     // Continuous mode state
     editorMode: overrides.editorMode || 'continuous', // 'continuous' or 'paged'
     continuousContent: overrides.continuousContent || EMPTY_PARAGRAPH,
-    pageBoundaries: overrides.pageBoundaries || []
+    pageBoundaries: overrides.pageBoundaries || defaultBoundaries
   };
 };
 

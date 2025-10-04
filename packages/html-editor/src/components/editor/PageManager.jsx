@@ -23,8 +23,9 @@ export const PageManager = ({
 } = {}) => {
   const { pageBoundaries, activePage, pageSize } = useSelector((state) => state.document);
 
-  // Simple page count from boundaries
-  const totalPages = pageBoundaries.length || 1;
+  // Ensure we always have at least one page
+  // Simple page count from boundaries with fallback
+  const totalPages = Math.max(pageBoundaries?.length || 0, 1);
 
   const handleNavigate = (pageIndex) => {
     // Delegate to parent - parent handles Redux dispatch and scrolling
@@ -121,7 +122,7 @@ export const PageManager = ({
 
       {/* Page List */}
       <div className="page-list">
-        {pageBoundaries.map((boundary, index) => (
+        {(pageBoundaries && pageBoundaries.length > 0 ? pageBoundaries : [{ id: 'page-0', pageNumber: 1 }]).map((boundary, index) => (
           <div key={boundary.id || `page-${index}`} className="page-item">
             <button
               type="button"

@@ -69,10 +69,17 @@ describe('documentSlice Redux Store', () => {
       expect(state.continuousContent).toBeTruthy();
     });
 
-    it('should initialize with empty page boundaries', () => {
+    it('should initialize with default page boundary for first page', () => {
       const state = store.getState().document;
       
-      expect(state.pageBoundaries).toEqual([]);
+      // Should have at least one page boundary for the initial page
+      expect(state.pageBoundaries).toHaveLength(1);
+      expect(state.pageBoundaries[0]).toEqual({
+        id: 'page-0',
+        pageNumber: 1,
+        top: 0,
+        height: 1123 // A4 height
+      });
     });
   });
 
@@ -339,7 +346,14 @@ describe('documentSlice Redux Store', () => {
       store.dispatch(resetDocument());
       const state = store.getState().document;
       
-      expect(state.pageBoundaries).toEqual([]);
+      // After reset, should have the default initial page boundary
+      expect(state.pageBoundaries).toHaveLength(1);
+      expect(state.pageBoundaries[0]).toEqual({
+        id: 'page-0',
+        pageNumber: 1,
+        top: 0,
+        height: 1123 // A4 height
+      });
     });
   });
 

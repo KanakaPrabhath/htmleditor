@@ -2,10 +2,12 @@
 
 [![npm version](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor.svg)](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Issues](https://img.shields.io/github/issues/Prabhath-Tharaka/htmleditor)](https://github.com/Prabhath-Tharaka/htmleditor/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/Prabhath-Tharaka/htmleditor)](https://github.com/Prabhath-Tharaka/htmleditor/stargazers)
 
-A React-based WYSIWYG continuous HTML editor with automatic page reflow, rich text formatting, and multi-page document management.
+A React-based WYSIWYG HTML editor with automatic page reflow, rich text formatting, and multi-page document management. Perfect for creating documents, reports, and rich content editors.
 
-![HTML Editor Screenshot](../../docs/screenshot.png)
+![HTML Editor Screenshot](docs/screenshot.png)
 
 ## ✨ Features
 
@@ -22,16 +24,37 @@ A React-based WYSIWYG continuous HTML editor with automatic page reflow, rich te
 ## 📦 Installation
 
 ```bash
+# Install the editor library
 npm install @prabhath-tharaka/html-editor
+
+# Install peer dependencies (if not already installed)
 npm install react react-dom
 ```
 
 ## 🚀 Quick Start
 
 ```jsx
-import React, { useRef } from 'react';
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
+import React from 'react';
+import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 import '@prabhath-tharaka/html-editor/styles';
+
+function App() {
+  return (
+    <DocumentProvider>
+      <HtmlEditor />
+    </DocumentProvider>
+  );
+}
+
+export default App;
+```
+
+## 🎯 Basic Usage
+
+### With Ref Access
+
+```jsx
+import React, { useRef } from 'react';
 
 function App() {
   const editorRef = useRef(null);
@@ -39,204 +62,153 @@ function App() {
   const handleSave = () => {
     const htmlContent = editorRef.current.getHTMLContent();
     const plainText = editorRef.current.getPlainText();
-    console.log('HTML Content:', htmlContent);
-    console.log('Plain Text:', plainText);
+    console.log('HTML:', htmlContent);
+    console.log('Text:', plainText);
   };
 
   return (
     <div>
       <DocumentProvider>
-        <ContentEditableEditor ref={editorRef} />
+        <HtmlEditor ref={editorRef} />
       </DocumentProvider>
       <button onClick={handleSave}>Save Content</button>
     </div>
   );
 }
-
-export default App;
 ```
 
-## 🔧 API Reference
-
-### Components
-
-#### ContentEditableEditor
-
-The main editor component with ref access to content methods.
-
-**Props:**
-- `pageManagerComponent?: ReactNode` - Custom page manager component
-- `onNavigatePage?: (pageIndex: number) => void` - Callback when navigating pages
-- `onAddPage?: () => void` - Callback when adding a page
-- `onDeletePage?: (pageIndex: number) => void` - Callback when deleting a page
-- `onPageSizeChange?: (size: 'A4' | 'Letter' | 'Legal') => void` - Callback when page size changes
-- `onChange?: (htmlContent: string) => void` - Callback when content changes
-- `showSidebar?: boolean` - Show/hide sidebar (default: true)
-- `showToolbar?: boolean` - Show/hide toolbar (default: true)
-- `showPageManager?: boolean` - Show/hide page manager (default: true)
-
-**Ref Methods:**
-- `getHTMLContent(): string` - Returns current HTML content
-- `getPlainText(): string` - Returns plain text content (HTML stripped)
-- `setContent(html: string): void` - Set editor content programmatically
-
-#### DocumentProvider
-
-Context provider for document state management.
+### Custom Configuration
 
 ```jsx
-<DocumentProvider initialState={{ title: "My Document", pageSize: "A4" }}>
-  <ContentEditableEditor />
-</DocumentProvider>
-```
-
-### Hooks
-
-#### useFormatting()
-
-Manages text formatting state and commands.
-
-```jsx
-const { currentFormat, formatText, resetFormat } = useFormatting();
-
-// Usage
-formatText('bold'); // Toggle bold
-formatText('fontSize', '16px'); // Set font size
-formatText('justifyCenter'); // Center align
-```
-
-#### useContinuousReflow()
-
-Handles automatic page reflow and boundary calculations.
-
-```jsx
-const { 
-  updateBoundaries, 
-  getCurrentPage, 
-  scrollToPage, 
-  triggerAutoReflow 
-} = useContinuousReflow(pageSize, editorRef);
-```
-
-### Context
-
-#### useDocument()
-
-Access document state and actions.
-
-```jsx
-const { state, actions } = useDocument();
-
-// State includes:
-// - continuousContent: string
-// - pageBoundaries: PageBoundary[]
-// - activePage: number
-// - pageSize: string
-// - pages: Page[]
-```
-
-#### useDocumentState()
-
-Access document state only.
-
-```jsx
-const { continuousContent, pageBoundaries, activePage } = useDocumentState();
-```
-
-#### useDocumentActions()
-
-Access document actions only.
-
-```jsx
-const { updateContinuousContent, setActivePage, updatePageSize } = useDocumentActions();
-```
-
-## 📄 Page Management
-
-The editor supports automatic page management with:
-
-- **Automatic Page Breaks**: Content automatically flows to new pages when exceeding page height
-- **Manual Page Breaks**: Insert page breaks at cursor position
-- **Page Navigation**: Navigate between pages with smooth scrolling
-- **Page Deletion**: Remove pages and their content
-- **Page Size Switching**: Change between A4, Letter, and Legal formats
-
-## 🎨 Styling
-
-Import the default styles:
-
-```jsx
-import '@prabhath-tharaka/html-editor/styles';
-```
-
-Or customize with your own CSS:
-
-```css
-.multi-page-editor {
-  /* Your custom styles */
-}
-
-.editor-toolbar {
-  /* Custom toolbar styles */
-}
-
-.continuous-content {
-  /* Custom editor content styles */
-}
-```
-
-## 🔧 Advanced Usage
-
-### Custom Page Manager
-
-```jsx
-function CustomPageManager({ onNavigate, onAddPage, onDeletePage }) {
-  return (
-    <div>
-      <button onClick={() => onAddPage()}>Add Page</button>
-      {/* Your custom page navigation UI */}
-    </div>
-  );
-}
-
 function App() {
   return (
-    <DocumentProvider>
-      <ContentEditableEditor 
-        pageManagerComponent={<CustomPageManager />}
+    <DocumentProvider initialState={{ title: "My Document", pageSize: "A4" }}>
+      <HtmlEditor 
+        showSidebar={true}
+        showToolbar={true}
+        showPageManager={true}
+        onNavigatePage={(pageIndex) => console.log('Page:', pageIndex)}
+        onAddPage={() => console.log('Page added')}
+        onChange={(html) => console.log('Content changed')}
       />
     </DocumentProvider>
   );
 }
 ```
 
+## 🔧 API Reference
+
+### HtmlEditor
+
+The main editor component with ref access to content methods.
+
+**Props:**
+- `pageManagerComponent?: ReactNode` - Custom page manager component
+- `onNavigatePage?: (pageIndex: number) => void` - Page navigation callback
+- `onAddPage?: () => void` - Page addition callback
+- `onDeletePage?: (pageIndex: number) => void` - Page deletion callback
+- `onPageSizeChange?: (size: 'A4' | 'Letter' | 'Legal') => void` - Page size change callback
+- `onChange?: (htmlContent: string) => void` - Content change callback
+- `showSidebar?: boolean` - Show/hide sidebar (default: true)
+- `showToolbar?: boolean` - Show/hide toolbar (default: true)
+- `showPageManager?: boolean` - Show/hide page manager (default: true)
+
+**Ref Methods:**
+- `getHTMLContent(): string` - Returns current HTML content
+- `getPlainText(): string` - Returns plain text content
+- `setContent(html: string): void` - Set editor content programmatically
+
+### DocumentProvider
+
+Context provider for document state management.
+
+```jsx
+<DocumentProvider initialState={{ title: "Document", pageSize: "A4" }}>
+  <HtmlEditor />
+</DocumentProvider>
+```
+
+## 📖 Documentation
+
+For complete documentation, check out our [Wiki](https://github.com/Prabhath-Tharaka/htmleditor/wiki) which includes:
+
+- [Getting Started](https://github.com/Prabhath-Tharaka/htmleditor/wiki/01-Getting-Started)
+- [API Reference](https://github.com/Prabhath-Tharaka/htmleditor/wiki/02-API-Reference)
+- [Advanced Usage](https://github.com/Prabhath-Tharaka/htmleditor/wiki/03-Advanced-Usage)
+- [Architecture](https://github.com/Prabhath-Tharaka/htmleditor/wiki/04-Architecture)
+- [Troubleshooting](https://github.com/Prabhath-Tharaka/htmleditor/wiki/05-Troubleshooting)
+
+## 🎨 Styling
+
+Import default styles:
+
+```jsx
+import '@prabhath-tharaka/html-editor/styles';
+```
+
+Or use your own CSS:
+
+```css
+.multi-page-editor {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.editor-toolbar {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+```
+
+## 🔍 Examples
+
+### Custom Page Manager
+
+```jsx
+import { useDocumentActions, useDocumentState } from '@prabhath-tharaka/html-editor';
+
+function CustomPageManager() {
+  const { pages, activePage } = useDocumentState();
+  const { setActivePage, addPage } = useDocumentActions();
+
+  return (
+    <div className="custom-pager">
+      <button onClick={addPage}>+ Add Page</button>
+      {pages.map((_, index) => (
+        <button 
+          key={index}
+          onClick={() => setActivePage(index)}
+          className={index === activePage ? 'active' : ''}
+        >
+          Page {index + 1}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Usage
+<HtmlEditor pageManagerComponent={<CustomPageManager />} />
+```
+
 ### Programmatic Content Control
 
 ```jsx
-function App() {
+function TemplateLoader() {
   const editorRef = useRef(null);
 
-  const loadTemplate = () => {
-    const template = `
-      <h1>Document Title</h1>
-      <p>This is a template content.</p>
-    `;
+  const loadTemplate = (template) => {
     editorRef.current.setContent(template);
-  };
-
-  const extractContent = () => {
-    const html = editorRef.current.getHTMLContent();
-    const text = editorRef.current.getPlainText();
-    // Process content as needed
   };
 
   return (
     <div>
       <DocumentProvider>
-        <ContentEditableEditor ref={editorRef} />
+        <HtmlEditor ref={editorRef} />
       </DocumentProvider>
-      <button onClick={loadTemplate}>Load Template</button>
-      <button onClick={extractContent}>Extract Content</button>
+      <button onClick={() => loadTemplate('<h1>Template</h1><p>Content</p>')}>
+        Load Template
+      </button>
     </div>
   );
 }
@@ -244,50 +216,85 @@ function App() {
 
 ## 🧪 Testing
 
-The library includes comprehensive end-to-end tests using Playwright:
+The library includes comprehensive tests:
 
 ```bash
-# Run tests
+# Run unit tests
 npm test
 
-# Run specific test suite
-npm test -- core-text-editing
+# Run end-to-end tests
+npm run test:e2e
+
+# Run tests with coverage
+npm run test:coverage
 ```
-
-## 📊 Performance
-
-The editor is optimized for performance with:
-
-- **Debounced Operations**: Boundary calculations and reflow operations are debounced
-- **Efficient Algorithms**: Smart page break insertion and content management
-- **Memory Management**: Proper cleanup and garbage collection
-- **Responsive Design**: Smooth editing experience even with large documents
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our contributing guidelines.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## 📝 License
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-MIT License - see LICENSE file for details.
+## 🐛 Reporting Issues
+
+Found a bug? Please [create an issue](https://github.com/Prabhath-Tharaka/htmleditor/issues) with:
+
+- Steps to reproduce
+- Expected vs actual behavior
+- Browser and environment information
+
+## 💡 Feature Requests
+
+Have an idea for improvement? [Suggest a feature](https://github.com/Prabhath-Tharaka/htmleditor/issues) with:
+
+- Use case description
+- Proposed implementation
+- Value it would provide
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/Prabhath-Tharaka/htmleditor)
-- [npm Package](https://www.npmjs.com/package/@prabhath-tharaka/html-editor)
-- [Issue Tracker](https://github.com/Prabhath-Tharaka/htmleditor/issues)
+- **GitHub**: https://github.com/Prabhath-Tharaka/htmleditor
+- **npm**: https://www.npmjs.com/package/@prabhath-tharaka/html-editor
+- **Issues**: https://github.com/Prabhath-Tharaka/htmleditor/issues
+- **Discussions**: https://github.com/Prabhath-Tharaka/htmleditor/discussions
 
 ## 🆕 Changelog
+
+### v1.1.2
+- **Multi-page Content Management**: Automatic content flow between pages with dynamic reflow
+- **Automatic Page Breaks**: Content automatically flows to new pages when exceeding capacity
+- **Dynamic Reflow**: Content shifts up when removed, eliminating blank pages
+- **Unbreakable Content Handling**: Large images and elements create new pages appropriately
+- **Real-time Performance**: Maintains 60fps during editing and reflow operations
+- **Enhanced Architecture**: Improved component structure with ContinuousPageView
+
+### v1.1.1
+- Published to npm registry with public access
+- Improved build process and distribution
+- Enhanced package configuration
 
 ### v1.1.0
 - Added automatic page reflow functionality
 - Improved performance with debounced operations
 - Enhanced page management features
 - Added comprehensive test coverage
-- Improved documentation
 
 ### v1.0.0
 - Initial release with basic WYSIWYG editing
 - Rich text formatting support
 - Multi-page document management
 - Customizable UI components
+
+---
+
+**Made with ❤️ by Prabhath Tharaka**
+
+If you find this library useful, please consider giving it a star on GitHub! ⭐

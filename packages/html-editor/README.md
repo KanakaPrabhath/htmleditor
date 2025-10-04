@@ -5,6 +5,8 @@
 
 A React-based WYSIWYG continuous HTML editor with automatic page reflow, rich text formatting, and multi-page document management.
 
+![HTML Editor Screenshot](../../docs/screenshot.png)
+
 ## ✨ Features
 
 - **WYSIWYG Editing**: Real-time HTML content editing with rich text formatting

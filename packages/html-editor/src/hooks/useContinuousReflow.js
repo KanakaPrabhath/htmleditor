@@ -1,6 +1,5 @@
 import { useCallback, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { updatePageBoundaries, updateContinuousContent } from '../store/slices/documentSlice';
+import { useDocumentActions } from '../context/DocumentContext';
 
 const PAGE_DIMENSIONS = {
   A4: { width: 794, height: 1123 },
@@ -21,7 +20,7 @@ const CONTENT_PADDING = {
  * Content remains in a single continuous contenteditable surface
  */
 export const useContinuousReflow = (pageSize, editorRef) => {
-  const dispatch = useDispatch();
+  const actions = useDocumentActions();
   const boundaryTimeoutRef = useRef(null);
   const reflowTimeoutRef = useRef(null);
   const latestPageSizeRef = useRef(pageSize);
@@ -162,9 +161,9 @@ export const useContinuousReflow = (pageSize, editorRef) => {
       
       // Update boundaries if we inserted breaks
       if (insertedBreaks) {
-        // Trigger content update to Redux
+        // Trigger content update to Context
         const html = editor.innerHTML;
-        dispatch(updateContinuousContent(html));
+        actions.updateContinuousContent(html);
         
         // Recalculate boundaries
         setTimeout(() => {
@@ -177,7 +176,7 @@ export const useContinuousReflow = (pageSize, editorRef) => {
     } finally {
       isReflowingRef.current = false;
     }
-  }, [editorRef, findOverflowPoint, insertPageBreakBefore, dispatch]);
+  }, [editorRef, findOverflowPoint, insertPageBreakBefore, actions]);
 
   /**
    * Debounced automatic reflow check
@@ -241,13 +240,13 @@ export const useContinuousReflow = (pageSize, editorRef) => {
   }, [editorRef]);
 
   /**
-   * Update page boundaries in Redux state
+   * Update page boundaries in Context state
    */
   const updateBoundaries = useCallback((options = {}) => {
     const boundaries = calculatePageBoundaries(options);
-    dispatch(updatePageBoundaries(boundaries));
+    actions.updatePageBoundaries(boundaries);
     return boundaries;
-  }, [calculatePageBoundaries, dispatch]);
+  }, [calculatePageBoundaries, actions]);
 
   /**
    * Debounced boundary calculation
@@ -517,9 +516,9 @@ export const useContinuousReflow = (pageSize, editorRef) => {
         }, 50);
       }
 
-      // Update content in Redux
+      // Update content in Context
       const updatedHTML = editor.innerHTML;
-      dispatch(updateContinuousContent(updatedHTML));
+      actions.updateContinuousContent(updatedHTML);
 
       // Update boundaries after deletion
       setTimeout(() => {
@@ -531,7 +530,7 @@ export const useContinuousReflow = (pageSize, editorRef) => {
       console.error('[removePageAndContent] Failed to remove page:', error);
       return false;
     }
-  }, [editorRef, calculatePageBoundaries, dispatch, updateBoundaries, positionCursorAtPage]);
+  }, [editorRef, calculatePageBoundaries, actions, updateBoundaries, positionCursorAtPage]);
 
   return {
     calculatePageBoundaries,

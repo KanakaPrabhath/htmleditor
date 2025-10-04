@@ -1,17 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  setActivePage,
-  updatePageSize,
-  updateContinuousContent,
-  addPageBreak,
-  removePageBreak
-} from '../../store/slices/documentSlice';
+import { useDocumentState, useDocumentActions } from '../../context/DocumentContext';
 import { useFormatting, useContinuousReflow } from '../../hooks';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import ContinuousPageView from './ContinuousPageView';
 import PageManager from './PageManager';
+import PageManagerConnected from './PageManagerConnected';
 import './MultiPageEditor.css';
 const PAGE_DIMENSIONS = {
   A4: { width: 794, height: 1123 },
@@ -42,8 +36,8 @@ const ContentEditableEditor = ({
   showToolbar = true,
   showPageManager = true
 }) => {
-  const dispatch = useDispatch();
-  const documentState = useSelector((state) => state.document);
+  const documentState = useDocumentState();
+  const actions = useDocumentActions();
   const { pageSize, continuousContent, pageBoundaries, activePage } = documentState;
 
   const containerRef = useRef(null);
@@ -98,7 +92,7 @@ const ContentEditableEditor = ({
             addingPageRef.current = false;
             setTimeout(() => {
               const newPageIndex = pageBoundaries.length > 0 ? pageBoundaries.length - 1 : 0;
-              dispatch(setActivePage(newPageIndex));
+              actions.setActivePage(newPageIndex);
               scrollToPage(newPageIndex, containerRef);
             }, 50);
           }
@@ -106,7 +100,7 @@ const ContentEditableEditor = ({
       }
       lastContentRef.current = continuousContent;
     }
-  }, [continuousContent, updateBoundaries, pageBoundaries.length, dispatch, scrollToPage]);
+  }, [continuousContent, updateBoundaries, pageBoundaries.length, actions, scrollToPage]);
 
   // Ensure boundaries are calculated on mount, even if content hasn't changed
   const mountRef = useRef(false);
@@ -133,7 +127,7 @@ const ContentEditableEditor = ({
 
   const handleInput = useCallback((event) => {
     const html = event.currentTarget.innerHTML;
-    dispatch(updateContinuousContent(html));
+    actions.updateContinuousContent(html);
     
     // Update page boundaries after content change (already debounced in hook)
     checkAndUpdateBoundaries();
@@ -144,12 +138,12 @@ const ContentEditableEditor = ({
     // Update active page based on cursor position
     const currentPage = getCurrentPage();
     if (currentPage !== activePage) {
-      dispatch(setActivePage(currentPage));
+      actions.setActivePage(currentPage);
     }
-  }, [checkAndUpdateBoundaries, dispatch, getCurrentPage, activePage, triggerAutoReflow]);
+  }, [checkAndUpdateBoundaries, actions, getCurrentPage, activePage, triggerAutoReflow]);
 
   const handlePageSizeChange = useCallback((newSize) => {
-    dispatch(updatePageSize(newSize));
+    actions.updatePageSize(newSize);
     // Recalculate boundaries with new page size (debounced in hook)
     updateBoundaries({ pageSize: newSize });
     
@@ -157,24 +151,24 @@ const ContentEditableEditor = ({
     if (onPageSizeChangeCallback) {
       onPageSizeChangeCallback(newSize);
     }
-  }, [dispatch, updateBoundaries, onPageSizeChangeCallback]);
+  }, [actions, updateBoundaries, onPageSizeChangeCallback]);
 
   const handleNavigatePage = useCallback((pageIndex) => {
-    dispatch(setActivePage(pageIndex));
+    actions.setActivePage(pageIndex);
     scrollToPage(pageIndex, containerRef);
     
     // Call parent callback if provided
     if (onNavigatePage) {
       onNavigatePage(pageIndex);
     }
-  }, [dispatch, scrollToPage, onNavigatePage]);
+  }, [actions, scrollToPage, onNavigatePage]);
 
   const handleAddPage = useCallback(() => {
     // Set flag to indicate we're adding a page
     addingPageRef.current = true;
     
-    // Add a page break at the end - this updates Redux state
-    dispatch(addPageBreak({ position: 'end' }));
+    // Add a page break at the end - this updates Context state
+    actions.addPageBreak({ position: 'end' });
     
     // The useEffect above will sync the content to DOM, update boundaries, and navigate
     
@@ -182,7 +176,7 @@ const ContentEditableEditor = ({
     if (onAddPage) {
       onAddPage();
     }
-  }, [dispatch, onAddPage]);
+  }, [actions, onAddPage]);
 
   const handleAddPageBreak = useCallback(() => {
     // Insert page break at current cursor position
@@ -204,10 +198,10 @@ const ContentEditableEditor = ({
         const newBoundaries = updateBoundaries();
         // Get current page and stay on it
         const currentPage = getCurrentPage();
-        dispatch(setActivePage(currentPage));
+        actions.setActivePage(currentPage);
       }, 150);
     }
-  }, [updateBoundaries, getCurrentPage, dispatch]);
+  }, [updateBoundaries, getCurrentPage, actions]);
 
   const handleDeletePage = useCallback((pageIndex) => {
     if (pageBoundaries.length <= 1) {
@@ -221,14 +215,14 @@ const ContentEditableEditor = ({
     
     if (success) {
       // Set active page to the first page after deletion
-      dispatch(setActivePage(0));
+      actions.setActivePage(0);
       
       // Call parent callback if provided
       if (onDeletePage) {
         onDeletePage(pageIndex);
       }
     }
-  }, [pageBoundaries.length, removePageAndContent, dispatch, onDeletePage]);
+  }, [pageBoundaries.length, removePageAndContent, actions, onDeletePage]);
 
   const handleScroll = useCallback(() => {
     if (!containerRef.current || !editorRef.current) return;
@@ -241,11 +235,11 @@ const ContentEditableEditor = ({
     scrollTimeoutRef.current = setTimeout(() => {
       const currentPage = getCurrentPage();
       if (currentPage !== activePage) {
-        dispatch(setActivePage(currentPage));
+        actions.setActivePage(currentPage);
       }
       scrollTimeoutRef.current = null;
     }, 100);
-  }, [getCurrentPage, activePage, dispatch]);
+  }, [getCurrentPage, activePage, actions]);
 
   // Word count for sidebar - memoized to prevent expensive regex on every render
   const wordCount = useMemo(() => {
@@ -316,7 +310,7 @@ const ContentEditableEditor = ({
                 onPageSizeChange: handlePageSizeChange
               })
             ) : (
-              <PageManager
+              <PageManagerConnected
                 onNavigate={handleNavigatePage}
                 onAddPage={handleAddPage}
                 onDeletePage={handleDeletePage}

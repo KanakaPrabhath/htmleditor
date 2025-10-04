@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDocumentState } from '../../context/DocumentContext';
 import { 
   FileText, 
   Hash, 
@@ -24,7 +24,7 @@ import './Sidebar.css';
  * @param {number} props.pageCount - Optional page count (for continuous mode)
  */
 export const Sidebar = ({ editorView, isCollapsed, onToggle, wordCount: propWordCount, pageCount: propPageCount }) => {
-  const documentState = useSelector(state => state.document);
+  const documentState = useDocumentState();
   const { pages, activePage, continuousContent, editorMode } = documentState;
   const [wordCount, setWordCount] = useState(0);
   const [outline, setOutline] = useState([]);

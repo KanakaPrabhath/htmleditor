@@ -1,41 +1,43 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { FileText, Plus, X, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /**
- * PageManager Component - Simplified
- * Redux-connected component for managing document pages
- * Displays page navigation controls and page settings
+ * PageManager Component - Standalone Component
  * 
- * All navigation logic is delegated to the parent via callbacks
+ * COMPLETELY INDEPENDENT - can be used with or without the editor
+ * Accepts all state as props, uses callbacks for all actions
+ * Perfect for external apps that want to provide their own PageManager UI
  * 
  * @param {Object} props - Component props
+ * @param {Array} props.pageBoundaries - Array of page boundary objects [{id, pageNumber, top, height}, ...]
+ * @param {number} props.activePage - Current active page index (0-based)
+ * @param {string} props.pageSize - Current page size ('A4', 'Letter', or 'Legal')
  * @param {Function} props.onNavigate - Callback when page changes (pageIndex)
  * @param {Function} props.onAddPage - Callback when page is added
  * @param {Function} props.onDeletePage - Callback when page is deleted (pageIndex)
  * @param {Function} props.onPageSizeChange - Callback when page size changes (newSize)
  */
 export const PageManager = ({ 
+  pageBoundaries = [{ id: 'page-0', pageNumber: 1 }],
+  activePage = 0,
+  pageSize = 'A4',
   onNavigate, 
   onAddPage,
   onDeletePage,
   onPageSizeChange
 } = {}) => {
-  const { pageBoundaries, activePage, pageSize } = useSelector((state) => state.document);
-
   // Ensure we always have at least one page
-  // Simple page count from boundaries with fallback
   const totalPages = Math.max(pageBoundaries?.length || 0, 1);
 
   const handleNavigate = (pageIndex) => {
-    // Delegate to parent - parent handles Redux dispatch and scrolling
+    // Delegate to parent callback
     if (onNavigate) {
       onNavigate(pageIndex);
     }
   };
 
   const handleAddPage = () => {
-    // Delegate to parent - parent handles Redux dispatch
+    // Delegate to parent callback
     if (onAddPage) {
       onAddPage();
     }
@@ -47,14 +49,14 @@ export const PageManager = ({
       return;
     }
     
-    // Delegate to parent - parent handles Redux dispatch
+    // Delegate to parent callback
     if (onDeletePage) {
       onDeletePage(pageIndex);
     }
   };
 
   const handlePageSizeChange = (newSize) => {
-    // Delegate to parent - parent handles Redux dispatch
+    // Delegate to parent callback
     if (onPageSizeChange) {
       onPageSizeChange(newSize);
     }

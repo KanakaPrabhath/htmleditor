@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor'
+import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor'
 import '@prabhath-tharaka/html-editor/styles'
 import './App.css'
 
@@ -15,7 +15,7 @@ function App() {
       <div id="app-wrapper">
         <div id="editor-container">
             <DocumentProvider>
-              <ContentEditableEditor ref={editorRef} />
+              <HtmlEditor ref={editorRef} />
             </DocumentProvider>
         </div>
       </div>

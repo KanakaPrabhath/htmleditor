@@ -28,9 +28,7 @@ import { logger } from '../../lib/editor/utils/logger';
  */
 const EditorToolbar = ({ 
   currentFormat, 
-  pageSize, 
   onFormatText, 
-  onPageSizeChange,
   onAddPageBreak
 }) => {
   /**
@@ -63,6 +61,21 @@ const EditorToolbar = ({
 
   return (
     <div className="editor-toolbar">
+      <button 
+        onClick={() => onFormatText('undo')} 
+        title="Undo"
+      >
+        <Undo size={16} />
+      </button>
+      <button 
+        onClick={() => onFormatText('redo')} 
+        title="Redo"
+      >
+        <Redo size={16} />
+      </button>
+      
+      <div className="toolbar-separator" />
+      
       <button 
         onClick={() => onFormatText('bold')} 
         className={currentFormat.bold ? 'active' : ''} 
@@ -199,23 +212,6 @@ const EditorToolbar = ({
         </button>
       )}
       
-      <div className="toolbar-separator" />
-      
-      <button 
-        onClick={() => onFormatText('undo')} 
-        title="Undo"
-      >
-        <Undo size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('redo')} 
-        title="Redo"
-      >
-        <Redo size={16} />
-      </button>
-      
-      <div className="toolbar-separator" />
-      
       <input 
         type="file" 
         accept="image/*" 
@@ -229,18 +225,6 @@ const EditorToolbar = ({
       >
         <ImageIcon size={16} />
       </button>
-      
-      <div className="toolbar-separator" />
-      
-      <select 
-        value={pageSize}
-        onChange={(e) => onPageSizeChange(e.target.value)}
-        title="Page Size"
-      >
-        <option value="A4">A4</option>
-        <option value="Letter">Letter</option>
-        <option value="Legal">Legal</option>
-      </select>
     </div>
   );
 };
@@ -258,9 +242,7 @@ EditorToolbar.propTypes = {
     fontFamily: PropTypes.string,
     fontSize: PropTypes.string
   }).isRequired,
-  pageSize: PropTypes.oneOf(['A4', 'Letter', 'Legal']).isRequired,
   onFormatText: PropTypes.func.isRequired,
-  onPageSizeChange: PropTypes.func.isRequired,
   onAddPageBreak: PropTypes.func
 };
 

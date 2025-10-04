@@ -33,13 +33,13 @@ npm install react react-dom
 
 ```jsx
 import React from 'react';
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 import '@prabhath-tharaka/html-editor/styles';
 
 function App() {
   return (
     <DocumentProvider>
-      <ContentEditableEditor />
+      <HtmlEditor />
     </DocumentProvider>
   );
 }
@@ -67,7 +67,7 @@ function App() {
   return (
     <div>
       <DocumentProvider>
-        <ContentEditableEditor ref={editorRef} />
+        <HtmlEditor ref={editorRef} />
       </DocumentProvider>
       <button onClick={handleSave}>Save Content</button>
     </div>
@@ -81,7 +81,7 @@ function App() {
 function App() {
   return (
     <DocumentProvider initialState={{ title: "My Document", pageSize: "A4" }}>
-      <ContentEditableEditor 
+      <HtmlEditor 
         showSidebar={true}
         showToolbar={true}
         showPageManager={true}
@@ -96,7 +96,7 @@ function App() {
 
 ## 🔧 API Reference
 
-### ContentEditableEditor
+### HtmlEditor
 
 The main editor component with ref access to content methods.
 
@@ -122,7 +122,7 @@ Context provider for document state management.
 
 ```jsx
 <DocumentProvider initialState={{ title: "Document", pageSize: "A4" }}>
-  <ContentEditableEditor />
+  <HtmlEditor />
 </DocumentProvider>
 ```
 
@@ -186,7 +186,7 @@ function CustomPageManager() {
 }
 
 // Usage
-<ContentEditableEditor pageManagerComponent={<CustomPageManager />} />
+<HtmlEditor pageManagerComponent={<CustomPageManager />} />
 ```
 
 ### Programmatic Content Control
@@ -202,7 +202,7 @@ function TemplateLoader() {
   return (
     <div>
       <DocumentProvider>
-        <ContentEditableEditor ref={editorRef} />
+        <HtmlEditor ref={editorRef} />
       </DocumentProvider>
       <button onClick={() => loadTemplate('<h1>Template</h1><p>Content</p>')}>
         Load Template

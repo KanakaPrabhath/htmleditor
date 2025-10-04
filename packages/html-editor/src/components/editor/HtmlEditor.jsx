@@ -342,9 +342,7 @@ const HtmlEditor = forwardRef(({
       {showToolbar && (
         <EditorToolbar
           currentFormat={currentFormat}
-          pageSize={pageSize}
           onFormatText={formatText}
-          onPageSizeChange={handlePageSizeChange}
           onAddPageBreak={handleAddPageBreak}
         />
       )}

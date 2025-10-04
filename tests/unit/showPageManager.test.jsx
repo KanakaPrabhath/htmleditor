@@ -1,9 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
-import { ContentEditableEditor, documentReducer } from '@prabhath-tharaka/html-editor';
+import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 
 // Mock the hooks to prevent actual DOM manipulations during tests
 vi.mock('@prabhath-tharaka/html-editor', async () => {
@@ -26,29 +24,12 @@ vi.mock('@prabhath-tharaka/html-editor', async () => {
   };
 });
 
-const createTestStore = () => {
-  return configureStore({
-    reducer: {
-      document: documentReducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: ['document/updateContinuousContent'],
-          ignoredPaths: ['document.continuousContent']
-        }
-      })
-  });
-};
-
 describe('ContentEditableEditor - showPageManager prop', () => {
   it('should render PageManager by default (showPageManager=true)', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor />
-      </Provider>
+      </DocumentProvider>
     );
     
     // PageManager should be present in the DOM
@@ -57,12 +38,10 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   });
 
   it('should render PageManager when showPageManager is explicitly true', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor showPageManager={true} />
-      </Provider>
+      </DocumentProvider>
     );
     
     const pageManager = document.querySelector('.page-manager-sidebar');
@@ -70,12 +49,10 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   });
 
   it('should NOT render PageManager when showPageManager is false', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor showPageManager={false} />
-      </Provider>
+      </DocumentProvider>
     );
     
     // PageManager should NOT be in the DOM
@@ -84,12 +61,10 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   });
 
   it('should still render editor content when PageManager is hidden', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor showPageManager={false} />
-      </Provider>
+      </DocumentProvider>
     );
     
     // Editor viewport should still be present
@@ -102,12 +77,10 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   });
 
   it('should hide toolbar when showToolbar is false', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor showToolbar={false} />
-      </Provider>
+      </DocumentProvider>
     );
     
     const toolbar = document.querySelector('.editor-toolbar');
@@ -115,12 +88,10 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   });
 
   it('should hide sidebar when showSidebar is false', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor showSidebar={false} />
-      </Provider>
+      </DocumentProvider>
     );
     
     const sidebar = document.querySelector('.editor-sidebar');
@@ -128,16 +99,14 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   });
 
   it('should allow hiding all UI components except editor', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor 
           showToolbar={false}
           showSidebar={false}
           showPageManager={false}
         />
-      </Provider>
+      </DocumentProvider>
     );
     
     // UI components should be hidden
@@ -151,37 +120,32 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   });
 
   it('should render PageManager with page counter and navigation', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor />
-      </Provider>
+      </DocumentProvider>
     );
     
-    // Page counter should be visible
-    const pageCounter = document.querySelector('.page-counter');
-    expect(pageCounter).toBeTruthy();
-    expect(pageCounter.textContent).toContain('Page 1 of');
+    // Page buttons should be visible (PageManager shows individual page buttons)
+    const pageButtons = document.querySelectorAll('.page-button');
+    expect(pageButtons.length).toBeGreaterThan(0);
+    expect(pageButtons[0].textContent).toContain('Page 1');
     
-    // Navigation buttons should exist
-    const navButtons = document.querySelectorAll('.nav-button');
-    expect(navButtons.length).toBe(2); // Previous and Next buttons
+    // Navigation buttons should exist (add page button)
+    const addPageButton = document.querySelector('.add-page-button');
+    expect(addPageButton).toBeTruthy();
   });
 
   it('should connect PageManager directly to Redux state', () => {
-    const store = createTestStore();
-    
     render(
-      <Provider store={store}>
+      <DocumentProvider>
         <ContentEditableEditor />
-      </Provider>
+      </DocumentProvider>
     );
     
-    // PageManager should display correct page size from Redux state
-    const pageSize = store.getState().document.pageSize;
+    // PageManager should display correct page size from context state (default is A4)
     const pageSizeSelector = document.querySelector('#page-size-selector');
     expect(pageSizeSelector).toBeTruthy();
-    expect(pageSizeSelector.value).toBe(pageSize);
+    expect(pageSizeSelector.value).toBe('A4');
   });
 });

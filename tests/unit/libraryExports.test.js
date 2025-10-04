@@ -5,7 +5,8 @@ describe('Library Exports', () => {
   describe('Component Exports', () => {
     it('should export ContentEditableEditor component', () => {
       expect(HtmlEditor.ContentEditableEditor).toBeDefined();
-      expect(typeof HtmlEditor.ContentEditableEditor).toBe('function');
+      // ContentEditableEditor is wrapped in forwardRef, which returns an object
+      expect(['function', 'object']).toContain(typeof HtmlEditor.ContentEditableEditor);
     });
 
     it('should export EditorToolbar component', () => {
@@ -178,6 +179,10 @@ describe('Library Exports', () => {
   describe('Export Completeness', () => {
     it('should have all expected exports', () => {
       const expectedExports = [
+        'DocumentProvider',
+        'useDocument',
+        'useDocumentState',
+        'useDocumentActions',
         'ContentEditableEditor',
         'EditorToolbar',
         'Sidebar',
@@ -220,6 +225,10 @@ describe('Library Exports', () => {
     it('should not have unexpected additional exports', () => {
       const actualExports = Object.keys(HtmlEditor);
       const expectedExports = [
+        'DocumentProvider',
+        'useDocument',
+        'useDocumentState',
+        'useDocumentActions',
         'ContentEditableEditor',
         'EditorToolbar',
         'Sidebar',
@@ -263,8 +272,8 @@ describe('Library Exports', () => {
 
   describe('Type Validation', () => {
     it('should have correct types for all exports', () => {
-      // Components should be functions
-      expect(typeof HtmlEditor.ContentEditableEditor).toBe('function');
+      // Components should be functions (or objects for forwardRef)
+      expect(['function', 'object']).toContain(typeof HtmlEditor.ContentEditableEditor);
       expect(typeof HtmlEditor.EditorToolbar).toBe('function');
       expect(typeof HtmlEditor.Sidebar).toBe('function');
       expect(typeof HtmlEditor.ContinuousPageView).toBe('function');

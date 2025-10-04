@@ -5,7 +5,6 @@ import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import ContinuousPageView from './ContinuousPageView';
 import PageManager from './PageManager';
-import PageManagerConnected from './PageManagerConnected';
 import './MultiPageEditor.css';
 const PAGE_DIMENSIONS = {
   A4: { width: 794, height: 1123 },
@@ -310,7 +309,10 @@ const ContentEditableEditor = ({
                 onPageSizeChange: handlePageSizeChange
               })
             ) : (
-              <PageManagerConnected
+              <PageManager
+                pageBoundaries={pageBoundaries}
+                activePage={activePage}
+                pageSize={pageSize}
                 onNavigate={handleNavigatePage}
                 onAddPage={handleAddPage}
                 onDeletePage={handleDeletePage}

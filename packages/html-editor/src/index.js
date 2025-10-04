@@ -19,10 +19,6 @@ export { default as ContinuousPageView } from './components/editor/ContinuousPag
 // Use this in external apps with your own state management
 export { default as PageManager } from './components/editor/PageManager';
 
-// PageManagerConnected - Context-connected wrapper
-// Use this if you're using DocumentProvider
-export { default as PageManagerConnected } from './components/editor/PageManagerConnected';
-
 // === CUSTOM HOOKS ===
 // These hooks require DocumentProvider context
 export { useFormatting, useContinuousReflow } from './hooks';

@@ -268,6 +268,14 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🆕 Changelog
 
+### v1.1.2
+- **Multi-page Content Management**: Automatic content flow between pages with dynamic reflow
+- **Automatic Page Breaks**: Content automatically flows to new pages when exceeding capacity
+- **Dynamic Reflow**: Content shifts up when removed, eliminating blank pages
+- **Unbreakable Content Handling**: Large images and elements create new pages appropriately
+- **Real-time Performance**: Maintains 60fps during editing and reflow operations
+- **Enhanced Architecture**: Improved component structure with ContinuousPageView
+
 ### v1.1.1
 - Published to npm registry with public access
 - Improved build process and distribution

@@ -2,7 +2,7 @@
 
 ## Components
 
-### ContentEditableEditor
+### HtmlEditor
 
 The main editor component that provides WYSIWYG editing capabilities.
 
@@ -23,7 +23,7 @@ The main editor component that provides WYSIWYG editing capabilities.
 #### Ref Methods
 
 ```typescript
-interface ContentEditableEditorRef {
+interface HtmlEditorRef {
   getHTMLContent(): string;
   getPlainText(): string;
   setContent(html: string): void;

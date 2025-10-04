@@ -26,13 +26,13 @@ npm install react react-dom
 
 ```jsx
 import React from 'react';
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 import '@prabhath-tharaka/html-editor/styles';
 
 function App() {
   return (
     <DocumentProvider>
-      <ContentEditableEditor />
+      <HtmlEditor />
     </DocumentProvider>
   );
 }
@@ -44,7 +44,7 @@ export default App;
 
 ```jsx
 import React, { useRef } from 'react';
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 import '@prabhath-tharaka/html-editor/styles';
 
 function App() {
@@ -64,7 +64,7 @@ function App() {
   return (
     <div>
       <DocumentProvider initialState={{ title: "My Document", pageSize: "A4" }}>
-        <ContentEditableEditor 
+        <HtmlEditor 
           ref={editorRef}
           onNavigatePage={handlePageChange}
           showSidebar={true}
@@ -87,8 +87,8 @@ packages/html-editor/
 ├── src/
 │   ├── components/
 │   │   ├── editor/
-│   │   │   ├── ContentEditableEditor.jsx    # Main editor component
-│   │   │   ├── ContinuousPageView.jsx       # Continuous page view
+│   │   │   ├── HtmlEditor.jsx    # Main editor component
+│   │   │   ├── PageView.jsx          # Continuous page view
 │   │   │   ├── EditorToolbar.jsx            # Formatting toolbar
 │   │   │   ├── PageManager.jsx              # Page management UI
 │   │   │   ├── Sidebar.jsx                  # Document sidebar

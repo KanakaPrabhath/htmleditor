@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 
 // Mock the hooks to prevent actual DOM manipulations during tests
 vi.mock('@prabhath-tharaka/html-editor', async () => {
@@ -24,11 +24,11 @@ vi.mock('@prabhath-tharaka/html-editor', async () => {
   };
 });
 
-describe('ContentEditableEditor - showPageManager prop', () => {
+describe('HtmlEditor - showPageManager prop', () => {
   it('should render PageManager by default (showPageManager=true)', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor />
+        <HtmlEditor />
       </DocumentProvider>
     );
     
@@ -40,7 +40,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should render PageManager when showPageManager is explicitly true', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor showPageManager={true} />
+        <HtmlEditor showPageManager={true} />
       </DocumentProvider>
     );
     
@@ -51,7 +51,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should NOT render PageManager when showPageManager is false', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor showPageManager={false} />
+        <HtmlEditor showPageManager={false} />
       </DocumentProvider>
     );
     
@@ -63,7 +63,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should still render editor content when PageManager is hidden', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor showPageManager={false} />
+        <HtmlEditor showPageManager={false} />
       </DocumentProvider>
     );
     
@@ -79,7 +79,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should hide toolbar when showToolbar is false', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor showToolbar={false} />
+        <HtmlEditor showToolbar={false} />
       </DocumentProvider>
     );
     
@@ -90,7 +90,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should hide sidebar when showSidebar is false', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor showSidebar={false} />
+        <HtmlEditor showSidebar={false} />
       </DocumentProvider>
     );
     
@@ -101,7 +101,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should allow hiding all UI components except editor', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor 
+        <HtmlEditor 
           showToolbar={false}
           showSidebar={false}
           showPageManager={false}
@@ -122,7 +122,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should render PageManager with page counter and navigation', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor />
+        <HtmlEditor />
       </DocumentProvider>
     );
     
@@ -139,7 +139,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
   it('should connect PageManager to Context state', () => {
     render(
       <DocumentProvider>
-        <ContentEditableEditor />
+        <HtmlEditor />
       </DocumentProvider>
     );
     

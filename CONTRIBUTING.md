@@ -95,17 +95,17 @@ Example test structure:
 ```javascript
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ContentEditableEditor } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor } from '@prabhath-tharaka/html-editor';
 
-describe('ContentEditableEditor', () => {
+describe('HtmlEditor', () => {
   test('renders with default props', () => {
-    render(<ContentEditableEditor />);
+    render(<HtmlEditor />);
     expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 
   test('handles content changes', async () => {
     const user = userEvent.setup();
-    render(<ContentEditableEditor />);
+    render(<HtmlEditor />);
     
     const editor = screen.getByRole('textbox');
     await user.type(editor, 'Hello World');
@@ -151,7 +151,7 @@ export function CustomEditor({ content, onChange }) {
 
   return (
     <div className="custom-editor">
-      <ContentEditableEditor content={content} onChange={handleChange} />
+      <HtmlEditor content={content} onChange={handleChange} />
     </div>
   );
 }

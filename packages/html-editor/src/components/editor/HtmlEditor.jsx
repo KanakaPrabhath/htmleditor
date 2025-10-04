@@ -4,7 +4,7 @@ import { useDocumentState, useDocumentActions } from '../../context/DocumentCont
 import { useFormatting, useContinuousReflow } from '../../hooks';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
-import ContinuousPageView from './ContinuousPageView';
+import PageView from './PageView';
 import PageManager from './PageManager';
 import './MultiPageEditor.css';
 
@@ -23,7 +23,7 @@ const FOCUS_DELAY = 200;
 const NAVIGATION_LOCK_TIMEOUT = 500;
 
 /**
- * ContentEditableEditor - Main WYSIWYG HTML Editor Component
+ * HtmlEditor - Main WYSIWYG HTML Editor Component
  * 
  * Exposed methods via ref:
  * - getHTMLContent() - Returns the current HTML content as a string
@@ -42,7 +42,7 @@ const NAVIGATION_LOCK_TIMEOUT = 500;
  * @param {boolean} props.showPageManager - Whether to show the PageManager component (default: true)
  * @param {React.Ref} ref - Forwarded ref to access editor methods
  */
-const ContentEditableEditor = forwardRef(({
+const HtmlEditor = forwardRef(({
   pageManagerComponent = null,
   onNavigatePage,
   onAddPage,
@@ -365,7 +365,7 @@ const ContentEditableEditor = forwardRef(({
           ref={containerRef}
           onScroll={handleScroll}
         >
-          <ContinuousPageView
+          <PageView
             content={continuousContent}
             dimensions={dimensions}
             pageSize={pageSize}
@@ -404,9 +404,9 @@ const ContentEditableEditor = forwardRef(({
   );
 });
 
-ContentEditableEditor.displayName = 'ContentEditableEditor';
+HtmlEditor.displayName = 'HtmlEditor';
 
-ContentEditableEditor.propTypes = {
+HtmlEditor.propTypes = {
   pageManagerComponent: PropTypes.element,
   onNavigatePage: PropTypes.func,
   onAddPage: PropTypes.func,
@@ -418,7 +418,7 @@ ContentEditableEditor.propTypes = {
   showPageManager: PropTypes.bool
 };
 
-ContentEditableEditor.defaultProps = {
+HtmlEditor.defaultProps = {
   pageManagerComponent: null,
   onNavigatePage: undefined,
   onAddPage: undefined,
@@ -430,4 +430,4 @@ ContentEditableEditor.defaultProps = {
   showPageManager: true
 };
 
-export default ContentEditableEditor;
+export default HtmlEditor;

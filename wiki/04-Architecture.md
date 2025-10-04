@@ -80,7 +80,7 @@ function ContentEditableEditor({
       <div className="editor-content">
         {showSidebar && <Sidebar />}
         
-        <ContinuousPageView
+        <PageView
           content={state.continuousContent}
           pageBoundaries={pageBoundaries}
           onContentUpdate={actions.updateContinuousContent}

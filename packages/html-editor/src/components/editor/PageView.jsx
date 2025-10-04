@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * ContinuousPageView - MS Word-like continuous contenteditable surface
+ * PageView - MS Word-like continuous contenteditable surface
  * Single contenteditable div with manual page breaks using <page-break> tags
  * Content flows continuously with explicit page boundaries
  */
-const ContinuousPageView = ({ 
+const PageView = ({ 
   content, 
   dimensions, 
   pageSize,
@@ -108,7 +108,7 @@ const ContinuousPageView = ({
   );
 };
 
-ContinuousPageView.propTypes = {
+PageView.propTypes = {
   content: PropTypes.string.isRequired,
   dimensions: PropTypes.shape({
     width: PropTypes.number.isRequired,
@@ -132,11 +132,11 @@ ContinuousPageView.propTypes = {
   onScroll: PropTypes.func
 };
 
-ContinuousPageView.defaultProps = {
+PageView.defaultProps = {
   pageBoundaries: [],
   onKeyDown: undefined,
   onClick: undefined,
   onScroll: undefined
 };
 
-export default ContinuousPageView;
+export default PageView;

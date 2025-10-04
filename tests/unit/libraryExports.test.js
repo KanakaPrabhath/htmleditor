@@ -3,10 +3,10 @@ import * as HtmlEditor from '@prabhath-tharaka/html-editor';
 
 describe('Library Exports', () => {
   describe('Component Exports', () => {
-    it('should export ContentEditableEditor component', () => {
-      expect(HtmlEditor.ContentEditableEditor).toBeDefined();
-      // ContentEditableEditor is wrapped in forwardRef, which returns an object
-      expect(['function', 'object']).toContain(typeof HtmlEditor.ContentEditableEditor);
+    it('should export HtmlEditor component', () => {
+      expect(HtmlEditor.HtmlEditor).toBeDefined();
+      // HtmlEditor is wrapped in forwardRef, which returns an object
+      expect(['function', 'object']).toContain(typeof HtmlEditor.HtmlEditor);
     });
 
     it('should export EditorToolbar component', () => {
@@ -19,9 +19,9 @@ describe('Library Exports', () => {
       expect(typeof HtmlEditor.Sidebar).toBe('function');
     });
 
-    it('should export ContinuousPageView component', () => {
-      expect(HtmlEditor.ContinuousPageView).toBeDefined();
-      expect(typeof HtmlEditor.ContinuousPageView).toBe('function');
+    it('should export PageView component', () => {
+      expect(HtmlEditor.PageView).toBeDefined();
+      expect(typeof HtmlEditor.PageView).toBe('function');
     });
 
     it('should export PageManager component', () => {
@@ -128,11 +128,11 @@ describe('Library Exports', () => {
         'useDocument',
         'useDocumentState',
         'useDocumentActions',
-        'ContentEditableEditor',
+        'HtmlEditor',
         'ErrorBoundary',
         'EditorToolbar',
         'Sidebar',
-        'ContinuousPageView',
+        'PageView',
         'PageManager',
         'useFormatting',
         'useContinuousReflow',
@@ -157,11 +157,11 @@ describe('Library Exports', () => {
         'useDocument',
         'useDocumentState',
         'useDocumentActions',
-        'ContentEditableEditor',
+        'HtmlEditor',
         'ErrorBoundary',
         'EditorToolbar',
         'Sidebar',
-        'ContinuousPageView',
+        'PageView',
         'PageManager',
         'useFormatting',
         'useContinuousReflow',
@@ -184,10 +184,10 @@ describe('Library Exports', () => {
   describe('Type Validation', () => {
     it('should have correct types for all exports', () => {
       // Components should be functions (or objects for forwardRef)
-      expect(['function', 'object']).toContain(typeof HtmlEditor.ContentEditableEditor);
+      expect(['function', 'object']).toContain(typeof HtmlEditor.HtmlEditor);
       expect(typeof HtmlEditor.EditorToolbar).toBe('function');
       expect(typeof HtmlEditor.Sidebar).toBe('function');
-      expect(typeof HtmlEditor.ContinuousPageView).toBe('function');
+      expect(typeof HtmlEditor.PageView).toBe('function');
       // PageManager is wrapped in React.memo, which returns an object
       expect(['function', 'object']).toContain(typeof HtmlEditor.PageManager);
       

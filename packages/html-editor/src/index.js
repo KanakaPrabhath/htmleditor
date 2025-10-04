@@ -6,8 +6,8 @@
 export { DocumentProvider, useDocument, useDocumentState, useDocumentActions } from './context/DocumentContext';
 
 // === CORE EDITOR COMPONENT ===
-// ContentEditableEditor - Must be wrapped in DocumentProvider
-export { default as ContentEditableEditor } from './components/editor/ContentEditableEditor';
+// HtmlEditor - Must be wrapped in DocumentProvider
+export { default as HtmlEditor } from './components/editor/HtmlEditor';
 
 // === ERROR HANDLING ===
 // ErrorBoundary - Wrap your components for error recovery
@@ -17,7 +17,7 @@ export { default as ErrorBoundary } from './components/ErrorBoundary';
 // Individual Components (can be used separately with your own state)
 export { default as EditorToolbar } from './components/editor/EditorToolbar';
 export { default as Sidebar } from './components/editor/Sidebar';
-export { default as ContinuousPageView } from './components/editor/ContinuousPageView';
+export { default as PageView } from './components/editor/PageView';
 
 // PageManager - COMPLETELY STANDALONE
 // Use this in external apps with your own state management

@@ -44,13 +44,13 @@ npm install react react-dom
 
 ### Basic Usage
 ```jsx
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 import '@prabhath-tharaka/html-editor/styles';
 
 function App() {
   return (
     <DocumentProvider>
-      <ContentEditableEditor />
+      <HtmlEditor />
     </DocumentProvider>
   );
 }

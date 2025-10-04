@@ -136,7 +136,7 @@ describe('ContentEditableEditor - showPageManager prop', () => {
     expect(addPageButton).toBeTruthy();
   });
 
-  it('should connect PageManager directly to Redux state', () => {
+  it('should connect PageManager to Context state', () => {
     render(
       <DocumentProvider>
         <ContentEditableEditor />

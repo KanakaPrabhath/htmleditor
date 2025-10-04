@@ -43,80 +43,25 @@ describe('Library Exports', () => {
     });
   });
 
-  describe('Redux Store Exports', () => {
-    it('should export documentReducer', () => {
-      expect(HtmlEditor.documentReducer).toBeDefined();
-      expect(typeof HtmlEditor.documentReducer).toBe('function');
+  describe('Context Exports', () => {
+    it('should export DocumentProvider', () => {
+      expect(HtmlEditor.DocumentProvider).toBeDefined();
+      expect(['function', 'object']).toContain(typeof HtmlEditor.DocumentProvider);
     });
 
-    it('should export initializeDocument action', () => {
-      expect(HtmlEditor.initializeDocument).toBeDefined();
-      expect(typeof HtmlEditor.initializeDocument).toBe('function');
+    it('should export useDocument hook', () => {
+      expect(HtmlEditor.useDocument).toBeDefined();
+      expect(typeof HtmlEditor.useDocument).toBe('function');
     });
 
-    it('should export updateTitle action', () => {
-      expect(HtmlEditor.updateTitle).toBeDefined();
-      expect(typeof HtmlEditor.updateTitle).toBe('function');
+    it('should export useDocumentState hook', () => {
+      expect(HtmlEditor.useDocumentState).toBeDefined();
+      expect(typeof HtmlEditor.useDocumentState).toBe('function');
     });
 
-    it('should export updatePageContent action', () => {
-      expect(HtmlEditor.updatePageContent).toBeDefined();
-      expect(typeof HtmlEditor.updatePageContent).toBe('function');
-    });
-
-    it('should export updatePages action', () => {
-      expect(HtmlEditor.updatePages).toBeDefined();
-      expect(typeof HtmlEditor.updatePages).toBe('function');
-    });
-
-    it('should export addPage action', () => {
-      expect(HtmlEditor.addPage).toBeDefined();
-      expect(typeof HtmlEditor.addPage).toBe('function');
-    });
-
-    it('should export deletePage action', () => {
-      expect(HtmlEditor.deletePage).toBeDefined();
-      expect(typeof HtmlEditor.deletePage).toBe('function');
-    });
-
-    it('should export setActivePage action', () => {
-      expect(HtmlEditor.setActivePage).toBeDefined();
-      expect(typeof HtmlEditor.setActivePage).toBe('function');
-    });
-
-    it('should export updatePageSize action', () => {
-      expect(HtmlEditor.updatePageSize).toBeDefined();
-      expect(typeof HtmlEditor.updatePageSize).toBe('function');
-    });
-
-    it('should export resetDocument action', () => {
-      expect(HtmlEditor.resetDocument).toBeDefined();
-      expect(typeof HtmlEditor.resetDocument).toBe('function');
-    });
-
-    it('should export updateContinuousContent action', () => {
-      expect(HtmlEditor.updateContinuousContent).toBeDefined();
-      expect(typeof HtmlEditor.updateContinuousContent).toBe('function');
-    });
-
-    it('should export updatePageBoundaries action', () => {
-      expect(HtmlEditor.updatePageBoundaries).toBeDefined();
-      expect(typeof HtmlEditor.updatePageBoundaries).toBe('function');
-    });
-
-    it('should export addPageBreak action', () => {
-      expect(HtmlEditor.addPageBreak).toBeDefined();
-      expect(typeof HtmlEditor.addPageBreak).toBe('function');
-    });
-
-    it('should export removePageBreak action', () => {
-      expect(HtmlEditor.removePageBreak).toBeDefined();
-      expect(typeof HtmlEditor.removePageBreak).toBe('function');
-    });
-
-    it('should export setEditorMode action', () => {
-      expect(HtmlEditor.setEditorMode).toBeDefined();
-      expect(typeof HtmlEditor.setEditorMode).toBe('function');
+    it('should export useDocumentActions hook', () => {
+      expect(HtmlEditor.useDocumentActions).toBeDefined();
+      expect(typeof HtmlEditor.useDocumentActions).toBe('function');
     });
   });
 
@@ -184,30 +129,13 @@ describe('Library Exports', () => {
         'useDocumentState',
         'useDocumentActions',
         'ContentEditableEditor',
+        'ErrorBoundary',
         'EditorToolbar',
         'Sidebar',
         'ContinuousPageView',
         'PageManager',
         'useFormatting',
         'useContinuousReflow',
-        'documentReducer',
-        'initializeDocument',
-        'updateTitle',
-        'updatePageContent',
-        'updatePages',
-        'addPage',
-        'deletePage',
-        'setActivePage',
-        'updatePageSize',
-        'resetDocument',
-        'updateContinuousContent',
-        'updatePageBoundaries',
-        'addPageBreak',
-        'removePageBreak',
-        'setEditorMode',
-        'insertPageAt',
-        'movePageTo',
-        'duplicatePage',
         'saveImage',
         'getImage',
         'deleteImage',
@@ -237,24 +165,6 @@ describe('Library Exports', () => {
         'PageManager',
         'useFormatting',
         'useContinuousReflow',
-        'documentReducer',
-        'initializeDocument',
-        'updateTitle',
-        'updatePageContent',
-        'updatePages',
-        'addPage',
-        'deletePage',
-        'setActivePage',
-        'updatePageSize',
-        'resetDocument',
-        'updateContinuousContent',
-        'updatePageBoundaries',
-        'addPageBreak',
-        'removePageBreak',
-        'setEditorMode',
-        'insertPageAt',
-        'movePageTo',
-        'duplicatePage',
         'saveImage',
         'getImage',
         'deleteImage',
@@ -285,12 +195,10 @@ describe('Library Exports', () => {
       expect(typeof HtmlEditor.useFormatting).toBe('function');
       expect(typeof HtmlEditor.useContinuousReflow).toBe('function');
       
-      // Reducer should be a function
-      expect(typeof HtmlEditor.documentReducer).toBe('function');
-      
-      // Actions should be functions
-      expect(typeof HtmlEditor.initializeDocument).toBe('function');
-      expect(typeof HtmlEditor.updateTitle).toBe('function');
+      // Context hooks should be functions
+      expect(typeof HtmlEditor.useDocument).toBe('function');
+      expect(typeof HtmlEditor.useDocumentState).toBe('function');
+      expect(typeof HtmlEditor.useDocumentActions).toBe('function');
       
       // Utilities should be functions
       expect(typeof HtmlEditor.saveImage).toBe('function');

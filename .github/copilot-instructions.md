@@ -1,6 +1,6 @@
 # HTML Editor - AI Coding Assistant Instructions
 
-This is a React 19 + Vite 7 monorepo that provides a WYSIWYG continuous HTML editor with rich text formatting and automatic page breaks. The primary state management is Context-based (DocumentProvider), with a legacy Redux slice exported for backward compatibility.
+This is a React 19 + Vite 7 monorepo that provides a WYSIWYG continuous HTML editor with rich text formatting and automatic page breaks. The state management is Context-based using DocumentProvider.
 
 ## Important Guidelines
 
@@ -16,8 +16,7 @@ This is a React 19 + Vite 7 monorepo that provides a WYSIWYG continuous HTML edi
 
 ### Key Integration Points
 - ContentEditable: Browser-native editing in a single continuous surface managed by `ContinuousPageView`
-- Context API (primary): `packages/html-editor/src/context/DocumentContext.jsx` provides `DocumentProvider`, `useDocumentState`, and `useDocumentActions`
-- Legacy Redux (optional): `packages/html-editor/src/store/slices/documentSlice.js` is still exported for backward compatibility
+- Context API: `packages/html-editor/src/context/DocumentContext.jsx` provides `DocumentProvider`, `useDocumentState`, and `useDocumentActions`
 - Automatic Reflow: `useContinuousReflow` inserts `<page-break>` elements as content exceeds page height
 - Page Management: Add, delete, navigate between pages; boundaries are computed from `<page-break>` tags
 
@@ -161,9 +160,7 @@ const {
   - `local-storage.js` - Image storage utilities
 - **Editor Logic**: `packages/html-editor/src/lib/editor/` - Business logic and models
   - `utils/` - Logger and utilities
-- **Context (primary)**: `packages/html-editor/src/context/DocumentContext.jsx` - Document state and actions
-- **Store (legacy)**: `packages/html-editor/src/store/` - Redux store slice for backward compatibility
-  - `slices/documentSlice.js` - Legacy document state management (exported in `src/index.js`)
+- **Context**: `packages/html-editor/src/context/DocumentContext.jsx` - Document state and actions
 - **Tests**: `tests/{unit,integration,e2e,performance}/` - Comprehensive test coverage
 - **Docs**: `docs/` - Architecture docs, test results, specifications
 
@@ -178,22 +175,6 @@ const {
 - Images saved to localStorage via `saveImage()` in `packages/html-editor/src/lib/storage/local-storage.js`
 - Return localStorage key as image URL for contenteditable integration
 - Handle uploads via `EditorToolbar` image button with validation
-
-### Redux Middleware Configuration (legacy only)
-```javascript
-// If you use the legacy Redux slice, ignore non-serializable fields/actions
-middleware: (getDefaultMiddleware) => 
-  getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: [
-        'document/updatePageContent',
-        'document/updatePages',
-        'document/updateContinuousContent'
-      ],
-      ignoredPaths: ['document.pages', 'document.pages.content']
-    }
-  })
-```
 
 ## Common Implementation Gotchas
 

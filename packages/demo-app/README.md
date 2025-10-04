@@ -31,41 +31,21 @@ npm run preview
 The demo shows a minimal integration of the HTML Editor:
 
 ```jsx
-import { ContentEditableEditor } from '@prabhath-tharaka/html-editor'
+import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor'
 import '@prabhath-tharaka/html-editor/styles'
 
 function App() {
   return (
     <div id="editor-container">
-      <ContentEditableEditor />
+      <DocumentProvider>
+        <ContentEditableEditor />
+      </DocumentProvider>
     </div>
   )
 }
 ```
 
-## 🔧 Redux Store Setup
-
-The demo includes a properly configured Redux store:
-
-```javascript
-import { configureStore } from '@reduxjs/toolkit';
-import { documentReducer } from '@prabhath-tharaka/html-editor';
-
-const store = configureStore({
-  reducer: {
-    document: documentReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['document/updateContent'],
-        ignoredPaths: ['document.pages.content']
-      }
-    })
-});
-```
-
-## 📚 Documentation
+##  Documentation
 
 For complete documentation and API reference, see the main library:
 - npm: https://www.npmjs.com/package/@prabhath-tharaka/html-editor

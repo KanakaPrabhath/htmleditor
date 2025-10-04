@@ -9,33 +9,20 @@ React-based WYSIWYG continuous HTML editor with automatic page reflow and rich t
 
 ```bash
 npm install @prabhath-tharaka/html-editor
-npm install react react-dom react-redux @reduxjs/toolkit
+npm install react react-dom
 ```
 
 ## Usage
 
 ```jsx
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import { ContentEditableEditor, documentReducer } from '@prabhath-tharaka/html-editor';
+import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
 import '@prabhath-tharaka/html-editor/styles';
-
-const store = configureStore({
-  reducer: { document: documentReducer },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['document/updatePageContent', 'document/updatePages'],
-        ignoredPaths: ['document.pages']
-      }
-    })
-});
 
 export default function App() {
   return (
-    <Provider store={store}>
+    <DocumentProvider>
       <ContentEditableEditor />
-    </Provider>
+    </DocumentProvider>
   );
 }
 ```
@@ -53,10 +40,10 @@ ContentEditableEditor:
 - showPageManager?: boolean (default true)
 
 ## Exports
-- Components: ContentEditableEditor, EditorToolbar, Sidebar, ContinuousPageView, PageManager
+- Context: DocumentProvider, useDocument, useDocumentState, useDocumentActions
+- Components: ContentEditableEditor, EditorToolbar, Sidebar, ContinuousPageView, PageManager, ErrorBoundary
 - Hooks: useFormatting, useContinuousReflow
-- Redux: documentReducer and all actions
-- Utilities: saveImage, getImage, deleteImage, clearImages, getAllImageKeys
+- Utilities: saveImage, getImage, deleteImage, clearImages, getAllImageKeys, logger
 - Constants: PAGE_DIMENSIONS
 
 ## Docs

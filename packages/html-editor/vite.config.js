@@ -18,14 +18,12 @@ export default defineConfig({
     },
     rollupOptions: {
       // Externalize dependencies that shouldn't be bundled
-      external: ['react', 'react-dom', 'react-redux', '@reduxjs/toolkit', 'uuid'],
+      external: ['react', 'react-dom', 'uuid'],
       output: {
         // Provide global variables for UMD build
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
-          'react-redux': 'ReactRedux',
-          '@reduxjs/toolkit': 'RTK',
           uuid: 'uuid'
         }
       }

@@ -27,29 +27,6 @@ export { default as PageManager } from './components/editor/PageManager';
 // These hooks require DocumentProvider context
 export { useFormatting, useContinuousReflow } from './hooks';
 
-// === LEGACY REDUX SUPPORT (Deprecated) ===
-// Keep for backward compatibility - will be removed in v2.0
-export { default as documentReducer } from './store/slices/documentSlice';
-export {
-  initializeDocument,
-  updateTitle,
-  updatePageContent,
-  updatePages,
-  addPage,
-  deletePage,
-  setActivePage,
-  updatePageSize,
-  resetDocument,
-  updateContinuousContent,
-  updatePageBoundaries,
-  addPageBreak,
-  removePageBreak,
-  setEditorMode,
-  insertPageAt,
-  movePageTo,
-  duplicatePage
-} from './store/slices/documentSlice';
-
 // === STORAGE UTILITIES ===
 export { saveImage, getImage, deleteImage, clearImages, getAllImageKeys } from './lib/storage/local-storage';
 

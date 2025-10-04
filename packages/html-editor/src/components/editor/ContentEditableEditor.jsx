@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 import { useDocumentState, useDocumentActions } from '../../context/DocumentContext';
 import { useFormatting, useContinuousReflow } from '../../hooks';
 import Sidebar from './Sidebar';
@@ -15,26 +15,34 @@ const PAGE_DIMENSIONS = {
 /**
  * ContentEditableEditor - Main WYSIWYG HTML Editor Component
  * 
+ * Exposed methods via ref:
+ * - getHTMLContent() - Returns the current HTML content as a string
+ * - getPlainText() - Returns the plain text content (HTML stripped)
+ * - setContent(html) - Sets the editor content programmatically
+ * 
  * @param {Object} props
  * @param {React.ReactNode} props.pageManagerComponent - Optional custom PageManager component from parent app
  * @param {Function} props.onNavigatePage - Optional callback when navigating to a page (pageIndex)
  * @param {Function} props.onAddPage - Optional callback when adding a page
  * @param {Function} props.onDeletePage - Optional callback when deleting a page (pageIndex)
  * @param {Function} props.onPageSizeChange - Optional callback when page size changes (newSize)
+ * @param {Function} props.onChange - Optional callback when content changes (htmlContent)
  * @param {boolean} props.showSidebar - Whether to show the sidebar (default: true)
  * @param {boolean} props.showToolbar - Whether to show the toolbar (default: true)
  * @param {boolean} props.showPageManager - Whether to show the PageManager component (default: true)
+ * @param {React.Ref} ref - Forwarded ref to access editor methods
  */
-const ContentEditableEditor = ({
+const ContentEditableEditor = forwardRef(({
   pageManagerComponent = null,
   onNavigatePage,
   onAddPage,
   onDeletePage,
   onPageSizeChange: onPageSizeChangeCallback,
+  onChange,
   showSidebar = true,
   showToolbar = true,
   showPageManager = true
-}) => {
+}, ref) => {
   const documentState = useDocumentState();
   const actions = useDocumentActions();
   const { pageSize, continuousContent, pageBoundaries, activePage } = documentState;
@@ -101,6 +109,44 @@ const ContentEditableEditor = ({
       lastContentRef.current = continuousContent;
     }
   }, [continuousContent, updateBoundaries, pageBoundaries.length, actions, scrollToPage]);
+
+  // Notify parent app when content changes
+  useEffect(() => {
+    if (onChange && contentSetRef.current) {
+      onChange(continuousContent);
+    }
+  }, [continuousContent, onChange]);
+
+  // Expose methods to parent component via ref
+  useImperativeHandle(ref, () => ({
+    /**
+     * Get the current HTML content from the editor
+     * @returns {string} The HTML content with page breaks
+     */
+    getHTMLContent: () => {
+      return continuousContent;
+    },
+    /**
+     * Get the plain text content (HTML stripped)
+     * @returns {string} Plain text content
+     */
+    getPlainText: () => {
+      return continuousContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    },
+    /**
+     * Set the editor content programmatically
+     * @param {string} html - HTML content to set
+     */
+    setContent: (html) => {
+      actions.updateContinuousContent(html);
+      if (editorRef.current) {
+        editorRef.current.innerHTML = html;
+        setTimeout(() => {
+          updateBoundaries();
+        }, 50);
+      }
+    }
+  }), [continuousContent, actions, updateBoundaries]);
 
   // Ensure boundaries are calculated on mount, even if content hasn't changed
   const mountRef = useRef(false);
@@ -347,6 +393,8 @@ const ContentEditableEditor = ({
       </div>
     </div>
   );
-};
+});
+
+ContentEditableEditor.displayName = 'ContentEditableEditor';
 
 export default ContentEditableEditor;

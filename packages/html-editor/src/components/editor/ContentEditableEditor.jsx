@@ -57,6 +57,7 @@ const ContentEditableEditor = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const scrollTimeoutRef = useRef(null);
   const addingPageRef = useRef(false);
+  const isNavigatingRef = useRef(false);
 
   // Initialize editor content
   const contentSetRef = useRef(false);
@@ -134,12 +135,12 @@ const ContentEditableEditor = ({
     // Trigger automatic reflow to insert page breaks when content overflows (already debounced)
     triggerAutoReflow();
     
-    // Update active page based on cursor position
-    const currentPage = getCurrentPage();
+    // Update active page based on viewport scroll position
+    const currentPage = getCurrentPage(containerRef);
     if (currentPage !== activePage) {
       actions.setActivePage(currentPage);
     }
-  }, [checkAndUpdateBoundaries, actions, getCurrentPage, activePage, triggerAutoReflow]);
+  }, [checkAndUpdateBoundaries, actions, getCurrentPage, activePage, triggerAutoReflow, containerRef]);
 
   const handlePageSizeChange = useCallback((newSize) => {
     actions.updatePageSize(newSize);
@@ -153,8 +154,19 @@ const ContentEditableEditor = ({
   }, [actions, updateBoundaries, onPageSizeChangeCallback]);
 
   const handleNavigatePage = useCallback((pageIndex) => {
+    // Set flag to prevent handleScroll from interfering during navigation
+    isNavigatingRef.current = true;
+    
+    // Set active page immediately
     actions.setActivePage(pageIndex);
+    
+    // Scroll to the page
     scrollToPage(pageIndex, containerRef);
+    
+    // Clear the navigation flag after scroll completes
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 500);
     
     // Call parent callback if provided
     if (onNavigatePage) {
@@ -195,12 +207,12 @@ const ContentEditableEditor = ({
       // Update boundaries after a short delay and ensure PageManager updates
       setTimeout(() => {
         const newBoundaries = updateBoundaries();
-        // Get current page and stay on it
-        const currentPage = getCurrentPage();
+        // Get current page based on scroll position and stay on it
+        const currentPage = getCurrentPage(containerRef);
         actions.setActivePage(currentPage);
       }, 150);
     }
-  }, [updateBoundaries, getCurrentPage, actions]);
+  }, [updateBoundaries, getCurrentPage, actions, containerRef]);
 
   const handleDeletePage = useCallback((pageIndex) => {
     if (pageBoundaries.length <= 1) {
@@ -226,19 +238,30 @@ const ContentEditableEditor = ({
   const handleScroll = useCallback(() => {
     if (!containerRef.current || !editorRef.current) return;
 
+    // Skip updating active page if we're manually navigating
+    if (isNavigatingRef.current) {
+      return;
+    }
+
     // Debounce scroll handler to prevent excessive updates
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
     scrollTimeoutRef.current = setTimeout(() => {
-      const currentPage = getCurrentPage();
+      // Double-check we're not navigating
+      if (isNavigatingRef.current) {
+        scrollTimeoutRef.current = null;
+        return;
+      }
+      
+      const currentPage = getCurrentPage(containerRef);
       if (currentPage !== activePage) {
         actions.setActivePage(currentPage);
       }
       scrollTimeoutRef.current = null;
     }, 100);
-  }, [getCurrentPage, activePage, actions]);
+  }, [getCurrentPage, activePage, actions, containerRef]);
 
   // Word count for sidebar - memoized to prevent expensive regex on every render
   const wordCount = useMemo(() => {

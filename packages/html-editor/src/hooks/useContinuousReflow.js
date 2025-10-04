@@ -266,78 +266,46 @@ export const useContinuousReflow = (pageSize, editorRef) => {
   }, [updateBoundaries]);
 
   /**
-   * Get current page number based on cursor position
+   * Get current page number based on viewport scroll position
+   * @param {HTMLElement} containerRef - The scroll container element
    */
-  const getCurrentPage = useCallback(() => {
-    if (!editorRef?.current) {
-      return 0;
-    }
-
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
+  const getCurrentPage = useCallback((containerRef) => {
+    if (!containerRef?.current || !editorRef?.current) {
       return 0;
     }
 
     try {
-      const range = selection.getRangeAt(0);
+      const container = containerRef.current;
       const editor = editorRef.current;
-      let currentNode = range.startContainer;
       
-      // Find all page breaks before cursor
-      const pageBreaks = Array.from(editor.querySelectorAll('page-break, [data-page-break="true"]'));
+      // Get all page breaks
+      const pageBreaks = editor.querySelectorAll('page-break, [data-page-break="true"]');
       
       if (pageBreaks.length === 0) {
         return 0; // Only one page
       }
-
-      // Walk up the tree to find the editor
-      while (currentNode && currentNode !== editor) {
-        // Check if current node is after any page breaks
-        for (let i = pageBreaks.length - 1; i >= 0; i--) {
-          const breakEl = pageBreaks[i];
-          const position = breakEl.compareDocumentPosition(currentNode);
-          
-          // If currentNode is after this page break
-          if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
-            return i + 1; // Page number (0-indexed internally)
-          }
-        }
+      
+      // Get viewport center position
+      const containerRect = container.getBoundingClientRect();
+      const viewportCenter = containerRect.top + (containerRect.height / 2);
+      
+      // Check each page break to find which page we're on
+      // Start from the last break and work backwards
+      for (let i = pageBreaks.length - 1; i >= 0; i--) {
+        const breakElement = pageBreaks[i];
+        const breakRect = breakElement.getBoundingClientRect();
         
-        currentNode = currentNode.parentNode;
+        // If the break is above the viewport center, we're on the page after it
+        if (breakRect.top < viewportCenter) {
+          return i + 1; // Page index (0-based)
+        }
       }
       
-      return 0; // Default to first page
+      // If we're above all breaks, we're on page 0
+      return 0;
     } catch (error) {
       console.warn('[getCurrentPage] Failed to calculate page:', error);
       return 0;
-    }
-  }, [editorRef]);
-
-  /**
-   * Scroll to a specific page and position cursor at the start of that page
-   */
-  const scrollToPage = useCallback((pageNumber, containerRef) => {
-    if (!containerRef?.current || !editorRef?.current) {
-      return;
-    }
-
-    const editor = editorRef.current;
-    const boundaries = calculatePageBoundaries();
-    
-    // Find the boundary for the requested page
-    const targetBoundary = boundaries.find(b => b.pageNumber === pageNumber + 1);
-    
-    if (targetBoundary) {
-      // Scroll to the page
-      containerRef.current.scrollTo({
-        top: targetBoundary.top - 40,
-        behavior: 'smooth'
-      });
-      
-      // Position cursor at the start of this page
-      setTimeout(() => {
-        positionCursorAtPage(pageNumber);
-      }, 300); // Wait for smooth scroll
     }
   }, [editorRef]);
 
@@ -391,6 +359,63 @@ export const useContinuousReflow = (pageSize, editorRef) => {
       console.warn('[positionCursorAtPage] Failed to position cursor:', error);
     }
   }, [editorRef]);
+
+  /**
+   * Scroll to a specific page and position cursor at the start of that page
+   */
+  const scrollToPage = useCallback((pageNumber, containerRef) => {
+    if (!containerRef?.current || !editorRef?.current) {
+      console.warn('[scrollToPage] Missing refs');
+      return;
+    }
+
+    const container = containerRef.current;
+    const editor = editorRef.current;
+    
+    try {
+      let targetElement = null;
+      
+      if (pageNumber === 0) {
+        // First page - scroll to top of editor
+        targetElement = editor;
+      } else {
+        // Find the page break for this page
+        const pageBreaks = editor.querySelectorAll('page-break, [data-page-break="true"]');
+        const targetBreak = pageBreaks[pageNumber - 1];
+        
+        if (targetBreak) {
+          targetElement = targetBreak;
+        } else {
+          console.warn('[scrollToPage] Page break not found for page', pageNumber);
+          return;
+        }
+      }
+      
+      if (targetElement) {
+        // Get the element's position relative to the container
+        const elementRect = targetElement.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        // Calculate scroll position: current scroll + element position relative to container
+        const scrollTop = container.scrollTop + (elementRect.top - containerRect.top);
+        
+        console.log('[scrollToPage] Scrolling to page', pageNumber, 'scrollTop:', scrollTop);
+        
+        // Scroll to the page
+        container.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+        
+        // Position cursor after scroll completes
+        setTimeout(() => {
+          positionCursorAtPage(pageNumber);
+        }, 400);
+      }
+    } catch (error) {
+      console.error('[scrollToPage] Error:', error);
+    }
+  }, [editorRef, positionCursorAtPage]);
 
   /**
    * Remove a page and its content from the continuous editor

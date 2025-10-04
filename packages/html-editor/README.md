@@ -266,32 +266,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - **Issues**: https://github.com/Prabhath-Tharaka/htmleditor/issues
 - **Discussions**: https://github.com/Prabhath-Tharaka/htmleditor/discussions
 
-## 🆕 Changelog
+## 📋 Changelog
 
-### v1.1.2
-- **Multi-page Content Management**: Automatic content flow between pages with dynamic reflow
-- **Automatic Page Breaks**: Content automatically flows to new pages when exceeding capacity
-- **Dynamic Reflow**: Content shifts up when removed, eliminating blank pages
-- **Unbreakable Content Handling**: Large images and elements create new pages appropriately
-- **Real-time Performance**: Maintains 60fps during editing and reflow operations
-- **Enhanced Architecture**: Improved component structure with ContinuousPageView
-
-### v1.1.1
-- Published to npm registry with public access
-- Improved build process and distribution
-- Enhanced package configuration
-
-### v1.1.0
-- Added automatic page reflow functionality
-- Improved performance with debounced operations
-- Enhanced page management features
-- Added comprehensive test coverage
-
-### v1.0.0
-- Initial release with basic WYSIWYG editing
-- Rich text formatting support
-- Multi-page document management
-- Customizable UI components
+See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes.
 
 ---
 

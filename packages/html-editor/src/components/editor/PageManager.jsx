@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Plus, X, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FileText, Plus, X, Settings } from 'lucide-react';
 
 /**
  * PageManager Component - Standalone Component
@@ -62,18 +62,6 @@ export const PageManager = ({
     }
   };
 
-  const handlePreviousPage = () => {
-    if (activePage > 0) {
-      handleNavigate(activePage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (activePage < totalPages - 1) {
-      handleNavigate(activePage + 1);
-    }
-  };
-
   return (
     <div className="page-manager">
       {/* Page Size Selector */}
@@ -93,33 +81,6 @@ export const PageManager = ({
           <option value="Letter">Letter</option>
           <option value="Legal">Legal</option>
         </select>
-      </div>
-
-      {/* Page Counter and Navigation */}
-      <div className="page-navigation-controls">
-        <button
-          type="button"
-          className="nav-button"
-          onClick={handlePreviousPage}
-          disabled={activePage === 0}
-          aria-label="Previous page"
-          title="Previous page (Ctrl+↑)"
-        >
-          <ChevronLeft size={16} />
-        </button>
-        <span className="page-counter" aria-live="polite">
-          Page {activePage + 1} of {totalPages}
-        </span>
-        <button
-          type="button"
-          className="nav-button"
-          onClick={handleNextPage}
-          disabled={activePage >= totalPages - 1}
-          aria-label="Next page"
-          title="Next page (Ctrl+↓)"
-        >
-          <ChevronRight size={16} />
-        </button>
       </div>
 
       {/* Page List */}

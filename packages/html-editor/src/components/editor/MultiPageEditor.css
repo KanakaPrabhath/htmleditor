@@ -323,7 +323,7 @@
   border-left: 1px solid #dee2e6;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden; /* Changed from overflow-y: auto to prevent double scrollbar */
 }
 
 .page-manager {
@@ -332,6 +332,7 @@
   height: 100%;
   padding: 16px;
   gap: 12px;
+  overflow: hidden; /* Prevent double scrollbar */
 }
 
 .page-size-controls {
@@ -430,6 +431,27 @@
   gap: 6px;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0; /* Important for flex container scroll */
+  padding-right: 4px; /* Space for scrollbar */
+}
+
+/* Thin scrollbar for page list */
+.page-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page-list::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.page-list::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
 }
 
 .page-item {
@@ -501,6 +523,8 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+  flex-shrink: 0; /* Prevent button from shrinking */
+  margin-top: auto; /* Push to bottom if there's space */
 }
 
 .add-page-button:hover {

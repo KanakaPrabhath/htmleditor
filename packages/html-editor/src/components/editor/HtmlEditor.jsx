@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState, useMemo, forwardRef, u
 import PropTypes from 'prop-types';
 import { useDocumentState, useDocumentActions } from '../../context/DocumentContext';
 import { useFormatting, useContinuousReflow } from '../../hooks';
+import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
@@ -55,7 +56,7 @@ const HtmlEditor = forwardRef(({
 }, ref) => {
   const documentState = useDocumentState();
   const actions = useDocumentActions();
-  const { pageSize, continuousContent, pageBoundaries, activePage } = documentState;
+  const { pageSize, continuousContent, pageBoundaries, activePage, zoomLevel } = documentState;
 
   const containerRef = useRef(null);
   const editorRef = useRef(null);
@@ -69,7 +70,7 @@ const HtmlEditor = forwardRef(({
     updateBoundaries,
     triggerAutoReflow,
     removePageAndContent
-  } = useContinuousReflow(pageSize, editorRef);
+  } = useContinuousReflow(pageSize, editorRef, zoomLevel);
 
   const dimensions = useMemo(() => PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4, [pageSize]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -289,6 +290,69 @@ const HtmlEditor = forwardRef(({
     }
   }, [pageBoundaries.length, removePageAndContent, actions, onDeletePage]);
 
+  // Zoom handlers
+  const handleZoomIn = useCallback(() => {
+    actions.zoomIn();
+    // Recalculate boundaries after zoom change
+    setTimeout(() => {
+      checkAndUpdateBoundaries({ delay: 100 });
+      triggerAutoReflow(500);
+    }, 100);
+  }, [actions, checkAndUpdateBoundaries, triggerAutoReflow]);
+
+  const handleZoomOut = useCallback(() => {
+    actions.zoomOut();
+    // Recalculate boundaries after zoom change
+    setTimeout(() => {
+      checkAndUpdateBoundaries({ delay: 100 });
+      triggerAutoReflow(500);
+    }, 100);
+  }, [actions, checkAndUpdateBoundaries, triggerAutoReflow]);
+
+  const handleZoomReset = useCallback(() => {
+    actions.resetZoom();
+    // Recalculate boundaries after zoom change
+    setTimeout(() => {
+      checkAndUpdateBoundaries({ delay: 100 });
+      triggerAutoReflow(500);
+    }, 100);
+  }, [actions, checkAndUpdateBoundaries, triggerAutoReflow]);
+
+  // Keyboard shortcuts for zoom
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // Only handle when editor or its container has focus
+      if (!editorRef.current && !containerRef.current) return;
+      
+      // Check if Ctrl key (or Cmd on Mac) is pressed
+      if (event.ctrlKey || event.metaKey) {
+        switch (event.key) {
+          case '+':
+          case '=':
+            event.preventDefault();
+            handleZoomIn();
+            break;
+          case '-':
+          case '_':
+            event.preventDefault();
+            handleZoomOut();
+            break;
+          case '0':
+            event.preventDefault();
+            handleZoomReset();
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleZoomIn, handleZoomOut, handleZoomReset]);
+
   const handleScroll = useCallback(() => {
     // Early exit if refs not ready or navigating
     if (!containerRef.current || !editorRef.current || isNavigatingRef.current) {
@@ -371,6 +435,7 @@ const HtmlEditor = forwardRef(({
             editorRef={editorRef}
             onInput={handleInput}
             onClick={() => editorRef.current?.focus()}
+            zoomLevel={zoomLevel}
           />
         </div>
 
@@ -382,17 +447,29 @@ const HtmlEditor = forwardRef(({
                 onNavigate: handleNavigatePage,
                 onAddPage: handleAddPage,
                 onDeletePage: handleDeletePage,
-                onPageSizeChange: handlePageSizeChange
+                onPageSizeChange: handlePageSizeChange,
+                zoomLevel,
+                canZoomIn: canZoomIn(zoomLevel),
+                canZoomOut: canZoomOut(zoomLevel),
+                onZoomIn: handleZoomIn,
+                onZoomOut: handleZoomOut,
+                onZoomReset: handleZoomReset
               })
             ) : (
               <PageManager
                 pageBoundaries={pageBoundaries}
                 activePage={activePage}
                 pageSize={pageSize}
+                zoomLevel={zoomLevel}
+                canZoomIn={canZoomIn(zoomLevel)}
+                canZoomOut={canZoomOut(zoomLevel)}
                 onNavigate={handleNavigatePage}
                 onAddPage={handleAddPage}
                 onDeletePage={handleDeletePage}
                 onPageSizeChange={handlePageSizeChange}
+                onZoomIn={handleZoomIn}
+                onZoomOut={handleZoomOut}
+                onZoomReset={handleZoomReset}
               />
             )}
           </div>

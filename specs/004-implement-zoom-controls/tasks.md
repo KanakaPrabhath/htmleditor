@@ -1,6 +1,11 @@
 # Tasks: Implement Zoom Controls and Enhance Page Size Selection
 
-**Input**: Design documents from `/specs/004-implement-zoom-controls/`
+**I## Phase 3.5: Polish
+- [x] T020 [P] Unit tests for zoom utilities in tests/unit/test-zoom-utils.test.js
+- [x] T021 [P] Unit tests for updated hooks in tests/unit/test-useContinuousReflow.test.js
+- [x] T022 Update quickstart documentation
+- [ ] T023 E2E tests for zoom functionality in tests/e2e/zoom-controls.spec.js
+- [ ] T024 Performance validation for zoom operations: Design documents from `/specs/004-implement-zoom-controls/`
 **Prerequisites**: plan.md (required), research.md, data-model.md, contracts/
 
 ## Execution Flow (main)
@@ -41,33 +46,33 @@
 - Tests: `tests/unit/`, `tests/integration/`, `tests/e2e/`
 
 ## Phase 3.1: Setup
-- [ ] T001 Define zoom constants and utilities in packages/html-editor/src/lib/editor/zoom-utils.js
-- [ ] T002 Update page size constants with real dimensions in packages/html-editor/src/lib/editor/page-sizes.js
+- [x] T001 Define zoom constants and utilities in packages/html-editor/src/lib/editor/zoom-utils.js
+- [x] T002 Update page size constants with real dimensions in packages/html-editor/src/lib/editor/page-sizes.js
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 **TDD Compliance**: All tests in this phase must be written and verified to fail before any implementation in Phase 3.3 begins, per Test-First constitution principle.
-- [ ] T003 [P] Contract test for PageManager component props in tests/unit/test-page-manager-contract.js
-- [ ] T004 [P] Contract test for DocumentContext zoom actions in tests/unit/test-document-context-contract.js
-- [ ] T005 [P] Integration test zoom in button functionality in tests/integration/test-zoom-controls.js
-- [ ] T006 [P] Integration test zoom out button functionality in tests/integration/test-zoom-controls.js
-- [ ] T007 [P] Integration test zoom reset button functionality in tests/integration/test-zoom-controls.js
-- [ ] T008 [P] Integration test keyboard shortcuts for zoom in tests/integration/test-zoom-keyboard.js
-- [ ] T009 [P] Integration test page boundaries at different zoom levels in tests/integration/test-zoom-boundaries.js
-- [ ] T010 [P] Integration test page size matching real dimensions in tests/integration/test-page-size-dimensions.js
+- [x] T003 [P] Contract test for PageManager component props in tests/unit/test-page-manager-contract.test.js
+- [x] T004 [P] Contract test for DocumentContext zoom actions in tests/unit/test-document-context-contract.test.js
+- [x] T005 [P] Integration test zoom in button functionality in tests/integration/test-zoom-controls.test.js
+- [x] T006 [P] Integration test zoom out button functionality in tests/integration/test-zoom-controls.test.js
+- [x] T007 [P] Integration test zoom reset button functionality in tests/integration/test-zoom-controls.test.js
+- [x] T008 [P] Integration test keyboard shortcuts for zoom in tests/integration/test-zoom-keyboard.test.js
+- [x] T009 [P] Integration test page boundaries at different zoom levels in tests/integration/test-zoom-boundaries.test.js
+- [x] T010 [P] Integration test page size matching real dimensions in tests/integration/test-page-size-dimensions.test.js
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T011 Add zoom level to DocumentContext state in packages/html-editor/src/context/DocumentContext.jsx
-- [ ] T012 Add zoom actions to DocumentContext in packages/html-editor/src/context/DocumentContext.jsx
-- [ ] T013 Update useContinuousReflow hook for zoom-aware boundary calculations in packages/html-editor/src/hooks/useContinuousReflow.js
-- [ ] T014 Update PageView for zoom scaling in packages/html-editor/src/components/editor/PageView.jsx
-- [ ] T015 Update PageManager component with zoom controls in packages/html-editor/src/components/editor/PageManager.jsx
-- [ ] T016 Add keyboard event handlers for zoom shortcuts in packages/html-editor/src/components/editor/HtmlEditor.jsx
+- [x] T011 Add zoom level to DocumentContext state in packages/html-editor/src/context/DocumentContext.jsx
+- [x] T012 Add zoom actions to DocumentContext in packages/html-editor/src/context/DocumentContext.jsx
+- [x] T013 Update useContinuousReflow hook for zoom-aware boundary calculations in packages/html-editor/src/hooks/useContinuousReflow.js
+- [x] T014 Update PageView for zoom scaling in packages/html-editor/src/components/editor/PageView.jsx
+- [x] T015 Update PageManager component with zoom controls in packages/html-editor/src/components/editor/PageManager.jsx
+- [x] T016 Add keyboard event handlers for zoom shortcuts in packages/html-editor/src/components/editor/HtmlEditor.jsx
 
 ## Phase 3.4: Integration
-- [ ] T017 Connect zoom state to page boundary calculations
-- [ ] T018 Ensure zoom works with page size changes
-- [ ] T019 Performance optimization for zoom transitions
+- [x] T017 Connect zoom state to page boundary calculations
+- [x] T018 Ensure zoom works with page size changes
+- [x] T019 Performance optimization for zoom transitions
 
 ## Phase 3.5: Polish
 - [ ] T020 [P] Unit tests for zoom utilities in tests/unit/test-zoom-utils.js

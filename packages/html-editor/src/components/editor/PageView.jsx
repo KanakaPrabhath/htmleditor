@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
  * PageView - MS Word-like continuous contenteditable surface
  * Single contenteditable div with manual page breaks using <page-break> tags
  * Content flows continuously with explicit page boundaries
+ * Supports zoom scaling via CSS transform
  */
 const PageView = ({ 
   content, 
@@ -15,7 +16,8 @@ const PageView = ({
   onInput,
   onKeyDown,
   onClick,
-  onScroll
+  onScroll,
+  zoomLevel = 100
 }) => {
   const padding = {
     top: 60,
@@ -23,6 +25,9 @@ const PageView = ({
     left: 72,
     right: 72
   };
+
+  // Calculate zoom multiplier
+  const zoomMultiplier = zoomLevel / 100;
 
   // Prevent deletion of page-break elements and handle Tab key
   const handleKeyDown = (event) => {
@@ -66,10 +71,13 @@ const PageView = ({
       style={{
         position: 'relative',
         width: '100%',
-        maxWidth: `${dimensions.width}px`,
+        maxWidth: `${dimensions.width * zoomMultiplier}px`,
         margin: '40px auto',
         backgroundColor: 'transparent',
-        minHeight: '100vh'
+        minHeight: '100vh',
+        transform: `scale(${zoomMultiplier})`,
+        transformOrigin: 'top center',
+        transition: 'transform 0.2s ease-out'
       }}
     >
       {/* Continuous contenteditable surface with page styling */}
@@ -129,14 +137,16 @@ PageView.propTypes = {
   onInput: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func,
   onClick: PropTypes.func,
-  onScroll: PropTypes.func
+  onScroll: PropTypes.func,
+  zoomLevel: PropTypes.number
 };
 
 PageView.defaultProps = {
   pageBoundaries: [],
   onKeyDown: undefined,
   onClick: undefined,
-  onScroll: undefined
+  onScroll: undefined,
+  zoomLevel: 100
 };
 
 export default PageView;

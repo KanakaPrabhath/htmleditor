@@ -29,17 +29,25 @@ const PAGE_BREAK_SELECTOR = 'page-break, [data-page-break="true"]';
  * useContinuousReflow - Automatically insert page breaks based on content height
  * Monitors content height and inserts <page-break> tags when content exceeds page dimensions
  * Content remains in a single continuous contenteditable surface
+ * @param {string} pageSize - The page size (A4, Letter, Legal)
+ * @param {React.RefObject} editorRef - Reference to the editor element
+ * @param {number} zoomLevel - Current zoom level percentage (50-200)
  */
-export const useContinuousReflow = (pageSize, editorRef) => {
+export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
   const actions = useDocumentActions();
   const boundaryTimeoutRef = useRef(null);
   const reflowTimeoutRef = useRef(null);
   const latestPageSizeRef = useRef(pageSize);
+  const latestZoomLevelRef = useRef(zoomLevel);
   const isReflowingRef = useRef(false);
 
   useEffect(() => {
     latestPageSizeRef.current = pageSize;
   }, [pageSize]);
+
+  useEffect(() => {
+    latestZoomLevelRef.current = zoomLevel;
+  }, [zoomLevel]);
 
   useEffect(() => {
     return () => {
@@ -171,6 +179,7 @@ export const useContinuousReflow = (pageSize, editorRef) => {
   /**
    * Automatic reflow: Insert page breaks when content exceeds page height
    * Optimized with performance guards and single-page-at-a-time processing
+   * Accounts for current zoom level when calculating max height
    */
   const checkAndReflow = useCallback(() => {
     // Performance guard: prevent concurrent reflows
@@ -182,10 +191,15 @@ export const useContinuousReflow = (pageSize, editorRef) => {
       isReflowingRef.current = true;
       const editor = editorRef.current;
       const targetPageSize = latestPageSizeRef.current || 'A4';
+      const currentZoom = latestZoomLevelRef.current || 100;
       const dimensions = PAGE_DIMENSIONS[targetPageSize] || PAGE_DIMENSIONS.A4;
       
-      // Calculate max content height (page height - padding)
-      const maxHeight = dimensions.height - CONTENT_PADDING.top - CONTENT_PADDING.bottom;
+      // Calculate max content height accounting for zoom
+      // When zoomed in (e.g., 150%), content appears larger, so effective height is less
+      // When zoomed out (e.g., 50%), content appears smaller, so effective height is more
+      const baseMaxHeight = dimensions.height - CONTENT_PADDING.top - CONTENT_PADDING.bottom;
+      const zoomMultiplier = currentZoom / 100;
+      const maxHeight = baseMaxHeight / zoomMultiplier;
       
       // Get all child elements in the editor
       const allChildren = Array.from(editor.children);

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useCallback, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { DEFAULT_ZOOM, MIN_ZOOM, MAX_ZOOM, ZOOM_STEP, canZoomIn as checkCanZoomIn, canZoomOut as checkCanZoomOut } from '../lib/editor/zoom-utils.js';
 
 // Constants moved outside for performance
 const DEFAULT_PAGE_SIZE = 'A4';
@@ -68,7 +69,8 @@ const buildInitialState = (overrides = {}) => {
     totalPages: pages.length,
     editorMode: overrides.editorMode || DEFAULT_EDITOR_MODE,
     continuousContent: overrides.continuousContent || EMPTY_PARAGRAPH,
-    pageBoundaries: overrides.pageBoundaries || createDefaultBoundary(pageSize)
+    pageBoundaries: overrides.pageBoundaries || createDefaultBoundary(pageSize),
+    zoomLevel: overrides.zoomLevel || DEFAULT_ZOOM
   };
 };
 
@@ -90,7 +92,11 @@ const ActionTypes = {
   SET_EDITOR_MODE: 'SET_EDITOR_MODE',
   INSERT_PAGE_AT: 'INSERT_PAGE_AT',
   MOVE_PAGE_TO: 'MOVE_PAGE_TO',
-  DUPLICATE_PAGE: 'DUPLICATE_PAGE'
+  DUPLICATE_PAGE: 'DUPLICATE_PAGE',
+  SET_ZOOM_LEVEL: 'SET_ZOOM_LEVEL',
+  ZOOM_IN: 'ZOOM_IN',
+  ZOOM_OUT: 'ZOOM_OUT',
+  RESET_ZOOM: 'RESET_ZOOM'
 };
 
 // Reducer
@@ -424,6 +430,65 @@ const documentReducer = (state, action) => {
       };
     }
 
+    case ActionTypes.SET_ZOOM_LEVEL: {
+      const newZoomLevel = action.payload;
+      
+      // Validate zoom level is within bounds
+      if (newZoomLevel < MIN_ZOOM || newZoomLevel > MAX_ZOOM) {
+        console.warn(`Invalid zoom level: ${newZoomLevel}. Must be between ${MIN_ZOOM} and ${MAX_ZOOM}.`);
+        return state;
+      }
+      
+      // Early exit if zoom hasn't changed
+      if (newZoomLevel === state.zoomLevel) {
+        return state;
+      }
+      
+      return {
+        ...state,
+        zoomLevel: newZoomLevel,
+        updatedAt: now
+      };
+    }
+
+    case ActionTypes.ZOOM_IN: {
+      if (!checkCanZoomIn(state.zoomLevel)) {
+        return state;
+      }
+      
+      const newZoomLevel = state.zoomLevel + ZOOM_STEP;
+      return {
+        ...state,
+        zoomLevel: newZoomLevel,
+        updatedAt: now
+      };
+    }
+
+    case ActionTypes.ZOOM_OUT: {
+      if (!checkCanZoomOut(state.zoomLevel)) {
+        return state;
+      }
+      
+      const newZoomLevel = state.zoomLevel - ZOOM_STEP;
+      return {
+        ...state,
+        zoomLevel: newZoomLevel,
+        updatedAt: now
+      };
+    }
+
+    case ActionTypes.RESET_ZOOM: {
+      if (state.zoomLevel === DEFAULT_ZOOM) {
+        return state;
+      }
+      
+      return {
+        ...state,
+        zoomLevel: DEFAULT_ZOOM,
+        updatedAt: now
+      };
+    }
+
     default:
       return state;
   }
@@ -454,7 +519,11 @@ export const DocumentProvider = ({ children, initialState = {} }) => {
     setEditorMode: (mode) => dispatch({ type: ActionTypes.SET_EDITOR_MODE, payload: mode }),
     insertPageAt: (payload) => dispatch({ type: ActionTypes.INSERT_PAGE_AT, payload }),
     movePageTo: (payload) => dispatch({ type: ActionTypes.MOVE_PAGE_TO, payload }),
-    duplicatePage: (payload) => dispatch({ type: ActionTypes.DUPLICATE_PAGE, payload })
+    duplicatePage: (payload) => dispatch({ type: ActionTypes.DUPLICATE_PAGE, payload }),
+    setZoomLevel: (level) => dispatch({ type: ActionTypes.SET_ZOOM_LEVEL, payload: level }),
+    zoomIn: () => dispatch({ type: ActionTypes.ZOOM_IN }),
+    zoomOut: () => dispatch({ type: ActionTypes.ZOOM_OUT }),
+    resetZoom: () => dispatch({ type: ActionTypes.RESET_ZOOM })
   }), []);
 
   const value = useMemo(() => ({

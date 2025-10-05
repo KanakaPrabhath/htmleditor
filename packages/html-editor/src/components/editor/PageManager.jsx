@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FileText, Plus, X, Settings } from 'lucide-react';
+import { FileText, Plus, X, Settings, ZoomIn, ZoomOut } from 'lucide-react';
 
 /**
  * PageManager Component - Standalone Component
@@ -13,19 +13,31 @@ import { FileText, Plus, X, Settings } from 'lucide-react';
  * @param {Array} props.pageBoundaries - Array of page boundary objects [{id, pageNumber, top, height}, ...]
  * @param {number} props.activePage - Current active page index (0-based)
  * @param {string} props.pageSize - Current page size ('A4', 'Letter', or 'Legal')
+ * @param {number} props.zoomLevel - Current zoom level (50-200)
+ * @param {boolean} props.canZoomIn - Whether zoom in is allowed
+ * @param {boolean} props.canZoomOut - Whether zoom out is allowed
  * @param {Function} props.onNavigate - Callback when page changes (pageIndex)
  * @param {Function} props.onAddPage - Callback when page is added
  * @param {Function} props.onDeletePage - Callback when page is deleted (pageIndex)
  * @param {Function} props.onPageSizeChange - Callback when page size changes (newSize)
+ * @param {Function} props.onZoomIn - Callback when zoom in is clicked
+ * @param {Function} props.onZoomOut - Callback when zoom out is clicked
+ * @param {Function} props.onZoomReset - Callback when zoom reset is clicked
  */
 export const PageManager = ({ 
   pageBoundaries = [{ id: 'page-0', pageNumber: 1 }],
   activePage = 0,
   pageSize = 'A4',
+  zoomLevel = 100,
+  canZoomIn = true,
+  canZoomOut = true,
   onNavigate, 
   onAddPage,
   onDeletePage,
-  onPageSizeChange
+  onPageSizeChange,
+  onZoomIn,
+  onZoomOut,
+  onZoomReset
 } = {}) => {
   // Ensure we always have at least one page
   const totalPages = Math.max(pageBoundaries?.length || 0, 1);
@@ -82,6 +94,39 @@ export const PageManager = ({
           <option value="Letter">Letter</option>
           <option value="Legal">Legal</option>
         </select>
+      </div>
+
+      {/* Zoom Controls */}
+      <div className="zoom-controls">
+        <button
+          type="button"
+          className="zoom-button"
+          onClick={onZoomOut}
+          disabled={!canZoomOut}
+          aria-label="Zoom out"
+          title="Zoom out (Ctrl + -)"
+        >
+          <ZoomOut size={14} />
+        </button>
+        <button
+          type="button"
+          className="zoom-reset-button"
+          onClick={onZoomReset}
+          aria-label="Reset zoom"
+          title="Reset zoom to 100% (Ctrl + 0)"
+        >
+          {zoomLevel}%
+        </button>
+        <button
+          type="button"
+          className="zoom-button"
+          onClick={onZoomIn}
+          disabled={!canZoomIn}
+          aria-label="Zoom in"
+          title="Zoom in (Ctrl + +)"
+        >
+          <ZoomIn size={14} />
+        </button>
       </div>
 
       {/* Page List */}
@@ -143,20 +188,32 @@ PageManager.propTypes = {
   ),
   activePage: PropTypes.number,
   pageSize: PropTypes.oneOf(['A4', 'Letter', 'Legal']),
+  zoomLevel: PropTypes.number,
+  canZoomIn: PropTypes.bool,
+  canZoomOut: PropTypes.bool,
   onNavigate: PropTypes.func,
   onAddPage: PropTypes.func,
   onDeletePage: PropTypes.func,
-  onPageSizeChange: PropTypes.func
+  onPageSizeChange: PropTypes.func,
+  onZoomIn: PropTypes.func,
+  onZoomOut: PropTypes.func,
+  onZoomReset: PropTypes.func
 };
 
 PageManager.defaultProps = {
   pageBoundaries: [{ id: 'page-0', pageNumber: 1 }],
   activePage: 0,
   pageSize: 'A4',
+  zoomLevel: 100,
+  canZoomIn: true,
+  canZoomOut: true,
   onNavigate: undefined,
   onAddPage: undefined,
   onDeletePage: undefined,
-  onPageSizeChange: undefined
+  onPageSizeChange: undefined,
+  onZoomIn: undefined,
+  onZoomOut: undefined,
+  onZoomReset: undefined
 };
 
 export default React.memo(PageManager);

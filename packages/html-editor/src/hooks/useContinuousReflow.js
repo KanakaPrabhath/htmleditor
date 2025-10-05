@@ -71,11 +71,8 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
       return null;
     }
     
-    let currentHeight = 0;
-    let lastValidElement = null;
-    let lastValidIndex = -1;
-    
-    for (let i = 0; i < pageElements.length; i++) {
+      let currentHeight = 0;
+      let lastValidElement = null;    for (let i = 0; i < pageElements.length; i++) {
       const element = pageElements[i];
       if (!element || !element.getBoundingClientRect) {
         continue;
@@ -118,7 +115,6 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
       // Element fits, add it to current height
       currentHeight += elementHeight;
       lastValidElement = element;
-      lastValidIndex = i;
     }
     
     return null; // No overflow
@@ -133,7 +129,6 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
     }
 
     try {
-      const editor = editorRef.current;
       const pageBreak = document.createElement('page-break');
       pageBreak.setAttribute('data-page-break', 'true');
       pageBreak.setAttribute('contenteditable', 'false');
@@ -206,6 +201,105 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
   }, [calculatePageBoundaries, actions]);
 
   /**
+   * Insert a page break at a specific page boundary based on content height
+   * This is used when manually adding pages to insert them at the correct location
+   * @param {number} pageNumber - The page number where the break should be inserted (1-based)
+   * @returns {boolean} - Success status
+   */
+  const insertPageBreakAtBoundary = useCallback((pageNumber) => {
+    if (!editorRef?.current) {
+      return false;
+    }
+
+    try {
+      const editor = editorRef.current;
+      const targetPageSize = latestPageSizeRef.current || 'A4';
+      const currentZoom = latestZoomLevelRef.current || 100;
+      const dimensions = PAGE_DIMENSIONS[targetPageSize] || PAGE_DIMENSIONS.A4;
+      
+      // Calculate max content height accounting for zoom and padding
+      const baseMaxHeight = dimensions.height - CONTENT_PADDING.top - CONTENT_PADDING.bottom;
+      const zoomMultiplier = currentZoom / 100;
+      const maxHeight = baseMaxHeight / zoomMultiplier;
+      
+      // Target height for the page break insertion
+      const targetHeight = maxHeight * (pageNumber - 1);
+      
+      // Get all children and find where to insert the break
+      const allChildren = Array.from(editor.children);
+      let accumulatedHeight = 0;
+      let insertBeforeElement = null;
+      
+      for (let i = 0; i < allChildren.length; i++) {
+        const child = allChildren[i];
+        
+        // Skip existing page breaks
+        if (child.tagName === 'PAGE-BREAK' || child.getAttribute('data-page-break') === 'true') {
+          continue;
+        }
+        
+        const childHeight = child.getBoundingClientRect().height;
+        
+        // Check if adding this element would exceed the target height
+        if (accumulatedHeight + childHeight > targetHeight) {
+          insertBeforeElement = child;
+          break;
+        }
+        
+        accumulatedHeight += childHeight;
+      }
+      
+      // If we found an insertion point, insert the page break
+      if (insertBeforeElement) {
+        const pageBreak = document.createElement('page-break');
+        pageBreak.setAttribute('data-page-break', 'true');
+        pageBreak.setAttribute('contenteditable', 'false');
+        pageBreak.setAttribute('data-page-number', String(pageNumber));
+        
+        insertBeforeElement.parentNode.insertBefore(pageBreak, insertBeforeElement);
+        
+        // Update content in Context
+        const updatedHTML = editor.innerHTML;
+        actions.updateContinuousContent(updatedHTML);
+        
+        // Update boundaries
+        setTimeout(() => {
+          updateBoundaries();
+        }, 50);
+        
+        return true;
+      } else {
+        // If no insertion point found, insert at the end
+        const pageBreak = document.createElement('page-break');
+        pageBreak.setAttribute('data-page-break', 'true');
+        pageBreak.setAttribute('contenteditable', 'false');
+        pageBreak.setAttribute('data-page-number', String(pageNumber));
+        
+        editor.appendChild(pageBreak);
+        
+        // Add an empty paragraph after the break
+        const emptyParagraph = document.createElement('p');
+        emptyParagraph.innerHTML = '<br>';
+        editor.appendChild(emptyParagraph);
+        
+        // Update content in Context
+        const updatedHTML = editor.innerHTML;
+        actions.updateContinuousContent(updatedHTML);
+        
+        // Update boundaries
+        setTimeout(() => {
+          updateBoundaries();
+        }, 50);
+        
+        return true;
+      }
+    } catch (error) {
+      console.error('[insertPageBreakAtBoundary] Failed to insert page break:', error);
+      return false;
+    }
+  }, [editorRef, actions, updateBoundaries]);
+
+  /**
    * Automatic reflow: Insert page breaks when content exceeds page height
    * Optimized with performance guards and single-page-at-a-time processing
    * Accounts for current zoom level when calculating max height
@@ -238,12 +332,11 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
       }
       
       // Find existing page breaks using cached selector
-      const existingBreaks = allChildren.filter(el => 
-        el.tagName === 'PAGE-BREAK' || el.getAttribute('data-page-break') === 'true'
-      );
+      // Note: existingBreaks is kept for reference but not actively used
+      // We rebuild pages dynamically during reflow operations
       
       // Split content into pages based on existing breaks
-      const pages = [];
+      let pages = [];
       let currentPage = [];
       
       for (const child of allChildren) {
@@ -674,6 +767,11 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
       // Update boundaries after deletion
       setTimeout(() => {
         updateBoundaries();
+        
+        // Trigger auto reflow to handle any overflow from content redistribution
+        setTimeout(() => {
+          checkAndReflow();
+        }, 150);
       }, 100);
 
       return true;
@@ -681,7 +779,7 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
       console.error('[removePageAndContent] Failed to remove page:', error);
       return false;
     }
-  }, [editorRef, calculatePageBoundaries, actions, updateBoundaries, positionCursorAtPage]);
+  }, [editorRef, calculatePageBoundaries, actions, updateBoundaries, positionCursorAtPage, checkAndReflow]);
 
   return {
     calculatePageBoundaries,
@@ -693,6 +791,7 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
     checkAndReflow,
     triggerAutoReflow,
     removePageAndContent,
+    insertPageBreakAtBoundary,
     boundaryTimeoutRef,
     reflowTimeoutRef
   };

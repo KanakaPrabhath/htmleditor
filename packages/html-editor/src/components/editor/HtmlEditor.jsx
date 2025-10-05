@@ -66,10 +66,10 @@ const HtmlEditor = forwardRef(({
     checkAndUpdateBoundaries, 
     getCurrentPage, 
     scrollToPage,
-    positionCursorAtPage,
     updateBoundaries,
     triggerAutoReflow,
-    removePageAndContent
+    removePageAndContent,
+    insertPageBreakAtBoundary
   } = useContinuousReflow(pageSize, editorRef, zoomLevel);
 
   const dimensions = useMemo(() => PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4, [pageSize]);
@@ -230,19 +230,36 @@ const HtmlEditor = forwardRef(({
   }, [actions, scrollToPage, onNavigatePage, pageBoundaries.length]);
 
   const handleAddPage = useCallback(() => {
-    // Set flag to indicate we're adding a page
-    addingPageRef.current = true;
+    // Calculate which page number we're adding (next page after current boundaries)
+    const nextPageNumber = pageBoundaries.length + 1;
     
-    // Add a page break at the end - this updates Context state
-    actions.addPageBreak({ position: 'end' });
+    // Use the smart insertion function to insert at the correct boundary
+    const success = insertPageBreakAtBoundary(nextPageNumber);
     
-    // The useEffect above will sync the content to DOM, update boundaries, and navigate
+    if (success) {
+      // Set flag to indicate we're adding a page for navigation
+      addingPageRef.current = true;
+      
+      // The insertPageBreakAtBoundary already updates content and boundaries
+      // We just need to handle navigation after a delay
+      setTimeout(() => {
+        if (addingPageRef.current) {
+          addingPageRef.current = false;
+          const newPageIndex = Math.max(0, pageBoundaries.length - 1);
+          actions.setActivePage(newPageIndex);
+          
+          setTimeout(() => {
+            scrollToPage(newPageIndex, containerRef);
+          }, NAVIGATION_DELAY);
+        }
+      }, 100);
+    }
     
     // Call parent callback if provided
     if (onAddPage) {
       onAddPage();
     }
-  }, [actions, onAddPage]);
+  }, [pageBoundaries.length, insertPageBreakAtBoundary, actions, scrollToPage, onAddPage]);
 
   const handleAddPageBreak = useCallback(() => {
     // Insert page break at current cursor position
@@ -261,7 +278,7 @@ const HtmlEditor = forwardRef(({
       
       // Update boundaries after a short delay and ensure PageManager updates
       setTimeout(() => {
-        const newBoundaries = updateBoundaries();
+        updateBoundaries();
         // Get current page based on scroll position and stay on it
         const currentPage = getCurrentPage(containerRef);
         actions.setActivePage(currentPage);

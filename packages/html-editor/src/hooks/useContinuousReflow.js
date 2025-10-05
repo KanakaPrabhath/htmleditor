@@ -3,9 +3,9 @@ import { useDocumentActions } from '../context/DocumentContext';
 
 // Constants moved outside to prevent recreation
 const PAGE_DIMENSIONS = {
-  A4: { width: 794, height: 1123 },
-  Letter: { width: 816, height: 1056 },
-  Legal: { width: 816, height: 1344 }
+  A4: { width: 595, height: 842 },
+  Letter: { width: 612, height: 792 },
+  Legal: { width: 612, height: 1008 }
 };
 
 const CONTENT_PADDING = {
@@ -17,7 +17,7 @@ const CONTENT_PADDING = {
 
 // Performance constants
 const DEFAULT_BOUNDARY_DELAY = 300;
-const DEFAULT_REFLOW_DELAY = 500;
+const DEFAULT_REFLOW_DELAY = 200; // Reduced from 500ms for better typing responsiveness
 const BOUNDARY_UPDATE_DELAY = 50;
 const CURSOR_POSITION_DELAY = 400;
 const SCROLL_POSITION_DELAY = 50;
@@ -71,6 +71,8 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
     }
     
     let currentHeight = 0;
+    let lastValidElement = null;
+    let lastValidIndex = -1;
     
     for (let i = 0; i < pageElements.length; i++) {
       const element = pageElements[i];
@@ -80,8 +82,31 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
       
       const elementHeight = element.getBoundingClientRect().height;
       
-      // Early exit on overflow
-      if (currentHeight + elementHeight > maxHeight) {
+      // Skip empty elements (like empty <p> tags from Enter key)
+      if (elementHeight < 1) {
+        continue;
+      }
+      
+      const potentialHeight = currentHeight + elementHeight;
+      
+      // Check if adding this element would exceed the page height
+      if (potentialHeight > maxHeight) {
+        // If we haven't added any elements yet (first element is too large)
+        if (lastValidElement === null) {
+          // Element is larger than page - must break anyway
+          // But only if it's not the very first element on the page
+          if (i > 0) {
+            return { 
+              overflowIndex: i, 
+              overflowElement: element, 
+              accumulatedHeight: currentHeight 
+            };
+          }
+          // If it's the first element and it's too large, let it overflow (unbreakable content)
+          return null;
+        }
+        
+        // We have overflow - return the current element as the break point
         return { 
           overflowIndex: i, 
           overflowElement: element, 
@@ -89,7 +114,10 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
         };
       }
       
+      // Element fits, add it to current height
       currentHeight += elementHeight;
+      lastValidElement = element;
+      lastValidIndex = i;
     }
     
     return null; // No overflow
@@ -240,22 +268,62 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
         ));
       }
       
-      // Check each page for overflow (process one at a time for stability)
+      // Check each page for overflow (process ALL pages for better typing support)
       let insertedBreaks = false;
+      let pagesProcessed = 0;
+      const MAX_PAGES_PER_REFLOW = 3; // Process up to 3 pages per reflow cycle
+      const MIN_OVERFLOW_THRESHOLD = 20; // Minimum pixels of overflow before breaking
       
-      for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+      for (let pageIndex = 0; pageIndex < pages.length && pagesProcessed < MAX_PAGES_PER_REFLOW; pageIndex++) {
         const pageElements = pages[pageIndex];
         const overflow = findOverflowPoint(pageElements, maxHeight);
         
         // Only insert break if we have actual overflow and not on first element
+        // Also check that the overflow is significant (not just a pixel or two)
         if (overflow && overflow.overflowIndex > 0) {
+          // Calculate actual overflow amount
+          let totalPageHeight = 0;
+          for (let i = 0; i < pageElements.length; i++) {
+            const el = pageElements[i];
+            if (el && el.getBoundingClientRect) {
+              totalPageHeight += el.getBoundingClientRect().height;
+            }
+          }
+          
+          // Only break if overflow is significant
+          const overflowAmount = totalPageHeight - maxHeight;
+          if (overflowAmount < MIN_OVERFLOW_THRESHOLD) {
+            continue; // Skip this page, overflow is too small
+          }
+          
           const pageNumber = pageIndex + 2;
           const inserted = insertPageBreakBefore(overflow.overflowElement, pageNumber);
           
           if (inserted) {
             insertedBreaks = true;
-            // Process one page at a time to prevent complexity
-            break;
+            pagesProcessed++;
+            
+            // Re-query pages after insertion to continue checking
+            const updatedChildren = Array.from(editor.children);
+            const updatedPages = [];
+            let currentPageElements = [];
+            
+            for (const child of updatedChildren) {
+              if (child.tagName === 'PAGE-BREAK' || child.getAttribute('data-page-break') === 'true') {
+                if (currentPageElements.length > 0) {
+                  updatedPages.push(currentPageElements);
+                  currentPageElements = [];
+                }
+              } else {
+                currentPageElements.push(child);
+              }
+            }
+            
+            if (currentPageElements.length > 0) {
+              updatedPages.push(currentPageElements);
+            }
+            
+            pages = updatedPages;
           }
         }
       }
@@ -269,6 +337,16 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
         // Recalculate boundaries with slight delay for DOM update
         setTimeout(() => {
           updateBoundaries();
+          
+          // If we processed the max number of pages, schedule another reflow check
+          // to handle any remaining overflows from typing
+          if (pagesProcessed >= MAX_PAGES_PER_REFLOW) {
+            setTimeout(() => {
+              if (!isReflowingRef.current) {
+                checkAndReflow();
+              }
+            }, 100);
+          }
         }, BOUNDARY_UPDATE_DELAY);
       }
       

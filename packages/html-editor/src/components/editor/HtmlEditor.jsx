@@ -11,9 +11,9 @@ import './MultiPageEditor.css';
 
 // Constants moved outside component to prevent recreation
 const PAGE_DIMENSIONS = {
-  A4: { width: 794, height: 1123 },
-  Letter: { width: 816, height: 1056 },
-  Legal: { width: 816, height: 1344 }
+  A4: { width: 595, height: 842 },
+  Letter: { width: 612, height: 792 },
+  Legal: { width: 612, height: 1008 }
 };
 
 const INITIAL_BOUNDARY_DELAY = 50;
@@ -182,8 +182,8 @@ const HtmlEditor = forwardRef(({
     // Update page boundaries after content change (already debounced in hook)
     checkAndUpdateBoundaries();
     
-    // Trigger automatic reflow to insert page breaks when content overflows (already debounced)
-    triggerAutoReflow();
+    // Trigger automatic reflow with shorter delay for typing (200ms instead of default 500ms)
+    triggerAutoReflow(200);
     
     // Update active page based on viewport scroll position
     const currentPage = getCurrentPage(containerRef);
@@ -293,30 +293,15 @@ const HtmlEditor = forwardRef(({
   // Zoom handlers
   const handleZoomIn = useCallback(() => {
     actions.zoomIn();
-    // Recalculate boundaries after zoom change
-    setTimeout(() => {
-      checkAndUpdateBoundaries({ delay: 100 });
-      triggerAutoReflow(500);
-    }, 100);
-  }, [actions, checkAndUpdateBoundaries, triggerAutoReflow]);
+  }, [actions]);
 
   const handleZoomOut = useCallback(() => {
     actions.zoomOut();
-    // Recalculate boundaries after zoom change
-    setTimeout(() => {
-      checkAndUpdateBoundaries({ delay: 100 });
-      triggerAutoReflow(500);
-    }, 100);
-  }, [actions, checkAndUpdateBoundaries, triggerAutoReflow]);
+  }, [actions]);
 
   const handleZoomReset = useCallback(() => {
     actions.resetZoom();
-    // Recalculate boundaries after zoom change
-    setTimeout(() => {
-      checkAndUpdateBoundaries({ delay: 100 });
-      triggerAutoReflow(500);
-    }, 100);
-  }, [actions, checkAndUpdateBoundaries, triggerAutoReflow]);
+  }, [actions]);
 
   // Keyboard shortcuts for zoom
   useEffect(() => {

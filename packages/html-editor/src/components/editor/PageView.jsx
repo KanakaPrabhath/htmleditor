@@ -29,8 +29,46 @@ const PageView = ({
   // Calculate zoom multiplier
   const zoomMultiplier = zoomLevel / 100;
 
+  // Helper function to check if cursor is in padding area
+  const isInPaddingArea = (element, clientY) => {
+    if (!element) return false;
+    
+    const rect = element.getBoundingClientRect();
+    const relativeY = clientY - rect.top;
+    
+    // Check if in top or bottom padding
+    if (relativeY < padding.top || relativeY > (rect.height - padding.bottom)) {
+      return true;
+    }
+    
+    return false;
+  };
+
+  // Helper function to check if element is or contains a page-break
+  const isPageBreakElement = (node) => {
+    if (!node) return false;
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      return node.tagName === 'PAGE-BREAK' || node.getAttribute('data-page-break') === 'true';
+    }
+    return node.parentElement && isPageBreakElement(node.parentElement);
+  };
+
   // Prevent deletion of page-break elements and handle Tab key
   const handleKeyDown = (event) => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const { startContainer, endContainer } = range;
+
+    // Prevent typing on page-break elements
+    if (isPageBreakElement(startContainer) || isPageBreakElement(endContainer)) {
+      if (event.key.length === 1 || event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        return false;
+      }
+    }
+
     // Handle Tab key to insert tab character
     if (event.key === 'Tab') {
       event.preventDefault();
@@ -38,23 +76,9 @@ const PageView = ({
       return false;
     }
 
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
-
-    const range = selection.getRangeAt(0);
-    const { startContainer, endContainer } = range;
-
-    // Check if we're trying to delete a page-break
-    const checkNode = (node) => {
-      if (!node) return false;
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        return node.tagName === 'PAGE-BREAK' || node.getAttribute('data-page-break') === 'true';
-      }
-      return node.parentElement && checkNode(node.parentElement);
-    };
-
+    // Prevent deletion of page-break elements
     if (event.key === 'Backspace' || event.key === 'Delete') {
-      if (checkNode(startContainer) || checkNode(endContainer)) {
+      if (isPageBreakElement(startContainer) || isPageBreakElement(endContainer)) {
         event.preventDefault();
         return false;
       }
@@ -65,13 +89,79 @@ const PageView = ({
     }
   };
 
+  // Handle click events to prevent cursor placement in padding areas
+  const handleClick = (event) => {
+    if (!editorRef.current) return;
+
+    const clickedElement = event.target;
+    
+    // Prevent clicking on page-break elements
+    if (isPageBreakElement(clickedElement)) {
+      event.preventDefault();
+      return;
+    }
+
+    // Check if click is in padding area
+    if (isInPaddingArea(editorRef.current, event.clientY)) {
+      event.preventDefault();
+      
+      // Move cursor to the nearest valid content area
+      const rect = editorRef.current.getBoundingClientRect();
+      const relativeY = event.clientY - rect.top;
+      
+      if (relativeY < padding.top) {
+        // Click was in top padding - move to first content element
+        const firstChild = editorRef.current.firstElementChild;
+        if (firstChild && firstChild.tagName !== 'PAGE-BREAK') {
+          const range = document.createRange();
+          const sel = window.getSelection();
+          range.setStart(firstChild, 0);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      } else {
+        // Click was in bottom padding - move to last content element
+        const lastChild = editorRef.current.lastElementChild;
+        if (lastChild && lastChild.tagName !== 'PAGE-BREAK') {
+          const range = document.createRange();
+          const sel = window.getSelection();
+          range.selectNodeContents(lastChild);
+          range.collapse(false);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+      return;
+    }
+
+    if (onClick) {
+      onClick(event);
+    }
+  };
+
+  // Prevent input in padding areas and on page breaks
+  const handleBeforeInput = (event) => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const { startContainer } = range;
+
+    // Prevent input on page-break elements
+    if (isPageBreakElement(startContainer)) {
+      event.preventDefault();
+      return false;
+    }
+  };
+
   return (
     <div 
       className="continuous-page-container"
       style={{
         position: 'relative',
         width: '100%',
-        maxWidth: `${dimensions.width * zoomMultiplier}px`,
+        maxWidth: `${dimensions.width}px`,
         margin: '40px auto',
         backgroundColor: 'transparent',
         minHeight: '100vh',
@@ -90,8 +180,10 @@ const PageView = ({
           position: 'relative',
           zIndex: 1,
           minHeight: `${dimensions.height}px`,
+          width: `${dimensions.width}px`,
           backgroundColor: 'white',
           padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+          boxSizing: 'border-box',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
           outline: 'none',
           cursor: 'text',
@@ -106,7 +198,8 @@ const PageView = ({
         }}
         onInput={onInput}
         onKeyDown={handleKeyDown}
-        onClick={onClick}
+        onBeforeInput={handleBeforeInput}
+        onClick={handleClick}
         onScroll={onScroll}
         data-testid="continuous-editor"
       >

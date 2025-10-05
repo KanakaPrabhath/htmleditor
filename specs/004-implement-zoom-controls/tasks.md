@@ -46,6 +46,7 @@
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
+**TDD Compliance**: All tests in this phase must be written and verified to fail before any implementation in Phase 3.3 begins, per Test-First constitution principle.
 - [ ] T003 [P] Contract test for PageManager component props in tests/unit/test-page-manager-contract.js
 - [ ] T004 [P] Contract test for DocumentContext zoom actions in tests/unit/test-document-context-contract.js
 - [ ] T005 [P] Integration test zoom in button functionality in tests/integration/test-zoom-controls.js

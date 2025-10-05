@@ -72,9 +72,9 @@ As a document editor user, I want to zoom in and out of the document view to adj
 
 ### Edge Cases
 - What happens when zoom is at 50% and user tries to zoom out? (Button should be disabled or do nothing)
-- How does zoom affect very large documents with many pages? (Performance should remain smooth)
+- How does zoom affect very large documents with many pages? (Performance must meet FR-007 requirements)
 - What if user uses keyboard shortcuts while the editor is not focused? (Shortcuts should work when editor has focus)
-- How does zoom interact with page size changes? (Boundaries and reflow should adjust accordingly)
+- How does zoom interact with page size changes? (When page size changes at any zoom level, boundaries recalculate within 100ms and reflow completes within 500ms)
 
 ## Requirements *(mandatory)*
 
@@ -82,10 +82,9 @@ As a document editor user, I want to zoom in and out of the document view to adj
 - **FR-001**: System MUST provide zoom in and zoom out buttons in the page manager at the bottom.
 - **FR-002**: System MUST display the current zoom level (e.g., 100%, 125%, etc.).
 - **FR-003**: System MUST allow zoom levels from 50% to 200% in 25% increments.
-- **FR-004**: System MUST apply zoom scaling to the continuous page view properly.
-- **FR-005**: System MUST maintain page boundaries and reflow behavior at different zoom levels.
-- **FR-006**: System MUST support keyboard shortcuts: Ctrl+Plus for zoom in, Ctrl+Minus for zoom out, Ctrl+0 for reset.
-- **FR-007**: System MUST ensure performance remains smooth at different zoom levels.
+- **FR-004**: System MUST apply zoom scaling to the continuous page view while maintaining page boundaries and reflow behavior.
+- **FR-006**: System MUST support keyboard shortcuts: Ctrl+Plus for zoom in, Ctrl+Minus for zoom out, Ctrl+0 for reset. Shortcuts must work when the editor has focus and not conflict with content editing operations.
+- **FR-007**: System MUST maintain 60fps during zoom operations and complete reflow within 500ms for documents up to 500 pages.
 - **FR-008**: System MUST ensure that the page size displayed in the editor matches the real-world page size selected by the user.
 
 ### Key Entities *(include if feature involves data)*

@@ -282,9 +282,9 @@ function Pt() {
 }
 var o = Pt();
 const Se = 100, we = 50, Re = 200, He = 5, Oe = (e) => e < Re, je = (e) => e > we, ue = "A4", ie = "<p><br></p>", kt = "continuous", Ne = {
-  A4: { width: 794, height: 1123 },
-  Letter: { width: 816, height: 1056 },
-  Legal: { width: 816, height: 1344 }
+  A4: { width: 595, height: 842 },
+  Letter: { width: 612, height: 792 },
+  Legal: { width: 612, height: 1008 }
 }, le = (e, r = ue) => ({
   id: De(),
   index: e,
@@ -1394,8 +1394,11 @@ const T = /* @__PURE__ */ Tt(Dt), Lt = {
   };
 }, he = {
   A4: { width: 595, height: 842 },
+  // 210mm × 297mm at 72 DPI
   Letter: { width: 612, height: 792 },
+  // 8.5" × 11" at 72 DPI
   Legal: { width: 612, height: 1008 }
+  // 8.5" × 14" at 72 DPI
 }, rt = {
   top: 60,
   bottom: 100,
@@ -3189,9 +3192,9 @@ mt.defaultProps = {
   showDetails: process.env.NODE_ENV === "development"
 };
 const pr = {
-  A4: { width: 794, height: 1123 },
-  Letter: { width: 816, height: 1056 },
-  Legal: { width: 816, height: 1344 }
+  A4: { width: 595, height: 842 },
+  Letter: { width: 612, height: 792 },
+  Legal: { width: 612, height: 1008 }
 };
 export {
   cr as DocumentProvider,

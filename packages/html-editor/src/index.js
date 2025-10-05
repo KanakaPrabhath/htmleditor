@@ -31,10 +31,11 @@ export { useFormatting, useContinuousReflow } from './hooks';
 export { saveImage, getImage, deleteImage, clearImages, getAllImageKeys } from './lib/storage/local-storage';
 
 // === CONSTANTS ===
+// Page dimensions at 72 DPI (PDF standard)
 export const PAGE_DIMENSIONS = {
-  A4: { width: 794, height: 1123 },
-  Letter: { width: 816, height: 1056 },
-  Legal: { width: 816, height: 1344 }
+  A4: { width: 595, height: 842 },
+  Letter: { width: 612, height: 792 },
+  Legal: { width: 612, height: 1008 }
 };
 
 // === LOGGER UTILITY ===

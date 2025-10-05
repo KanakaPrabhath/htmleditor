@@ -1,19 +1,19 @@
 /**
  * Page size constants with real-world dimensions
- * Dimensions calculated at 96 DPI (standard web resolution)
+ * Dimensions calculated at 72 DPI (PDF standard resolution)
  */
 
 /**
  * Page size configurations
- * All dimensions in pixels at 96 DPI
+ * All dimensions in pixels at 72 DPI
  * 
- * Conversion: 1 inch = 96 pixels, 1 mm = 96/25.4 pixels
+ * Conversion: 1 inch = 72 pixels, 1 mm = 72/25.4 pixels
  */
 export const PAGE_SIZES = {
   A4: {
     name: 'A4',
-    width: 794,  // 210mm = 210 * 96 / 25.4 ≈ 794px
-    height: 1123, // 297mm = 297 * 96 / 25.4 ≈ 1123px
+    width: 595,  // 210mm = 210 * 72 / 25.4 ≈ 595px
+    height: 842, // 297mm = 297 * 72 / 25.4 ≈ 842px
     widthMm: 210,
     heightMm: 297,
     widthIn: 8.27,
@@ -21,8 +21,8 @@ export const PAGE_SIZES = {
   },
   Letter: {
     name: 'Letter',
-    width: 816,  // 8.5 inches = 8.5 * 96 = 816px
-    height: 1056, // 11 inches = 11 * 96 = 1056px
+    width: 612,  // 8.5 inches = 8.5 * 72 = 612px
+    height: 792, // 11 inches = 11 * 72 = 792px
     widthMm: 216,
     heightMm: 279,
     widthIn: 8.5,
@@ -30,8 +30,8 @@ export const PAGE_SIZES = {
   },
   Legal: {
     name: 'Legal',
-    width: 816,  // 8.5 inches = 8.5 * 96 = 816px
-    height: 1344, // 14 inches = 14 * 96 = 1344px
+    width: 612,  // 8.5 inches = 8.5 * 72 = 612px
+    height: 1008, // 14 inches = 14 * 72 = 1008px
     widthMm: 216,
     heightMm: 356,
     widthIn: 8.5,

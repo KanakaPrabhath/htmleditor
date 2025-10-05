@@ -7,10 +7,11 @@ const DEFAULT_PAGE_SIZE = 'A4';
 const EMPTY_PARAGRAPH = '<p><br></p>';
 const DEFAULT_EDITOR_MODE = 'continuous';
 
+// Page dimensions at 72 DPI (PDF standard)
 const PAGE_DIMENSIONS = {
-  A4: { width: 794, height: 1123 },
-  Letter: { width: 816, height: 1056 },
-  Legal: { width: 816, height: 1344 }
+  A4: { width: 595, height: 842 },
+  Letter: { width: 612, height: 792 },
+  Legal: { width: 612, height: 1008 }
 };
 
 // Helper functions moved outside reducer for better performance and reusability

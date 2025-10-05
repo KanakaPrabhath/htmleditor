@@ -2,10 +2,11 @@ import { useCallback, useRef, useEffect } from 'react';
 import { useDocumentActions } from '../context/DocumentContext';
 
 // Constants moved outside to prevent recreation
+// Using PDF standard dimensions at 72 DPI for accurate page sizing
 const PAGE_DIMENSIONS = {
-  A4: { width: 595, height: 842 },
-  Letter: { width: 612, height: 792 },
-  Legal: { width: 612, height: 1008 }
+  A4: { width: 595, height: 842 },     // 210mm × 297mm at 72 DPI
+  Letter: { width: 612, height: 792 }, // 8.5" × 11" at 72 DPI
+  Legal: { width: 612, height: 1008 }  // 8.5" × 14" at 72 DPI
 };
 
 const CONTENT_PADDING = {

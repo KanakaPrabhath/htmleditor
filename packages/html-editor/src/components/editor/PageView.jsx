@@ -20,10 +20,10 @@ const PageView = ({
   zoomLevel = 100
 }) => {
   const padding = {
-    top: 60,
-    bottom: 100,
-    left: 72,
-    right: 72
+    top: 40,
+    bottom: 40,
+    left: 40,
+    right: 40
   };
 
   // Calculate zoom multiplier

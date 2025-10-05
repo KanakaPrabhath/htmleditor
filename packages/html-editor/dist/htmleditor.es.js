@@ -2543,10 +2543,10 @@ const Be = ({
   zoomLevel: m = 100
 }) => {
   const b = {
-    top: 60,
-    bottom: 100,
-    left: 72,
-    right: 72
+    top: 40,
+    bottom: 40,
+    left: 40,
+    right: 40
   }, h = m / 100, O = (E, C) => {
     if (!E) return !1;
     const R = E.getBoundingClientRect(), g = C - R.top;

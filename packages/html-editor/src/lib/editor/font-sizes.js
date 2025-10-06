@@ -51,9 +51,9 @@ export const COMMON_FONT_SIZES = [
 ];
 
 /**
- * Default font size (11 pt in Word, which is 15px at 96 DPI)
+ * Default font size (9 pt in Word, which is 12px at 96 DPI)
  */
-export const DEFAULT_FONT_SIZE = '15px';
+export const DEFAULT_FONT_SIZE = '16px';
 
 /**
  * Convert points to pixels at 96 DPI

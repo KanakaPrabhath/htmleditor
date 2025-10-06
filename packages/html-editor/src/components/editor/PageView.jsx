@@ -20,11 +20,12 @@ const PageView = ({
   onScroll,
   zoomLevel = 100
 }) => {
+  // Word's default margins: 0.5 inches = 0.5 * 96 DPI = 48px
   const padding = {
-    top: 40,
-    bottom: 40,
-    left: 40,
-    right: 40
+    top: 48,
+    bottom: 48,
+    left: 48,
+    right: 48
   };
 
   // Calculate zoom multiplier

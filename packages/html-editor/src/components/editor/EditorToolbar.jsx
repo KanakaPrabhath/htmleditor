@@ -157,7 +157,7 @@ const EditorToolbar = ({
       >
         {COMMON_FONT_SIZES.map(({ value, label, pt }) => (
           <option key={value} value={value}>
-            {label} ({pt} pt)
+            {label}
           </option>
         ))}
       </select>

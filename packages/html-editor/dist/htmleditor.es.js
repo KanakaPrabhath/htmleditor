@@ -1333,7 +1333,7 @@ const T = /* @__PURE__ */ Ot(qt), bt = {
   // 48 pt ≈ 64 px
   { value: "96px", label: "72", pt: 72 }
   // 72 pt ≈ 96 px
-], Be = "15px", Yt = (e) => Math.round(e * 96 / 72), Ft = (e) => Math.round(e * 72 / 96 * 2) / 2, jr = (e) => {
+], Be = "16px", Yt = (e) => Math.round(e * 96 / 72), Ft = (e) => Math.round(e * 72 / 96 * 2) / 2, jr = (e) => {
   const t = Object.values(bt).find((a) => a.pt === e);
   return t ? `${t.px}px` : `${Yt(e)}px`;
 }, Nr = (e) => {
@@ -2623,12 +2623,7 @@ const lt = new Ar("Editor"), $e = ({
         onChange: (r) => t("fontSize", r.target.value),
         defaultValue: Be,
         title: "Font Size",
-        children: Gt.map(({ value: r, label: s, pt: i }) => /* @__PURE__ */ c.jsxs("option", { value: r, children: [
-          s,
-          " (",
-          i,
-          " pt)"
-        ] }, r))
+        children: Gt.map(({ value: r, label: s, pt: i }) => /* @__PURE__ */ c.jsx("option", { value: r, children: s }, r))
       }
     ),
     /* @__PURE__ */ c.jsxs(
@@ -2746,10 +2741,10 @@ const Ue = ({
   zoomLevel: f = 100
 }) => {
   const h = {
-    top: 40,
-    bottom: 40,
-    left: 40,
-    right: 40
+    top: 48,
+    bottom: 48,
+    left: 48,
+    right: 48
   }, d = f / 100, x = (E, S) => {
     if (!E) return !1;
     const b = E.getBoundingClientRect(), O = S - b.top;

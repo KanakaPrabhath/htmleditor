@@ -55,8 +55,8 @@ describe('Font Sizes', () => {
       expect(size4.label).toBe('12');
     });
 
-    it('should have default font size of 15px (11pt in Word)', () => {
-      expect(DEFAULT_FONT_SIZE).toBe('15px');
+    it('should have default font size of 12px (9pt in Word)', () => {
+      expect(DEFAULT_FONT_SIZE).toBe('12px');
     });
   });
 

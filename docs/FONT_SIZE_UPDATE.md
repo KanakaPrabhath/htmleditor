@@ -29,9 +29,9 @@ Based on 96 DPI standard (Microsoft Word):
 | Points (pt) | Pixels (px) | Label | Notes |
 |------------|-------------|-------|-------|
 | 7.5 | 10 | 7.5 | Minimum readable size |
-| 9 | 12 | 9 | Small text |
+| **9** | **12** | **9** | **Default** ⭐ |
 | 10 | 13 | 10 | Small body text |
-| **11** | **15** | **11** | **Word default** ⭐ |
+| 11 | 15 | 11 | Word's original default |
 | 12 | 16 | 12 | Common body text |
 | 14 | 19 | 14 | Slightly larger |
 | 16 | 21 | 16 | Subheadings |
@@ -51,8 +51,8 @@ Based on 96 DPI standard (Microsoft Word):
 - Example: "11 (11 pt)" for the default Word size
 
 #### **PageView** (`packages/html-editor/src/components/editor/PageView.jsx`)
-- Default font size changed from `12px` to `15px` (11pt)
-- Matches Word's default font size
+- Default font size: `12px` (9pt)
+- Margins updated to match Word's 0.5" margins: `48px` (0.5 inch × 96 DPI)
 
 #### **useFormatting Hook** (`packages/html-editor/src/hooks/useFormatting.js`)
 - Updated `FONT_SIZE_MAP` to include all new sizes
@@ -108,7 +108,7 @@ Created 18 tests covering:
 7.5 (7.5 pt)
 9 (9 pt)
 10 (10 pt)
-11 (11 pt)    ← Word default
+11 (11 pt)    ← Word's original default
 12 (12 pt)
 14 (14 pt)
 16 (16 pt)
@@ -122,8 +122,8 @@ Created 18 tests covering:
 ```
 
 ### Default Text Size
-- **Before**: 12px (9pt) - smaller than Word
-- **After**: 15px (11pt) - matches Word default ✅
+- **Default**: 12px (9pt) - standard readable size
+- **Margins**: 48px (0.5 inches) - matches Word's default margins ✅
 
 ## Technical Implementation Details
 

@@ -20,7 +20,7 @@ import {
 describe('Zoom Utils', () => {
   describe('constants', () => {
     it('should have correct zoom levels', () => {
-      expect(ZOOM_LEVELS).toEqual([50, 75, 100, 125, 150, 175, 200]);
+      expect(ZOOM_LEVELS).toEqual([50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200]);
     });
 
     it('should have default zoom of 100', () => {
@@ -35,8 +35,8 @@ describe('Zoom Utils', () => {
       expect(MAX_ZOOM).toBe(200);
     });
 
-    it('should have zoom step of 25', () => {
-      expect(ZOOM_STEP).toBe(25);
+    it('should have zoom step of 5', () => {
+      expect(ZOOM_STEP).toBe(5);
     });
   });
 
@@ -72,9 +72,9 @@ describe('Zoom Utils', () => {
 
   describe('getNextZoomLevel', () => {
     it('should return next zoom level when zooming in', () => {
-      expect(getNextZoomLevel(100)).toBe(125);
-      expect(getNextZoomLevel(125)).toBe(150);
-      expect(getNextZoomLevel(175)).toBe(200);
+      expect(getNextZoomLevel(100)).toBe(105);
+      expect(getNextZoomLevel(125)).toBe(130);
+      expect(getNextZoomLevel(195)).toBe(200);
     });
 
     it('should return current zoom when at max', () => {
@@ -84,9 +84,9 @@ describe('Zoom Utils', () => {
 
   describe('getPreviousZoomLevel', () => {
     it('should return previous zoom level when zooming out', () => {
-      expect(getPreviousZoomLevel(100)).toBe(75);
-      expect(getPreviousZoomLevel(125)).toBe(100);
-      expect(getPreviousZoomLevel(75)).toBe(50);
+      expect(getPreviousZoomLevel(100)).toBe(95);
+      expect(getPreviousZoomLevel(125)).toBe(120);
+      expect(getPreviousZoomLevel(55)).toBe(50);
     });
 
     it('should return current zoom when at min', () => {
@@ -102,9 +102,9 @@ describe('Zoom Utils', () => {
     });
 
     it('should return false for invalid zoom levels', () => {
-      expect(isValidZoomLevel(60)).toBe(false);
-      expect(isValidZoomLevel(110)).toBe(false);
-      expect(isValidZoomLevel(250)).toBe(false);
+      expect(isValidZoomLevel(25)).toBe(false); // Below minimum
+      expect(isValidZoomLevel(52)).toBe(true); // Valid (between 50-200)
+      expect(isValidZoomLevel(250)).toBe(false); // Above maximum
     });
   });
 

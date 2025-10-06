@@ -58,7 +58,7 @@ describe('DocumentContext Contract - Zoom Actions', () => {
     expect(result.current.state.zoomLevel).toBe(125);
   });
 
-  it('should increase zoomLevel by 25 when zoomIn is called', () => {
+  it('should increase zoomLevel by 5 when zoomIn is called', () => {
     const { result } = renderHook(() => ({
       state: useDocumentState(),
       actions: useDocumentActions()
@@ -68,10 +68,10 @@ describe('DocumentContext Contract - Zoom Actions', () => {
       result.current.actions.zoomIn();
     });
     
-    expect(result.current.state.zoomLevel).toBe(125);
+    expect(result.current.state.zoomLevel).toBe(105);
   });
 
-  it('should decrease zoomLevel by 25 when zoomOut is called', () => {
+  it('should decrease zoomLevel by 5 when zoomOut is called', () => {
     const { result } = renderHook(() => ({
       state: useDocumentState(),
       actions: useDocumentActions()
@@ -81,7 +81,7 @@ describe('DocumentContext Contract - Zoom Actions', () => {
       result.current.actions.zoomOut();
     });
     
-    expect(result.current.state.zoomLevel).toBe(75);
+    expect(result.current.state.zoomLevel).toBe(95);
   });
 
   it('should reset zoomLevel to 100 when resetZoom is called', () => {

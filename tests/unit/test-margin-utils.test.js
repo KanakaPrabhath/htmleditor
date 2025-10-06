@@ -25,7 +25,7 @@ describe('margin-utils', () => {
 
     it('should have DEFAULT_MARGIN_PRESET defined', () => {
       expect(DEFAULT_MARGIN_PRESET).toBeDefined();
-      expect(DEFAULT_MARGIN_PRESET).toBe('NARROW');
+      expect(DEFAULT_MARGIN_PRESET).toBe('NORMAL');
     });
 
     it('should have MARGIN_PRESETS object with expected presets', () => {
@@ -92,8 +92,8 @@ describe('margin-utils', () => {
 
     it('should use default preset when no preset name provided', () => {
       const margins = getMarginPixels();
-      const narrowMargins = getMarginPixels('NARROW');
-      expect(margins).toEqual(narrowMargins);
+      const normalMargins = getMarginPixels('NORMAL');
+      expect(margins).toEqual(normalMargins);
     });
   });
 

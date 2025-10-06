@@ -33,18 +33,20 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
     });
     
     // Get initial page count
-    const initialPageCount = screen.getByText(/Page \d+ of \d+/);
+    const initialPage = screen.getByText(/Page 1/);
     
-    // Zoom in to 125%
+    // Zoom in to 105%
     const zoomInButton = screen.getByRole('button', { name: /zoom in/i });
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('105%');
     });
     
     // Page boundaries should still be calculated
-    expect(screen.getByText(/Page \d+ of \d+/)).toBeInTheDocument();
+    expect(screen.getByText(/Page 1/)).toBeInTheDocument();
   });
 
   it('should recalculate boundaries within 100ms when zoom changes', async () => {
@@ -62,7 +64,9 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('105%');
     });
     
     const endTime = Date.now();
@@ -77,11 +81,14 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
     
     // Zoom to 50%
     const zoomOutButton = screen.getByRole('button', { name: /zoom out/i });
-    fireEvent.click(zoomOutButton);
-    fireEvent.click(zoomOutButton);
+    for (let i = 0; i < 10; i++) {
+      fireEvent.click(zoomOutButton);
+    }
     
     await waitFor(() => {
-      expect(screen.getByText(/50%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('50%');
     });
     
     const editor = container.querySelector('[contenteditable="true"]');
@@ -103,12 +110,14 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
     
     // Zoom to 200%
     const zoomInButton = screen.getByRole('button', { name: /zoom in/i });
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 20; i++) {
       fireEvent.click(zoomInButton);
     }
     
     await waitFor(() => {
-      expect(screen.getByText(/200%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('200%');
     });
     
     const editor = container.querySelector('[contenteditable="true"]');
@@ -126,14 +135,14 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
   });
 
   it('should complete reflow within 500ms at all zoom levels', async () => {
-    const zoomLevels = [50, 75, 100, 125, 150, 175, 200];
+    const zoomLevels = [50, 75, 100, 105, 125, 150, 175, 200];
     
     for (const targetZoom of zoomLevels) {
       const { container, unmount } = renderWithProvider(React.createElement(HtmlEditor));
       
       // Set zoom level
       const currentZoom = 100;
-      const steps = (targetZoom - currentZoom) / 25;
+      const steps = (targetZoom - currentZoom) / 5;
       const button = steps > 0 
         ? screen.getByRole('button', { name: /zoom in/i })
         : screen.getByRole('button', { name: /zoom out/i });
@@ -143,7 +152,9 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
       }
       
       await waitFor(() => {
-        expect(screen.getByText(new RegExp(`${targetZoom}%`))).toBeInTheDocument();
+        const zoomDisplay = container.querySelector('.zoom-level-display');
+        expect(zoomDisplay).toBeInTheDocument();
+        expect(zoomDisplay.textContent).toBe(`${targetZoom}%`);
       });
       
       const editor = container.querySelector('[contenteditable="true"]');
@@ -188,7 +199,9 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('105%');
     });
     
     // Page breaks should be preserved

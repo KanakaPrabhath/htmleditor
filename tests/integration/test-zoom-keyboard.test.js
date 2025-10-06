@@ -21,60 +21,74 @@ describe('Integration Test - Zoom Keyboard Shortcuts', () => {
   });
 
   it('should zoom in when Ctrl+Plus is pressed', async () => {
-    renderWithProvider(React.createElement(HtmlEditor));
+    const { container } = renderWithProvider(React.createElement(HtmlEditor));
     
     // Initially at 100%
-    expect(screen.getByText(/100%/)).toBeInTheDocument();
+    const zoomDisplay = container.querySelector('.zoom-level-display');
+    expect(zoomDisplay).toBeInTheDocument();
+    expect(zoomDisplay.textContent).toBe('100%');
     
     // Press Ctrl+Plus
     fireEvent.keyDown(window, { key: '+', ctrlKey: true });
     
-    // Should zoom to 125%
+    // Should zoom to 105%
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('105%');
     });
   });
 
   it('should zoom in when Ctrl+= is pressed (alternative)', async () => {
-    renderWithProvider(React.createElement(HtmlEditor));
+    const { container } = renderWithProvider(React.createElement(HtmlEditor));
     
     // Initially at 100%
-    expect(screen.getByText(/100%/)).toBeInTheDocument();
+    const zoomDisplay = container.querySelector('.zoom-level-display');
+    expect(zoomDisplay).toBeInTheDocument();
+    expect(zoomDisplay.textContent).toBe('100%');
     
     // Press Ctrl+= (same key as + without shift)
     fireEvent.keyDown(window, { key: '=', ctrlKey: true });
     
-    // Should zoom to 125%
+    // Should zoom to 105%
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('105%');
     });
   });
 
   it('should zoom out when Ctrl+Minus is pressed', async () => {
-    renderWithProvider(React.createElement(HtmlEditor));
+    const { container } = renderWithProvider(React.createElement(HtmlEditor));
     
     // Initially at 100%
-    expect(screen.getByText(/100%/)).toBeInTheDocument();
+    const zoomDisplay = container.querySelector('.zoom-level-display');
+    expect(zoomDisplay).toBeInTheDocument();
+    expect(zoomDisplay.textContent).toBe('100%');
     
     // Press Ctrl+Minus
     fireEvent.keyDown(window, { key: '-', ctrlKey: true });
     
-    // Should zoom to 75%
+    // Should zoom to 95%
     await waitFor(() => {
-      expect(screen.getByText(/75%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('95%');
     });
   });
 
   it('should reset zoom when Ctrl+0 is pressed', async () => {
-    renderWithProvider(React.createElement(HtmlEditor));
+    const { container } = renderWithProvider(React.createElement(HtmlEditor));
     
-    // Zoom to 150%
+    // Zoom to 110%
     const zoomInButton = screen.getByRole('button', { name: /zoom in/i });
     fireEvent.click(zoomInButton);
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/150%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('110%');
     });
     
     // Press Ctrl+0
@@ -82,12 +96,14 @@ describe('Integration Test - Zoom Keyboard Shortcuts', () => {
     
     // Should reset to 100%
     await waitFor(() => {
-      expect(screen.getByText(/100%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('100%');
     });
   });
 
   it('should not zoom when editor is not focused and shortcuts are pressed', async () => {
-    const { container } = render(
+    const { container } = renderWithProvider(
       React.createElement('div', null,
         React.createElement('input', { 'data-testid': 'external-input' }),
         React.createElement(HtmlEditor)
@@ -97,55 +113,76 @@ describe('Integration Test - Zoom Keyboard Shortcuts', () => {
     const externalInput = screen.getByTestId('external-input');
     externalInput.focus();
     
-    // Initially at 100%
-    expect(screen.getByText(/100%/)).toBeInTheDocument();
+    // Wait for PageManager to be rendered
+    await waitFor(() => {
+      expect(document.querySelector('.page-manager')).toBeInTheDocument();
+    });
+    
+    // Initially at 100% - wait for it to appear
+    await waitFor(() => {
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('100%');
+    });
     
     // Press Ctrl+Plus while focused on external input
-    fireEvent.keyDown(externalInput, { key: '+', ctrlKey: true });
+    fireEvent.keyDown(window, { key: '+', ctrlKey: true });
     
     // Should remain at 100%
     await waitFor(() => {
-      expect(screen.getByText(/100%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('100%');
     }, { timeout: 1000 });
   });
 
   it('should handle multiple keyboard shortcuts in sequence', async () => {
-    renderWithProvider(React.createElement(HtmlEditor));
+    const { container } = renderWithProvider(React.createElement(HtmlEditor));
     
     // Zoom in twice with keyboard
     fireEvent.keyDown(window, { key: '+', ctrlKey: true });
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('105%');
     });
     
     fireEvent.keyDown(window, { key: '+', ctrlKey: true });
     await waitFor(() => {
-      expect(screen.getByText(/150%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('110%');
     });
     
     // Zoom out once
     fireEvent.keyDown(window, { key: '-', ctrlKey: true });
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('105%');
     });
     
     // Reset
     fireEvent.keyDown(window, { key: '0', ctrlKey: true });
     await waitFor(() => {
-      expect(screen.getByText(/100%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('100%');
     });
   });
 
   it('should not zoom when Ctrl+Plus is pressed at 200%', async () => {
-    renderWithProvider(React.createElement(HtmlEditor));
+    const { container } = renderWithProvider(React.createElement(HtmlEditor));
     
     // Zoom to 200%
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 20; i++) {
       fireEvent.keyDown(window, { key: '+', ctrlKey: true });
     }
     
     await waitFor(() => {
-      expect(screen.getByText(/200%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('200%');
     });
     
     // Try to zoom in again
@@ -153,20 +190,24 @@ describe('Integration Test - Zoom Keyboard Shortcuts', () => {
     
     // Should stay at 200%
     await waitFor(() => {
-      expect(screen.getByText(/200%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('200%');
     }, { timeout: 1000 });
   });
 
   it('should not zoom when Ctrl+Minus is pressed at 50%', async () => {
-    renderWithProvider(React.createElement(HtmlEditor));
+    const { container } = renderWithProvider(React.createElement(HtmlEditor));
     
     // Zoom to 50%
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 10; i++) {
       fireEvent.keyDown(window, { key: '-', ctrlKey: true });
     }
     
     await waitFor(() => {
-      expect(screen.getByText(/50%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('50%');
     });
     
     // Try to zoom out again
@@ -174,7 +215,9 @@ describe('Integration Test - Zoom Keyboard Shortcuts', () => {
     
     // Should stay at 50%
     await waitFor(() => {
-      expect(screen.getByText(/50%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('50%');
     }, { timeout: 1000 });
   });
 

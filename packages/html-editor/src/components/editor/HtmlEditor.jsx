@@ -330,28 +330,37 @@ const HtmlEditor = forwardRef(({
   // Keyboard shortcuts for zoom
   useEffect(() => {
     const handleKeyDown = (event) => {
-      // Only handle when editor or its container has focus
-      if (!editorRef.current && !containerRef.current) return;
-      
       // Check if Ctrl key (or Cmd on Mac) is pressed
       if (event.ctrlKey || event.metaKey) {
-        switch (event.key) {
-          case '+':
-          case '=':
-            event.preventDefault();
-            handleZoomIn();
-            break;
-          case '-':
-          case '_':
-            event.preventDefault();
-            handleZoomOut();
-            break;
-          case '0':
-            event.preventDefault();
-            handleZoomReset();
-            break;
-          default:
-            break;
+        // Prevent default browser zoom behavior for our shortcuts
+        if (['+', '=', '-', '_', '0'].includes(event.key)) {
+          event.preventDefault();
+        }
+        
+        // Only handle zoom shortcuts when editor or its container has focus
+        // or when no specific input elements are focused
+        const isEditorFocused = document.activeElement === editorRef.current;
+        const isContainerFocused = document.activeElement === containerRef.current;
+        const isInputFocused = document.activeElement?.tagName === 'INPUT' ||
+                               document.activeElement?.tagName === 'TEXTAREA' ||
+                               document.activeElement?.isContentEditable === false;
+        
+        if (isEditorFocused || isContainerFocused || !isInputFocused) {
+          switch (event.key) {
+            case '+':
+            case '=':
+              handleZoomIn();
+              break;
+            case '-':
+            case '_':
+              handleZoomOut();
+              break;
+            case '0':
+              handleZoomReset();
+              break;
+            default:
+              break;
+          }
         }
       }
     };

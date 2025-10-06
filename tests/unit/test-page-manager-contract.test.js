@@ -26,9 +26,9 @@ describe('PageManager Contract - Zoom Props', () => {
   };
 
   it('should accept zoomLevel prop and display it', () => {
-    const props = { ...defaultProps, zoomLevel: 125 };
+    const props = { ...defaultProps, zoomLevel: 105 };
     render(React.createElement(PageManager, props));
-    expect(screen.getByText(/125%/)).toBeInTheDocument();
+    expect(screen.getByText(/105%/)).toBeInTheDocument();
   });
 
   it('should accept onZoomIn callback and call it when zoom in button is clicked', () => {

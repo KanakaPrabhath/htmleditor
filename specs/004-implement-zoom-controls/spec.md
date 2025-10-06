@@ -63,9 +63,9 @@ When creating this spec from a user prompt:
 As a document editor user, I want to zoom in and out of the document view to adjust the content size for better readability and editing at different scales.
 
 ### Acceptance Scenarios
-1. **Given** the editor is displaying a document, **When** I click the zoom in button, **Then** the zoom level increases by 25% and the view scales accordingly.
-2. **Given** the editor is at 100% zoom, **When** I press Ctrl+Plus, **Then** the zoom level becomes 125%.
-3. **Given** the editor is at 200% zoom, **When** I click zoom out, **Then** the zoom level becomes 175%.
+1. **Given** the editor is displaying a document, **When** I click the zoom in button, **Then** the zoom level increases by 5% and the view scales accordingly.
+2. **Given** the editor is at 100% zoom, **When** I press Ctrl+Plus, **Then** the zoom level becomes 105%.
+3. **Given** the editor is at 200% zoom, **When** I click zoom out, **Then** the zoom level becomes 195%.
 4. **Given** the editor is at any zoom level, **When** I press Ctrl+0, **Then** the zoom resets to 100%.
 5. **Given** the editor has content that spans multiple pages, **When** I change zoom level, **Then** page boundaries and reflow behavior are maintained.
 6. **Given** the editor is at 50% zoom, **When** I attempt to zoom out further, **Then** the zoom level remains at 50% or the button is disabled.
@@ -81,14 +81,14 @@ As a document editor user, I want to zoom in and out of the document view to adj
 ### Functional Requirements
 - **FR-001**: System MUST provide zoom in and zoom out buttons in the page manager at the bottom.
 - **FR-002**: System MUST display the current zoom level (e.g., 100%, 125%, etc.).
-- **FR-003**: System MUST allow zoom levels from 50% to 200% in 25% increments.
+- **FR-003**: System MUST allow zoom levels from 50% to 200% in 5% increments.
 - **FR-004**: System MUST apply zoom scaling to the continuous page view while maintaining page boundaries and reflow behavior.
 - **FR-006**: System MUST support keyboard shortcuts: Ctrl+Plus for zoom in, Ctrl+Minus for zoom out, Ctrl+0 for reset. Shortcuts must work when the editor has focus and not conflict with content editing operations.
 - **FR-007**: System MUST maintain 60fps during zoom operations and complete reflow within 500ms for documents up to 500 pages.
 - **FR-008**: System MUST ensure that the page size displayed in the editor matches the real-world page size selected by the user.
 
 ### Key Entities *(include if feature involves data)*
-- **Zoom Level**: Represents the current scaling percentage for the document view, with allowed values of 50%, 75%, 100%, 125%, 150%, 175%, 200%.
+- **Zoom Level**: Represents the current scaling percentage for the document view, with allowed values of 50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%, 95%, 100%, 105%, 110%, 115%, 120%, 125%, 130%, 135%, 140%, 145%, 150%, 155%, 160%, 165%, 170%, 175%, 180%, 185%, 190%, 195%, 200%.
 - **Page Size**: Defines the dimensions of the document page (e.g., A4, Letter, Legal), used for layout and boundary calculations.
 
 ---

@@ -23,7 +23,7 @@ describe('Integration Test - Zoom Controls', () => {
     vi.clearAllMocks();
   });
 
-  it('should zoom in by 25% when zoom in button is clicked', async () => {
+  it('should zoom in by 5% when zoom in button is clicked', async () => {
     renderWithProvider(React.createElement(HtmlEditor));
     
     // Initially at 100%
@@ -33,13 +33,13 @@ describe('Integration Test - Zoom Controls', () => {
     const zoomInButton = screen.getByRole('button', { name: /zoom in/i });
     fireEvent.click(zoomInButton);
     
-    // Should now be at 125%
+    // Should now be at 105%
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      expect(screen.getByText(/105%/)).toBeInTheDocument();
     });
   });
 
-  it('should zoom out by 25% when zoom out button is clicked', async () => {
+  it('should zoom out by 5% when zoom out button is clicked', async () => {
     renderWithProvider(React.createElement(HtmlEditor));
     
     // Initially at 100%
@@ -49,22 +49,22 @@ describe('Integration Test - Zoom Controls', () => {
     const zoomOutButton = screen.getByRole('button', { name: /zoom out/i });
     fireEvent.click(zoomOutButton);
     
-    // Should now be at 75%
+    // Should now be at 95%
     await waitFor(() => {
-      expect(screen.getByText(/75%/)).toBeInTheDocument();
+      expect(screen.getByText(/95%/)).toBeInTheDocument();
     });
   });
 
   it('should reset to 100% when reset button is clicked', async () => {
     renderWithProvider(React.createElement(HtmlEditor));
     
-    // Zoom in twice to 150%
+    // Zoom in twice to 110%
     const zoomInButton = screen.getByRole('button', { name: /zoom in/i });
     fireEvent.click(zoomInButton);
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/150%/)).toBeInTheDocument();
+      expect(screen.getByText(/110%/)).toBeInTheDocument();
     });
     
     // Click reset
@@ -83,8 +83,8 @@ describe('Integration Test - Zoom Controls', () => {
     // Zoom to maximum (200%)
     const zoomInButton = screen.getByRole('button', { name: /zoom in/i });
     
-    // Click 4 times to reach 200% (100 -> 125 -> 150 -> 175 -> 200)
-    for (let i = 0; i < 4; i++) {
+    // Click 20 times to reach 200% (100 -> 105 -> ... -> 200)
+    for (let i = 0; i < 20; i++) {
       fireEvent.click(zoomInButton);
     }
     
@@ -100,8 +100,8 @@ describe('Integration Test - Zoom Controls', () => {
     // Zoom to minimum (50%)
     const zoomOutButton = screen.getByRole('button', { name: /zoom out/i });
     
-    // Click twice to reach 50% (100 -> 75 -> 50)
-    for (let i = 0; i < 2; i++) {
+    // Click 10 times to reach 50% (100 -> 95 -> ... -> 50)
+    for (let i = 0; i < 10; i++) {
       fireEvent.click(zoomOutButton);
     }
     
@@ -122,30 +122,30 @@ describe('Integration Test - Zoom Controls', () => {
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/150%/)).toBeInTheDocument();
+      expect(screen.getByText(/110%/)).toBeInTheDocument();
     });
     
     // Zoom out once
     fireEvent.click(zoomOutButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      expect(screen.getByText(/105%/)).toBeInTheDocument();
     });
   });
 
   it('should apply zoom only in valid increments', async () => {
     renderWithProvider(React.createElement(HtmlEditor));
     
-    // Start at 100%, zoom in to 125%
+    // Start at 100%, zoom in to 105%
     const zoomInButton = screen.getByRole('button', { name: /zoom in/i });
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      expect(screen.getByText(/105%/)).toBeInTheDocument();
     });
     
     // Verify no intermediate values appear
-    expect(screen.queryByText(/110%/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/120%/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/101%/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/102%/)).not.toBeInTheDocument();
   });
 });

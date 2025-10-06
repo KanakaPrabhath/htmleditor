@@ -97,7 +97,9 @@ describe('Integration Test - Page Size Real Dimensions', () => {
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/150%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('150%');
     });
     
     // Check scaled dimensions
@@ -119,7 +121,9 @@ describe('Integration Test - Page Size Real Dimensions', () => {
     fireEvent.click(zoomInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/125%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('125%');
     });
     
     // Add content
@@ -151,7 +155,9 @@ describe('Integration Test - Page Size Real Dimensions', () => {
     }
     
     await waitFor(() => {
-      expect(screen.getByText(/175%/)).toBeInTheDocument();
+      const zoomDisplay = container.querySelector('.zoom-level-display');
+      expect(zoomDisplay).toBeInTheDocument();
+      expect(zoomDisplay.textContent).toBe('175%');
     });
     
     // Add substantial content

@@ -13,6 +13,40 @@ export const MAX_PAGES_PER_REFLOW = 3; // Process up to 3 pages per reflow cycle
 export const MIN_OVERFLOW_THRESHOLD = 20; // Minimum pixels of overflow before breaking
 
 /**
+ * Get the total height of an element including its margins
+ * Optimized to use known CSS margins instead of getComputedStyle
+ * Based on MultiPageEditor.css: .continuous-content p { margin: 0 0 16px 0; }
+ * @param {HTMLElement} element - The element to measure
+ * @returns {number} Total height including margins
+ */
+const getElementTotalHeight = (element) => {
+  if (!element || !element.getBoundingClientRect) {
+    return 0;
+  }
+  
+  const rect = element.getBoundingClientRect();
+  
+  // Based on our CSS, paragraph elements have 16px bottom margin
+  // .continuous-content p { margin: 0 0 16px 0; }
+  if (element.tagName === 'P') {
+    return rect.height + 16;  // Add known bottom margin
+  }
+  
+  // For other block elements (headings, lists), use a conservative estimate
+  if (element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3' || 
+      element.tagName === 'H4' || element.tagName === 'H5' || element.tagName === 'H6') {
+    return rect.height + 20;  // Headings typically have larger margins
+  }
+  
+  if (element.tagName === 'UL' || element.tagName === 'OL') {
+    return rect.height + 16;  // Lists have similar margins to paragraphs
+  }
+  
+  // For other elements, just return the rect height
+  return rect.height;
+};
+
+/**
  * Check if content in a page section exceeds the maximum height
  * Returns the element where overflow occurs
  * Optimized for performance with early exit
@@ -34,7 +68,7 @@ export const findOverflowPoint = (pageElements, maxHeight) => {
       continue;
     }
     
-    const elementHeight = element.getBoundingClientRect().height;
+    const elementHeight = getElementTotalHeight(element);
     
     // Skip empty elements (like empty <p> tags from Enter key)
     if (elementHeight < 1) {
@@ -129,7 +163,7 @@ export const checkAndReflow = (
         for (let i = 0; i < pageElements.length; i++) {
           const el = pageElements[i];
           if (el && el.getBoundingClientRect) {
-            totalPageHeight += el.getBoundingClientRect().height;
+            totalPageHeight += getElementTotalHeight(el);
           }
         }
         

@@ -76,14 +76,22 @@ export const calculatePageBoundaries = (editor, options = {}) => {
 
 /**
  * Calculate maximum content height for a page accounting for zoom and margins
+ * This is the height available for actual content INSIDE the contenteditable div
+ * The contenteditable div itself has padding applied via getMarginPixels
+ * So we need to subtract both the margins AND the padding from the page height
  * @param {string} pageSize - The page size
  * @param {number} zoomLevel - Current zoom level percentage
  * @param {string} pageMargins - The margin preset name
- * @returns {number} Maximum content height in pixels
+ * @returns {number} Maximum content height in pixels (actual content area inside padding)
  */
 export const calculateMaxContentHeight = (pageSize, zoomLevel = 100, pageMargins = DEFAULT_MARGIN_PRESET) => {
   const dimensions = getPageDimensions(pageSize);
   const verticalMargins = getTotalVerticalMargins(pageMargins);
+  
+  // The page has total height = dimensions.height
+  // The contenteditable div has padding applied via getMarginPixels (which are the same as margins)
+  // So the actual content area height = page height - (top margin + bottom margin) = dimensions.height - verticalMargins
+  // This is already the max height for content inside the padding
   const baseMaxHeight = dimensions.height - verticalMargins;
   const zoomMultiplier = zoomLevel / 100;
   return baseMaxHeight / zoomMultiplier;

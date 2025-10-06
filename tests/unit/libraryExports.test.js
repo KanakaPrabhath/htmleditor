@@ -142,6 +142,19 @@ describe('Library Exports', () => {
         'clearImages',
         'getAllImageKeys',
         'PAGE_DIMENSIONS',
+        'PAGE_SIZES',
+        'getPageDimensions',
+        'isValidPageSize',
+        'getAvailablePageSizes',
+        'DEFAULT_PAGE_SIZE',
+        'FONT_SIZE_MAP',
+        'COMMON_FONT_SIZES',
+        'DEFAULT_FONT_SIZE',
+        'pointsToPixels',
+        'pixelsToPoints',
+        'getPixelValue',
+        'getPointValue',
+        'isValidFontSize',
         'logger'
       ];
       
@@ -171,6 +184,19 @@ describe('Library Exports', () => {
         'clearImages',
         'getAllImageKeys',
         'PAGE_DIMENSIONS',
+        'PAGE_SIZES',
+        'getPageDimensions',
+        'isValidPageSize',
+        'getAvailablePageSizes',
+        'DEFAULT_PAGE_SIZE',
+        'FONT_SIZE_MAP',
+        'COMMON_FONT_SIZES',
+        'DEFAULT_FONT_SIZE',
+        'pointsToPixels',
+        'pixelsToPoints',
+        'getPixelValue',
+        'getPointValue',
+        'isValidFontSize',
         'logger'
       ];
       

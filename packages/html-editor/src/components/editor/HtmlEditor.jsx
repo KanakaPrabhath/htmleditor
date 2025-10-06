@@ -3,18 +3,12 @@ import PropTypes from 'prop-types';
 import { useDocumentState, useDocumentActions } from '../../context/DocumentContext';
 import { useFormatting, useContinuousReflow } from '../../hooks';
 import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
+import { PAGE_SIZES, getPageDimensions } from '../../lib/editor/page-sizes';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
 import PageManager from './PageManager';
 import './MultiPageEditor.css';
-
-// Constants moved outside component to prevent recreation
-const PAGE_DIMENSIONS = {
-  A4: { width: 595, height: 842 },
-  Letter: { width: 612, height: 792 },
-  Legal: { width: 612, height: 1008 }
-};
 
 const INITIAL_BOUNDARY_DELAY = 50;
 const BOUNDARY_UPDATE_DELAY = 50;
@@ -72,7 +66,7 @@ const HtmlEditor = forwardRef(({
     insertPageBreakAtBoundary
   } = useContinuousReflow(pageSize, editorRef, zoomLevel);
 
-  const dimensions = useMemo(() => PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4, [pageSize]);
+  const dimensions = useMemo(() => getPageDimensions(pageSize), [pageSize]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const scrollTimeoutRef = useRef(null);
   const addingPageRef = useRef(false);

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { saveImage } from '../../lib/storage/local-storage';
 import { logger } from '../../lib/editor/utils/logger';
+import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 
 /**
  * EditorToolbar - Formatting toolbar for the multi-page editor
@@ -151,16 +152,14 @@ const EditorToolbar = ({
       
       <select 
         onChange={(e) => onFormatText('fontSize', e.target.value)}
-        defaultValue="12px"
+        defaultValue={DEFAULT_FONT_SIZE}
         title="Font Size"
       >
-        <option value="10px">10</option>
-        <option value="12px">12</option>
-        <option value="14px">14</option>
-        <option value="16px">16</option>
-        <option value="18px">18</option>
-        <option value="24px">24</option>
-        <option value="32px">32</option>
+        {COMMON_FONT_SIZES.map(({ value, label, pt }) => (
+          <option key={value} value={value}>
+            {label} ({pt} pt)
+          </option>
+        ))}
       </select>
       
       <select 

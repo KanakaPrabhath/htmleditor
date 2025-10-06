@@ -1,14 +1,23 @@
 import { useState, useCallback } from 'react';
+import { DEFAULT_FONT_SIZE } from '../lib/editor/font-sizes';
 
 // Constants for better maintainability
+// Font size mapping for execCommand (legacy HTML font sizes 1-7)
 const FONT_SIZE_MAP = {
-  '10px': '1',
-  '12px': '2',
-  '14px': '3',
-  '16px': '4',
-  '18px': '5',
-  '24px': '6',
-  '32px': '7'
+  '10px': '1',   // 7.5 pt
+  '12px': '2',   // 9 pt
+  '13px': '2',   // 10 pt
+  '15px': '3',   // 11 pt (Word default)
+  '16px': '3',   // 12 pt
+  '19px': '4',   // 14 pt
+  '21px': '4',   // 16 pt
+  '24px': '5',   // 18 pt
+  '27px': '5',   // 20 pt
+  '32px': '6',   // 24 pt
+  '37px': '6',   // 28 pt
+  '48px': '6',   // 36 pt
+  '64px': '7',   // 48 pt
+  '96px': '7'    // 72 pt
 };
 
 const DEFAULT_FORMAT = {
@@ -21,7 +30,7 @@ const DEFAULT_FORMAT = {
   alignRight: false,
   alignJustify: false,
   fontFamily: 'Arial',
-  fontSize: '12px',
+  fontSize: DEFAULT_FONT_SIZE,
   headingLevel: 'p' // Add heading level tracking
 };
 

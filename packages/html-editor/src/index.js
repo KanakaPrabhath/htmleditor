@@ -31,12 +31,31 @@ export { useFormatting, useContinuousReflow } from './hooks';
 export { saveImage, getImage, deleteImage, clearImages, getAllImageKeys } from './lib/storage/local-storage';
 
 // === CONSTANTS ===
-// Page dimensions at 72 DPI (PDF standard)
+// Page dimensions at 96 DPI (Microsoft Word standard for screen display)
+// Import from centralized page-sizes module
+import { PAGE_SIZES } from './lib/editor/page-sizes';
+
 export const PAGE_DIMENSIONS = {
-  A4: { width: 595, height: 842 },
-  Letter: { width: 612, height: 792 },
-  Legal: { width: 612, height: 1008 }
+  A4: { width: PAGE_SIZES.A4.width, height: PAGE_SIZES.A4.height },
+  Letter: { width: PAGE_SIZES.Letter.width, height: PAGE_SIZES.Letter.height },
+  Legal: { width: PAGE_SIZES.Legal.width, height: PAGE_SIZES.Legal.height }
 };
+
+// Also export the full PAGE_SIZES for advanced usage
+export { PAGE_SIZES, getPageDimensions, isValidPageSize, getAvailablePageSizes, DEFAULT_PAGE_SIZE } from './lib/editor/page-sizes';
+
+// === FONT SIZE UTILITIES ===
+// Font size conversions and constants (96 DPI, matching Microsoft Word)
+export { 
+  FONT_SIZE_MAP, 
+  COMMON_FONT_SIZES, 
+  DEFAULT_FONT_SIZE, 
+  pointsToPixels, 
+  pixelsToPoints, 
+  getPixelValue, 
+  getPointValue, 
+  isValidFontSize 
+} from './lib/editor/font-sizes';
 
 // === LOGGER UTILITY ===
 export { default as logger } from './lib/editor/utils/logger';

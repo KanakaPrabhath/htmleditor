@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 
 /**
  * PageView - MS Word-like continuous contenteditable surface
@@ -170,6 +171,30 @@ const PageView = ({
         transition: 'transform 0.2s ease-out'
       }}
     >
+      {/* Page height boundary markers (red lines) */}
+      {pageBoundaries.map((boundary, index) => {
+        // Calculate where the page height ends (top + height)
+        const boundaryEndPosition = boundary.top + dimensions.height;
+        
+        return (
+          <div
+            key={`boundary-marker-${boundary.id}`}
+            className="page-height-marker"
+            style={{
+              position: 'absolute',
+              top: `${boundaryEndPosition}px`,
+              left: 0,
+              right: 0,
+              height: '2px',
+              backgroundColor: 'red',
+              zIndex: 10,
+              pointerEvents: 'none'
+            }}
+            title={`End of Page ${boundary.pageNumber} (${dimensions.height}px)`}
+          />
+        );
+      })}
+      
       {/* Continuous contenteditable surface with page styling */}
       <div
         ref={editorRef}
@@ -188,7 +213,7 @@ const PageView = ({
           outline: 'none',
           cursor: 'text',
           fontFamily: 'Arial, sans-serif',
-          fontSize: '12px',
+          fontSize: DEFAULT_FONT_SIZE,
           lineHeight: '1.15',
           color: '#333',
           wordWrap: 'break-word',

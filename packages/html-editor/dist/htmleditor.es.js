@@ -322,7 +322,7 @@ const Ne = 100, Ie = 50, De = 200, Xe = 5, Le = (e) => e < De, ze = (e) => e > I
     left: 1.25,
     right: 1.25
   }
-}, le = "NARROW", ht = (e = le) => {
+}, le = "NORMAL", ht = (e = le) => {
   const t = Pe[e] || Pe[le];
   return {
     top: be(t.top),

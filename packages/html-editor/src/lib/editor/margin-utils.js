@@ -68,7 +68,7 @@ export const MARGIN_PRESETS = {
 };
 
 // Default margin preset
-export const DEFAULT_MARGIN_PRESET = 'Normal';
+export const DEFAULT_MARGIN_PRESET = 'NORMAL';
 
 /**
  * Convert margin preset to pixel values

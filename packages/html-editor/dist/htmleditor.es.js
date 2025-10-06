@@ -2890,7 +2890,7 @@ const Ye = ({
             cursor: "text",
             fontFamily: "Arial, sans-serif",
             fontSize: Ze,
-            lineHeight: "1.15",
+            lineHeight: "1.3",
             color: "#333",
             wordWrap: "break-word",
             whiteSpace: "pre-wrap",

@@ -188,7 +188,7 @@ const PageView = ({
           cursor: 'text',
           fontFamily: 'Arial, sans-serif',
           fontSize: DEFAULT_FONT_SIZE,
-          lineHeight: '1.15',
+          lineHeight: '1.3',
           color: '#333',
           wordWrap: 'break-word',
           whiteSpace: 'pre-wrap',

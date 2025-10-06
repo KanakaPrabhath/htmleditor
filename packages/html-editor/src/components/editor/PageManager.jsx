@@ -89,76 +89,77 @@ export const PageManager = ({
 
   return (
     <div className="page-manager">
-      {/* Page Size Selector */}
-      <div className="page-size-controls">
-        <label htmlFor="page-size-selector">
+      {/* Page Settings Group - Size and Margins together */}
+      <div className="page-settings-group">
+        <div className="page-settings-header">
           <Settings size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-          Page Size:
-        </label>
-        <select
-          id="page-size-selector"
-          role="combobox"
-          aria-label="Page size selector"
-          value={pageSize}
-          onChange={(e) => handlePageSizeChange(e.target.value)}
-        >
-          <option value="A4">A4</option>
-          <option value="Letter">Letter</option>
-          <option value="Legal">Legal</option>
-        </select>
+          Page Settings
+        </div>
+        <div className="page-settings-controls">
+          <div className="page-setting-item">
+            <label htmlFor="page-size-selector">Size:</label>
+            <select
+              id="page-size-selector"
+              role="combobox"
+              aria-label="Page size selector"
+              value={pageSize}
+              onChange={(e) => handlePageSizeChange(e.target.value)}
+            >
+              <option value="A4">A4</option>
+              <option value="Letter">Letter</option>
+              <option value="Legal">Legal</option>
+            </select>
+          </div>
+          <div className="page-setting-item">
+            <label htmlFor="page-margins-selector">Margins:</label>
+            <select
+              id="page-margins-selector"
+              role="combobox"
+              aria-label="Page margins selector"
+              value={pageMargins}
+              onChange={(e) => handlePageMarginsChange(e.target.value)}
+            >
+              {getMarginPresetNames().map((presetName) => (
+                <option key={presetName} value={presetName}>
+                  {getMarginPresetLabel(presetName)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
-      {/* Page Margins Selector */}
-      <div className="page-margins-controls">
-        <label htmlFor="page-margins-selector">
-          <Settings size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-          Margins:
-        </label>
-        <select
-          id="page-margins-selector"
-          role="combobox"
-          aria-label="Page margins selector"
-          value={pageMargins}
-          onChange={(e) => handlePageMarginsChange(e.target.value)}
-        >
-          {getMarginPresetNames().map((presetName) => (
-            <option key={presetName} value={presetName}>
-              {getMarginPresetLabel(presetName)}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Zoom Controls */}
-      <div className="zoom-controls">
+      {/* Compact Zoom Controls */}
+      <div className="zoom-controls-compact">
         <button
           type="button"
-          className="zoom-button"
+          className="zoom-button-compact"
           onClick={onZoomOut}
           disabled={!canZoomOut}
           aria-label="Zoom out"
           title="Zoom out (Ctrl + -)"
         >
-          <ZoomOut size={14} />
+          <ZoomOut size={12} />
         </button>
+        <span className="zoom-level-display">{zoomLevel}%</span>
         <button
           type="button"
-          className="zoom-reset-button"
-          onClick={onZoomReset}
-          aria-label="Reset zoom"
-          title="Reset zoom to 100% (Ctrl + 0)"
-        >
-          {zoomLevel}%
-        </button>
-        <button
-          type="button"
-          className="zoom-button"
+          className="zoom-button-compact"
           onClick={onZoomIn}
           disabled={!canZoomIn}
           aria-label="Zoom in"
           title="Zoom in (Ctrl + +)"
         >
-          <ZoomIn size={14} />
+          <ZoomIn size={12} />
+        </button>
+        <button
+          type="button"
+          className="zoom-reset-compact"
+          onClick={onZoomReset}
+          aria-label="Reset zoom"
+          title="Reset zoom to 100% (Ctrl + 0)"
+        >
+          Reset
         </button>
       </div>
 

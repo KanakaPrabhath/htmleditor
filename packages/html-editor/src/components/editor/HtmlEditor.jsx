@@ -31,6 +31,7 @@ const NAVIGATION_LOCK_TIMEOUT = 500;
  * @param {Function} props.onAddPage - Optional callback when adding a page
  * @param {Function} props.onDeletePage - Optional callback when deleting a page (pageIndex)
  * @param {Function} props.onPageSizeChange - Optional callback when page size changes (newSize)
+ * @param {Function} props.onPageMarginsChange - Optional callback when page margins change (newMargins)
  * @param {Function} props.onChange - Optional callback when content changes (htmlContent)
  * @param {boolean} props.showSidebar - Whether to show the sidebar (default: true)
  * @param {boolean} props.showToolbar - Whether to show the toolbar (default: true)
@@ -43,6 +44,7 @@ const HtmlEditor = forwardRef(({
   onAddPage,
   onDeletePage,
   onPageSizeChange: onPageSizeChangeCallback,
+  onPageMarginsChange: onPageMarginsChangeCallback,
   onChange,
   showSidebar = true,
   showToolbar = true,
@@ -50,7 +52,7 @@ const HtmlEditor = forwardRef(({
 }, ref) => {
   const documentState = useDocumentState();
   const actions = useDocumentActions();
-  const { pageSize, continuousContent, pageBoundaries, activePage, zoomLevel } = documentState;
+  const { pageSize, pageMargins, continuousContent, pageBoundaries, activePage, zoomLevel } = documentState;
 
   const containerRef = useRef(null);
   const editorRef = useRef(null);
@@ -64,7 +66,7 @@ const HtmlEditor = forwardRef(({
     triggerAutoReflow,
     removePageAndContent,
     insertPageBreakAtBoundary
-  } = useContinuousReflow(pageSize, editorRef, zoomLevel);
+  } = useContinuousReflow(pageSize, editorRef, zoomLevel, pageMargins);
 
   const dimensions = useMemo(() => getPageDimensions(pageSize), [pageSize]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -196,6 +198,17 @@ const HtmlEditor = forwardRef(({
       onPageSizeChangeCallback(newSize);
     }
   }, [actions, updateBoundaries, onPageSizeChangeCallback]);
+
+  const handlePageMarginsChange = useCallback((newMargins) => {
+    actions.updatePageMargins(newMargins);
+    // Recalculate boundaries with new margins (debounced in hook)
+    updateBoundaries({ pageMargins: newMargins });
+    
+    // Call parent callback if provided
+    if (onPageMarginsChangeCallback) {
+      onPageMarginsChangeCallback(newMargins);
+    }
+  }, [actions, updateBoundaries, onPageMarginsChangeCallback]);
 
   const handleNavigatePage = useCallback((pageIndex) => {
     // Validate page index
@@ -427,6 +440,7 @@ const HtmlEditor = forwardRef(({
             content={continuousContent}
             dimensions={dimensions}
             pageSize={pageSize}
+            pageMargins={pageMargins}
             pageBoundaries={pageBoundaries}
             editorRef={editorRef}
             onInput={handleInput}
@@ -444,6 +458,7 @@ const HtmlEditor = forwardRef(({
                 onAddPage: handleAddPage,
                 onDeletePage: handleDeletePage,
                 onPageSizeChange: handlePageSizeChange,
+                onPageMarginsChange: handlePageMarginsChange,
                 zoomLevel,
                 canZoomIn: canZoomIn(zoomLevel),
                 canZoomOut: canZoomOut(zoomLevel),
@@ -456,6 +471,7 @@ const HtmlEditor = forwardRef(({
                 pageBoundaries={pageBoundaries}
                 activePage={activePage}
                 pageSize={pageSize}
+                pageMargins={pageMargins}
                 zoomLevel={zoomLevel}
                 canZoomIn={canZoomIn(zoomLevel)}
                 canZoomOut={canZoomOut(zoomLevel)}
@@ -463,6 +479,7 @@ const HtmlEditor = forwardRef(({
                 onAddPage={handleAddPage}
                 onDeletePage={handleDeletePage}
                 onPageSizeChange={handlePageSizeChange}
+                onPageMarginsChange={handlePageMarginsChange}
                 onZoomIn={handleZoomIn}
                 onZoomOut={handleZoomOut}
                 onZoomReset={handleZoomReset}
@@ -483,6 +500,7 @@ HtmlEditor.propTypes = {
   onAddPage: PropTypes.func,
   onDeletePage: PropTypes.func,
   onPageSizeChange: PropTypes.func,
+  onPageMarginsChange: PropTypes.func,
   onChange: PropTypes.func,
   showSidebar: PropTypes.bool,
   showToolbar: PropTypes.bool,
@@ -495,6 +513,7 @@ HtmlEditor.defaultProps = {
   onAddPage: undefined,
   onDeletePage: undefined,
   onPageSizeChange: undefined,
+  onPageMarginsChange: undefined,
   onChange: undefined,
   showSidebar: true,
   showToolbar: true,

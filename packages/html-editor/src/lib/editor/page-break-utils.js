@@ -38,6 +38,7 @@ export const insertPageBreakBefore = (targetElement, pageNumber) => {
  * @param {number} pageNumber - The page number where the break should be inserted (1-based)
  * @param {string} pageSize - The page size
  * @param {number} zoomLevel - Current zoom level percentage
+ * @param {string} pageMargins - The margin preset name
  * @param {Function} updateContentCallback - Callback to update content in context
  * @param {Function} updateBoundariesCallback - Callback to update boundaries
  * @returns {boolean} Success status
@@ -47,6 +48,7 @@ export const insertPageBreakAtBoundary = (
   pageNumber,
   pageSize,
   zoomLevel,
+  pageMargins,
   updateContentCallback,
   updateBoundariesCallback
 ) => {
@@ -55,8 +57,8 @@ export const insertPageBreakAtBoundary = (
   }
 
   try {
-    // Calculate max content height accounting for zoom and padding
-    const maxHeight = calculateMaxContentHeight(pageSize, zoomLevel);
+    // Calculate max content height accounting for zoom, padding, and margins
+    const maxHeight = calculateMaxContentHeight(pageSize, zoomLevel, pageMargins);
     
     // Target height for the page break insertion
     const targetHeight = maxHeight * (pageNumber - 1);

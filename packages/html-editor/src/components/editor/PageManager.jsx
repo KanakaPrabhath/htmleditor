@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FileText, Plus, X, Settings, ZoomIn, ZoomOut } from 'lucide-react';
+import { MARGIN_PRESETS, getMarginPresetNames, getMarginPresetLabel, DEFAULT_MARGIN_PRESET } from '../../lib/editor/margin-utils';
 
 /**
  * PageManager Component - Standalone Component
@@ -13,6 +14,7 @@ import { FileText, Plus, X, Settings, ZoomIn, ZoomOut } from 'lucide-react';
  * @param {Array} props.pageBoundaries - Array of page boundary objects [{id, pageNumber, top, height}, ...]
  * @param {number} props.activePage - Current active page index (0-based)
  * @param {string} props.pageSize - Current page size ('A4', 'Letter', or 'Legal')
+ * @param {string} props.pageMargins - Current page margin preset ('NORMAL', 'NARROW', etc.)
  * @param {number} props.zoomLevel - Current zoom level (50-200)
  * @param {boolean} props.canZoomIn - Whether zoom in is allowed
  * @param {boolean} props.canZoomOut - Whether zoom out is allowed
@@ -20,6 +22,7 @@ import { FileText, Plus, X, Settings, ZoomIn, ZoomOut } from 'lucide-react';
  * @param {Function} props.onAddPage - Callback when page is added
  * @param {Function} props.onDeletePage - Callback when page is deleted (pageIndex)
  * @param {Function} props.onPageSizeChange - Callback when page size changes (newSize)
+ * @param {Function} props.onPageMarginsChange - Callback when page margins change (newMargins)
  * @param {Function} props.onZoomIn - Callback when zoom in is clicked
  * @param {Function} props.onZoomOut - Callback when zoom out is clicked
  * @param {Function} props.onZoomReset - Callback when zoom reset is clicked
@@ -28,6 +31,7 @@ export const PageManager = ({
   pageBoundaries = [{ id: 'page-0', pageNumber: 1 }],
   activePage = 0,
   pageSize = 'A4',
+  pageMargins = DEFAULT_MARGIN_PRESET,
   zoomLevel = 100,
   canZoomIn = true,
   canZoomOut = true,
@@ -35,6 +39,7 @@ export const PageManager = ({
   onAddPage,
   onDeletePage,
   onPageSizeChange,
+  onPageMarginsChange,
   onZoomIn,
   onZoomOut,
   onZoomReset
@@ -75,6 +80,13 @@ export const PageManager = ({
     }
   };
 
+  const handlePageMarginsChange = (newMargins) => {
+    // Delegate to parent callback
+    if (onPageMarginsChange) {
+      onPageMarginsChange(newMargins);
+    }
+  };
+
   return (
     <div className="page-manager">
       {/* Page Size Selector */}
@@ -93,6 +105,27 @@ export const PageManager = ({
           <option value="A4">A4</option>
           <option value="Letter">Letter</option>
           <option value="Legal">Legal</option>
+        </select>
+      </div>
+
+      {/* Page Margins Selector */}
+      <div className="page-margins-controls">
+        <label htmlFor="page-margins-selector">
+          <Settings size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+          Margins:
+        </label>
+        <select
+          id="page-margins-selector"
+          role="combobox"
+          aria-label="Page margins selector"
+          value={pageMargins}
+          onChange={(e) => handlePageMarginsChange(e.target.value)}
+        >
+          {getMarginPresetNames().map((presetName) => (
+            <option key={presetName} value={presetName}>
+              {getMarginPresetLabel(presetName)}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -188,6 +221,7 @@ PageManager.propTypes = {
   ),
   activePage: PropTypes.number,
   pageSize: PropTypes.oneOf(['A4', 'Letter', 'Legal']),
+  pageMargins: PropTypes.string,
   zoomLevel: PropTypes.number,
   canZoomIn: PropTypes.bool,
   canZoomOut: PropTypes.bool,
@@ -195,6 +229,7 @@ PageManager.propTypes = {
   onAddPage: PropTypes.func,
   onDeletePage: PropTypes.func,
   onPageSizeChange: PropTypes.func,
+  onPageMarginsChange: PropTypes.func,
   onZoomIn: PropTypes.func,
   onZoomOut: PropTypes.func,
   onZoomReset: PropTypes.func
@@ -204,6 +239,7 @@ PageManager.defaultProps = {
   pageBoundaries: [{ id: 'page-0', pageNumber: 1 }],
   activePage: 0,
   pageSize: 'A4',
+  pageMargins: DEFAULT_MARGIN_PRESET,
   zoomLevel: 100,
   canZoomIn: true,
   canZoomOut: true,
@@ -211,6 +247,7 @@ PageManager.defaultProps = {
   onAddPage: undefined,
   onDeletePage: undefined,
   onPageSizeChange: undefined,
+  onPageMarginsChange: undefined,
   onZoomIn: undefined,
   onZoomOut: undefined,
   onZoomReset: undefined

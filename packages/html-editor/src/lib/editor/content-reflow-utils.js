@@ -79,10 +79,11 @@ export const findOverflowPoint = (pageElements, maxHeight) => {
 /**
  * Automatic reflow: Insert page breaks when content exceeds page height
  * Optimized with performance guards and single-page-at-a-time processing
- * Accounts for current zoom level when calculating max height
+ * Accounts for current zoom level and margins when calculating max height
  * @param {HTMLElement} editor - The editor element
  * @param {string} pageSize - The page size
  * @param {number} zoomLevel - Current zoom level percentage
+ * @param {string} pageMargins - The margin preset name
  * @param {Function} updateContentCallback - Callback to update content in context
  * @param {Function} updateBoundariesCallback - Callback to update boundaries
  * @param {boolean} isReflowingRef - Reference to track if reflow is in progress
@@ -93,6 +94,7 @@ export const checkAndReflow = (
   editor, 
   pageSize, 
   zoomLevel, 
+  pageMargins,
   updateContentCallback, 
   updateBoundariesCallback, 
   isReflowingRef, 
@@ -106,7 +108,7 @@ export const checkAndReflow = (
   try {
     isReflowingRef.current = true;
     
-    const maxHeight = calculateMaxContentHeight(pageSize, zoomLevel);
+    const maxHeight = calculateMaxContentHeight(pageSize, zoomLevel, pageMargins);
     
     // Split content into pages based on existing breaks
     let pages = splitContentIntoPages(editor);

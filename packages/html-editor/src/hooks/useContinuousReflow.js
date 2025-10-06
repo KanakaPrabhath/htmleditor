@@ -29,13 +29,15 @@ const DEFAULT_BOUNDARY_DELAY = 300;
  * @param {string} pageSize - The page size (A4, Letter, Legal)
  * @param {React.RefObject} editorRef - Reference to the editor element
  * @param {number} zoomLevel - Current zoom level percentage (50-200)
+ * @param {string} pageMargins - The margin preset name
  */
-export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
+export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100, pageMargins = 'NARROW') => {
   const actions = useDocumentActions();
   const boundaryTimeoutRef = useRef(null);
   const reflowTimeoutRef = useRef(null);
   const latestPageSizeRef = useRef(pageSize);
   const latestZoomLevelRef = useRef(zoomLevel);
+  const latestPageMarginsRef = useRef(pageMargins);
   const isReflowingRef = useRef(false);
 
   useEffect(() => {
@@ -45,6 +47,10 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
   useEffect(() => {
     latestZoomLevelRef.current = zoomLevel;
   }, [zoomLevel]);
+
+  useEffect(() => {
+    latestPageMarginsRef.current = pageMargins;
+  }, [pageMargins]);
 
   useEffect(() => {
     return () => {
@@ -91,12 +97,14 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
 
     const targetPageSize = latestPageSizeRef.current || 'A4';
     const currentZoom = latestZoomLevelRef.current || 100;
+    const currentMargins = latestPageMarginsRef.current || 'NARROW';
     
     return insertPageBreakAtBoundary(
       editorRef.current,
       pageNumber,
       targetPageSize,
       currentZoom,
+      currentMargins,
       actions.updateContinuousContent,
       updateBoundaries
     );
@@ -105,7 +113,7 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
   /**
    * Automatic reflow: Insert page breaks when content exceeds page height
    * Optimized with performance guards and single-page-at-a-time processing
-   * Accounts for current zoom level when calculating max height
+   * Accounts for current zoom level and margins when calculating max height
    */
   const checkAndReflowCallback = useCallback(() => {
     if (!editorRef?.current) {
@@ -114,11 +122,13 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100) => {
 
     const targetPageSize = latestPageSizeRef.current || 'A4';
     const currentZoom = latestZoomLevelRef.current || 100;
+    const currentMargins = latestPageMarginsRef.current || 'NARROW';
     
     checkAndReflow(
       editorRef.current,
       targetPageSize,
       currentZoom,
+      currentMargins,
       actions.updateContinuousContent,
       updateBoundaries,
       isReflowingRef,

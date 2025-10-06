@@ -4,6 +4,7 @@
  */
 
 import { PAGE_SIZES } from './page-sizes.js';
+import { getTotalVerticalMargins, DEFAULT_MARGIN_PRESET } from './margin-utils.js';
 
 // Content padding constants
 export const CONTENT_PADDING = {
@@ -74,14 +75,16 @@ export const calculatePageBoundaries = (editor, options = {}) => {
 };
 
 /**
- * Calculate maximum content height for a page accounting for zoom and padding
+ * Calculate maximum content height for a page accounting for zoom and margins
  * @param {string} pageSize - The page size
  * @param {number} zoomLevel - Current zoom level percentage
+ * @param {string} pageMargins - The margin preset name
  * @returns {number} Maximum content height in pixels
  */
-export const calculateMaxContentHeight = (pageSize, zoomLevel = 100) => {
+export const calculateMaxContentHeight = (pageSize, zoomLevel = 100, pageMargins = DEFAULT_MARGIN_PRESET) => {
   const dimensions = getPageDimensions(pageSize);
-  const baseMaxHeight = dimensions.height - CONTENT_PADDING.top - CONTENT_PADDING.bottom;
+  const verticalMargins = getTotalVerticalMargins(pageMargins);
+  const baseMaxHeight = dimensions.height - verticalMargins;
   const zoomMultiplier = zoomLevel / 100;
   return baseMaxHeight / zoomMultiplier;
 };

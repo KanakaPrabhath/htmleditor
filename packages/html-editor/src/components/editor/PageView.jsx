@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
+import { getMarginPixels, DEFAULT_MARGIN_PRESET } from '../../lib/editor/margin-utils';
 
 /**
  * PageView - MS Word-like continuous contenteditable surface
@@ -18,15 +19,11 @@ const PageView = ({
   onKeyDown,
   onClick,
   onScroll,
-  zoomLevel = 100
+  zoomLevel = 100,
+  pageMargins = DEFAULT_MARGIN_PRESET
 }) => {
-  // Word's default margins: 0.5 inches = 0.5 * 96 DPI = 48px
-  const padding = {
-    top: 48,
-    bottom: 48,
-    left: 48,
-    right: 48
-  };
+  // Convert margin preset to pixel values
+  const padding = getMarginPixels(pageMargins);
 
   // Calculate zoom multiplier
   const zoomMultiplier = zoomLevel / 100;
@@ -257,7 +254,8 @@ PageView.propTypes = {
   onKeyDown: PropTypes.func,
   onClick: PropTypes.func,
   onScroll: PropTypes.func,
-  zoomLevel: PropTypes.number
+  zoomLevel: PropTypes.number,
+  pageMargins: PropTypes.string
 };
 
 PageView.defaultProps = {
@@ -265,7 +263,8 @@ PageView.defaultProps = {
   onKeyDown: undefined,
   onClick: undefined,
   onScroll: undefined,
-  zoomLevel: 100
+  zoomLevel: 100,
+  pageMargins: DEFAULT_MARGIN_PRESET
 };
 
 export default PageView;

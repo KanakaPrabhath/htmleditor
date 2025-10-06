@@ -1,9 +1,9 @@
-import xe, { createContext as kt, useContext as St, useReducer as Ct, useMemo as be, useState as Ee, useCallback as Z, useRef as J, useEffect as ae, forwardRef as De, createElement as Ce, useImperativeHandle as wt } from "react";
-import { v4 as Le } from "uuid";
-function Ot(e) {
+import ke, { createContext as Nt, useContext as It, useReducer as Dt, useMemo as Ae, useState as Te, useCallback as G, useRef as X, useEffect as oe, forwardRef as $e, createElement as je, useImperativeHandle as Lt } from "react";
+import { v4 as Ue } from "uuid";
+function zt(e) {
   return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
 }
-var ge = { exports: {} }, le = {};
+var ye = { exports: {} }, fe = {};
 /**
  * @license React
  * react-jsx-runtime.production.js
@@ -13,29 +13,29 @@ var ge = { exports: {} }, le = {};
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var qe;
-function Rt() {
-  if (qe) return le;
-  qe = 1;
+var We;
+function Bt() {
+  if (We) return fe;
+  We = 1;
   var e = Symbol.for("react.transitional.element"), t = Symbol.for("react.fragment");
-  function a(n, r, s) {
-    var i = null;
-    if (s !== void 0 && (i = "" + s), r.key !== void 0 && (i = "" + r.key), "key" in r) {
+  function i(n, r, s) {
+    var a = null;
+    if (s !== void 0 && (a = "" + s), r.key !== void 0 && (a = "" + r.key), "key" in r) {
       s = {};
-      for (var l in r)
-        l !== "key" && (s[l] = r[l]);
+      for (var u in r)
+        u !== "key" && (s[u] = r[u]);
     } else s = r;
     return r = s.ref, {
       $$typeof: e,
       type: n,
-      key: i,
+      key: a,
       ref: r !== void 0 ? r : null,
       props: s
     };
   }
-  return le.Fragment = t, le.jsx = a, le.jsxs = a, le;
+  return fe.Fragment = t, fe.jsx = i, fe.jsxs = i, fe;
 }
-var ue = {};
+var ge = {};
 /**
  * @license React
  * react-jsx-runtime.development.js
@@ -45,47 +45,47 @@ var ue = {};
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var Ge;
-function jt() {
-  return Ge || (Ge = 1, process.env.NODE_ENV !== "production" && (function() {
+var Ke;
+function $t() {
+  return Ke || (Ke = 1, process.env.NODE_ENV !== "production" && (function() {
     function e(o) {
       if (o == null) return null;
       if (typeof o == "function")
-        return o.$$typeof === re ? null : o.displayName || o.name || null;
+        return o.$$typeof === ae ? null : o.displayName || o.name || null;
       if (typeof o == "string") return o;
       switch (o) {
-        case w:
+        case C:
           return "Fragment";
-        case S:
+        case A:
           return "Profiler";
-        case E:
+        case z:
           return "StrictMode";
-        case $:
+        case R:
           return "Suspense";
-        case H:
+        case B:
           return "SuspenseList";
-        case Q:
+        case q:
           return "Activity";
       }
       if (typeof o == "object")
         switch (typeof o.tag == "number" && console.error(
           "Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."
         ), o.$$typeof) {
-          case _:
+          case h:
             return "Portal";
-          case O:
+          case k:
             return o.displayName || "Context";
-          case b:
+          case _:
             return (o._context.displayName || "Context") + ".Consumer";
-          case g:
-            var y = o.render;
-            return o = o.displayName, o || (o = y.displayName || y.name || "", o = o !== "" ? "ForwardRef(" + o + ")" : "ForwardRef"), o;
-          case G:
-            return y = o.displayName || null, y !== null ? y : e(o.type) || "Memo";
-          case K:
-            y = o._payload, o = o._init;
+          case l:
+            var m = o.render;
+            return o = o.displayName, o || (o = m.displayName || m.name || "", o = o !== "" ? "ForwardRef(" + o + ")" : "ForwardRef"), o;
+          case Z:
+            return m = o.displayName || null, m !== null ? m : e(o.type) || "Memo";
+          case V:
+            m = o._payload, o = o._init;
             try {
-              return e(o(y));
+              return e(o(m));
             } catch {
             }
         }
@@ -94,77 +94,77 @@ function jt() {
     function t(o) {
       return "" + o;
     }
-    function a(o) {
+    function i(o) {
       try {
         t(o);
-        var y = !1;
+        var m = !1;
       } catch {
-        y = !0;
+        m = !0;
       }
-      if (y) {
-        y = console;
-        var A = y.error, P = typeof Symbol == "function" && Symbol.toStringTag && o[Symbol.toStringTag] || o.constructor.name || "Object";
-        return A.call(
-          y,
+      if (m) {
+        m = console;
+        var P = m.error, T = typeof Symbol == "function" && Symbol.toStringTag && o[Symbol.toStringTag] || o.constructor.name || "Object";
+        return P.call(
+          m,
           "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
-          P
+          T
         ), t(o);
       }
     }
     function n(o) {
-      if (o === w) return "<>";
-      if (typeof o == "object" && o !== null && o.$$typeof === K)
+      if (o === C) return "<>";
+      if (typeof o == "object" && o !== null && o.$$typeof === V)
         return "<...>";
       try {
-        var y = e(o);
-        return y ? "<" + y + ">" : "<...>";
+        var m = e(o);
+        return m ? "<" + m + ">" : "<...>";
       } catch {
         return "<...>";
       }
     }
     function r() {
-      var o = oe.A;
+      var o = ne.A;
       return o === null ? null : o.getOwner();
     }
     function s() {
       return Error("react-stack-top-frame");
     }
-    function i(o) {
+    function a(o) {
       if (ie.call(o, "key")) {
-        var y = Object.getOwnPropertyDescriptor(o, "key").get;
-        if (y && y.isReactWarning) return !1;
+        var m = Object.getOwnPropertyDescriptor(o, "key").get;
+        if (m && m.isReactWarning) return !1;
       }
       return o.key !== void 0;
     }
-    function l(o, y) {
-      function A() {
-        q || (q = !0, console.error(
+    function u(o, m) {
+      function P() {
+        K || (K = !0, console.error(
           "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
-          y
+          m
         ));
       }
-      A.isReactWarning = !0, Object.defineProperty(o, "key", {
-        get: A,
+      P.isReactWarning = !0, Object.defineProperty(o, "key", {
+        get: P,
         configurable: !0
       });
     }
-    function m() {
+    function g() {
       var o = e(this.type);
-      return V[o] || (V[o] = !0, console.error(
+      return F[o] || (F[o] = !0, console.error(
         "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
       )), o = this.props.ref, o !== void 0 ? o : null;
     }
-    function f(o, y, A, P, N, R) {
-      var k = A.ref;
+    function f(o, m, P, T, I, w) {
+      var S = P.ref;
       return o = {
-        $$typeof: C,
+        $$typeof: x,
         type: o,
-        key: y,
-        props: A,
-        _owner: P
-      }, (k !== void 0 ? k : null) !== null ? Object.defineProperty(o, "ref", {
+        key: m,
+        props: P,
+        _owner: T
+      }, (S !== void 0 ? S : null) !== null ? Object.defineProperty(o, "ref", {
         enumerable: !1,
-        get: m
+        get: g
       }) : Object.defineProperty(o, "ref", { enumerable: !1, value: null }), o._store = {}, Object.defineProperty(o._store, "validated", {
         configurable: !1,
         enumerable: !1,
@@ -179,1304 +179,164 @@ function jt() {
         configurable: !1,
         enumerable: !1,
         writable: !0,
-        value: N
+        value: I
       }), Object.defineProperty(o, "_debugTask", {
         configurable: !1,
         enumerable: !1,
         writable: !0,
-        value: R
+        value: w
       }), Object.freeze && (Object.freeze(o.props), Object.freeze(o)), o;
     }
-    function h(o, y, A, P, N, R) {
-      var k = y.children;
-      if (k !== void 0)
-        if (P)
-          if (ne(k)) {
-            for (P = 0; P < k.length; P++)
-              d(k[P]);
-            Object.freeze && Object.freeze(k);
+    function b(o, m, P, T, I, w) {
+      var S = m.children;
+      if (S !== void 0)
+        if (T)
+          if (re(S)) {
+            for (T = 0; T < S.length; T++)
+              y(S[T]);
+            Object.freeze && Object.freeze(S);
           } else
             console.error(
               "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
             );
-        else d(k);
-      if (ie.call(y, "key")) {
-        k = e(o);
-        var j = Object.keys(y).filter(function(I) {
-          return I !== "key";
+        else y(S);
+      if (ie.call(m, "key")) {
+        S = e(o);
+        var j = Object.keys(m).filter(function(D) {
+          return D !== "key";
         });
-        P = 0 < j.length ? "{key: someKey, " + j.join(": ..., ") + ": ...}" : "{key: someKey}", p[k + P] || (j = 0 < j.length ? "{" + j.join(": ..., ") + ": ...}" : "{}", console.error(
+        T = 0 < j.length ? "{key: someKey, " + j.join(": ..., ") + ": ...}" : "{key: someKey}", p[S + T] || (j = 0 < j.length ? "{" + j.join(": ..., ") + ": ...}" : "{}", console.error(
           `A props object containing a "key" prop is being spread into JSX:
   let props = %s;
   <%s {...props} />
 React keys must be passed directly to JSX without using spread:
   let props = %s;
   <%s key={someKey} {...props} />`,
-          P,
-          k,
+          T,
+          S,
           j,
-          k
-        ), p[k + P] = !0);
+          S
+        ), p[S + T] = !0);
       }
-      if (k = null, A !== void 0 && (a(A), k = "" + A), i(y) && (a(y.key), k = "" + y.key), "key" in y) {
-        A = {};
-        for (var D in y)
-          D !== "key" && (A[D] = y[D]);
-      } else A = y;
-      return k && l(
-        A,
+      if (S = null, P !== void 0 && (i(P), S = "" + P), a(m) && (i(m.key), S = "" + m.key), "key" in m) {
+        P = {};
+        for (var L in m)
+          L !== "key" && (P[L] = m[L]);
+      } else P = m;
+      return S && u(
+        P,
         typeof o == "function" ? o.displayName || o.name || "Unknown" : o
       ), f(
         o,
-        k,
-        A,
+        S,
+        P,
         r(),
-        N,
-        R
+        I,
+        w
       );
     }
+    function y(o) {
+      d(o) ? o._store && (o._store.validated = 1) : typeof o == "object" && o !== null && o.$$typeof === V && (o._payload.status === "fulfilled" ? d(o._payload.value) && o._payload.value._store && (o._payload.value._store.validated = 1) : o._store && (o._store.validated = 1));
+    }
     function d(o) {
-      x(o) ? o._store && (o._store.validated = 1) : typeof o == "object" && o !== null && o.$$typeof === K && (o._payload.status === "fulfilled" ? x(o._payload.value) && o._payload.value._store && (o._payload.value._store.validated = 1) : o._store && (o._store.validated = 1));
+      return typeof o == "object" && o !== null && o.$$typeof === x;
     }
-    function x(o) {
-      return typeof o == "object" && o !== null && o.$$typeof === C;
-    }
-    var v = xe, C = Symbol.for("react.transitional.element"), _ = Symbol.for("react.portal"), w = Symbol.for("react.fragment"), E = Symbol.for("react.strict_mode"), S = Symbol.for("react.profiler"), b = Symbol.for("react.consumer"), O = Symbol.for("react.context"), g = Symbol.for("react.forward_ref"), $ = Symbol.for("react.suspense"), H = Symbol.for("react.suspense_list"), G = Symbol.for("react.memo"), K = Symbol.for("react.lazy"), Q = Symbol.for("react.activity"), re = Symbol.for("react.client.reference"), oe = v.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ie = Object.prototype.hasOwnProperty, ne = Array.isArray, F = console.createTask ? console.createTask : function() {
+    var O = ke, x = Symbol.for("react.transitional.element"), h = Symbol.for("react.portal"), C = Symbol.for("react.fragment"), z = Symbol.for("react.strict_mode"), A = Symbol.for("react.profiler"), _ = Symbol.for("react.consumer"), k = Symbol.for("react.context"), l = Symbol.for("react.forward_ref"), R = Symbol.for("react.suspense"), B = Symbol.for("react.suspense_list"), Z = Symbol.for("react.memo"), V = Symbol.for("react.lazy"), q = Symbol.for("react.activity"), ae = Symbol.for("react.client.reference"), ne = O.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ie = Object.prototype.hasOwnProperty, re = Array.isArray, se = console.createTask ? console.createTask : function() {
       return null;
     };
-    v = {
+    O = {
       react_stack_bottom_frame: function(o) {
         return o();
       }
     };
-    var q, V = {}, ee = v.react_stack_bottom_frame.bind(
-      v,
+    var K, F = {}, J = O.react_stack_bottom_frame.bind(
+      O,
       s
-    )(), te = F(n(s)), p = {};
-    ue.Fragment = w, ue.jsx = function(o, y, A) {
-      var P = 1e4 > oe.recentlyCreatedOwnerStacks++;
-      return h(
+    )(), te = se(n(s)), p = {};
+    ge.Fragment = C, ge.jsx = function(o, m, P) {
+      var T = 1e4 > ne.recentlyCreatedOwnerStacks++;
+      return b(
         o,
-        y,
-        A,
+        m,
+        P,
         !1,
-        P ? Error("react-stack-top-frame") : ee,
-        P ? F(n(o)) : te
+        T ? Error("react-stack-top-frame") : J,
+        T ? se(n(o)) : te
       );
-    }, ue.jsxs = function(o, y, A) {
-      var P = 1e4 > oe.recentlyCreatedOwnerStacks++;
-      return h(
+    }, ge.jsxs = function(o, m, P) {
+      var T = 1e4 > ne.recentlyCreatedOwnerStacks++;
+      return b(
         o,
-        y,
-        A,
+        m,
+        P,
         !0,
-        P ? Error("react-stack-top-frame") : ee,
-        P ? F(n(o)) : te
+        T ? Error("react-stack-top-frame") : J,
+        T ? se(n(o)) : te
       );
     };
-  })()), ue;
+  })()), ge;
 }
-var Ye;
-function Nt() {
-  return Ye || (Ye = 1, process.env.NODE_ENV === "production" ? ge.exports = Rt() : ge.exports = jt()), ge.exports;
-}
-var c = Nt();
-const we = 100, Oe = 50, Re = 200, Fe = 5, je = (e) => e < Re, Ne = (e) => e > Oe, pe = "A4", se = "<p><br></p>", Mt = "continuous", Me = {
-  A4: { width: 595, height: 842 },
-  Letter: { width: 612, height: 792 },
-  Legal: { width: 612, height: 1008 }
-}, de = (e, t = pe) => ({
-  id: Le(),
-  index: e,
-  size: t,
-  content: se,
-  images: [],
-  isBreakPoint: !1
-}), ye = (e) => typeof e != "string" || e.trim() === "" ? se : e, dt = (e, t = pe) => (e.length > 0 ? e : [de(0, t)]).map((n, r) => ({
-  id: n.id || Le(),
-  index: r,
-  size: n.size || t,
-  content: ye(n.content),
-  images: n.images || [],
-  isBreakPoint: !!n.isBreakPoint
-})), It = (e = pe) => [{
-  id: "page-0",
-  pageNumber: 1,
-  top: 0,
-  height: (Me[e] || Me.A4).height
-}], Ie = (e = {}) => {
-  const t = (/* @__PURE__ */ new Date()).toISOString(), a = e.pageSize || pe, n = dt(e.pages || [de(0, a)], a);
-  return {
-    id: Le(),
-    title: e.title || "Untitled Document",
-    createdAt: t,
-    updatedAt: t,
-    pageSize: a,
-    pages: n,
-    activePage: e.activePage && e.activePage < n.length ? e.activePage : 0,
-    pageBreaks: e.pageBreaks || [],
-    totalPages: n.length,
-    editorMode: e.editorMode || Mt,
-    continuousContent: e.continuousContent || se,
-    pageBoundaries: e.pageBoundaries || It(a),
-    zoomLevel: e.zoomLevel || we
-  };
-}, M = {
-  INITIALIZE_DOCUMENT: "INITIALIZE_DOCUMENT",
-  UPDATE_TITLE: "UPDATE_TITLE",
-  UPDATE_PAGE_CONTENT: "UPDATE_PAGE_CONTENT",
-  UPDATE_PAGES: "UPDATE_PAGES",
-  ADD_PAGE: "ADD_PAGE",
-  DELETE_PAGE: "DELETE_PAGE",
-  SET_ACTIVE_PAGE: "SET_ACTIVE_PAGE",
-  UPDATE_PAGE_SIZE: "UPDATE_PAGE_SIZE",
-  RESET_DOCUMENT: "RESET_DOCUMENT",
-  UPDATE_CONTINUOUS_CONTENT: "UPDATE_CONTINUOUS_CONTENT",
-  UPDATE_PAGE_BOUNDARIES: "UPDATE_PAGE_BOUNDARIES",
-  ADD_PAGE_BREAK: "ADD_PAGE_BREAK",
-  REMOVE_PAGE_BREAK: "REMOVE_PAGE_BREAK",
-  SET_EDITOR_MODE: "SET_EDITOR_MODE",
-  INSERT_PAGE_AT: "INSERT_PAGE_AT",
-  MOVE_PAGE_TO: "MOVE_PAGE_TO",
-  DUPLICATE_PAGE: "DUPLICATE_PAGE",
-  SET_ZOOM_LEVEL: "SET_ZOOM_LEVEL",
-  ZOOM_IN: "ZOOM_IN",
-  ZOOM_OUT: "ZOOM_OUT",
-  RESET_ZOOM: "RESET_ZOOM"
-}, Dt = (e, t) => {
-  const a = (/* @__PURE__ */ new Date()).toISOString();
-  switch (t.type) {
-    case M.INITIALIZE_DOCUMENT: {
-      const { initialContent: n = se, pageSize: r = pe } = t.payload || {}, s = { ...de(0, r), content: ye(n) };
-      return Ie({
-        title: e.title,
-        pageSize: r,
-        pages: [s]
-      });
-    }
-    case M.UPDATE_TITLE:
-      return {
-        ...e,
-        title: t.payload,
-        updatedAt: a
-      };
-    case M.UPDATE_PAGE_CONTENT: {
-      const { pageIndex: n, content: r } = t.payload;
-      if (n < 0 || n >= e.pages.length)
-        return e;
-      const s = [...e.pages];
-      return s[n] = {
-        ...s[n],
-        content: ye(r)
-      }, {
-        ...e,
-        pages: s,
-        updatedAt: a
-      };
-    }
-    case M.UPDATE_PAGES: {
-      const n = Array.isArray(t.payload) ? { pages: t.payload } : t.payload || {}, r = dt(n.pages || [], e.pageSize), s = Array.isArray(n.pageBreaks) ? n.pageBreaks : r.slice(0, -1).map((i, l) => ({
-        id: `auto-break-${l}`,
-        pageNumber: l + 1
-      }));
-      return {
-        ...e,
-        pages: r,
-        activePage: Math.min(e.activePage, r.length - 1),
-        pageBreaks: s,
-        totalPages: r.length,
-        updatedAt: a
-      };
-    }
-    case M.ADD_PAGE: {
-      const n = typeof t.payload?.index == "number" ? Math.min(Math.max(t.payload.index, 0), e.pages.length) : e.pages.length, r = [...e.pages];
-      r.splice(n, 0, de(n, e.pageSize));
-      const s = r.map((l, m) => ({
-        ...l,
-        index: m,
-        size: e.pageSize
-      })), i = s.slice(0, -1).map((l, m) => ({
-        id: `auto-break-${m}`,
-        pageNumber: m + 1
-      }));
-      return {
-        ...e,
-        pages: s,
-        activePage: n,
-        pageBreaks: i,
-        totalPages: s.length,
-        updatedAt: a
-      };
-    }
-    case M.DELETE_PAGE: {
-      const n = t.payload;
-      if (e.pages.length <= 1)
-        return e;
-      const r = [...e.pages];
-      r.splice(n, 1);
-      const s = r.map((m, f) => ({
-        ...m,
-        index: f,
-        size: e.pageSize
-      }));
-      let i = e.activePage;
-      i >= s.length ? i = s.length - 1 : n <= i && i > 0 && (i -= 1);
-      const l = s.slice(0, -1).map((m, f) => ({
-        id: `auto-break-${f}`,
-        pageNumber: f + 1
-      }));
-      return {
-        ...e,
-        pages: s,
-        activePage: i,
-        pageBreaks: l,
-        totalPages: s.length,
-        updatedAt: a
-      };
-    }
-    case M.SET_ACTIVE_PAGE: {
-      const n = t.payload;
-      if (n === e.activePage)
-        return e;
-      const r = e.editorMode === "continuous" ? e.pageBoundaries.length : e.pages.length;
-      return n < 0 || n >= r ? e : {
-        ...e,
-        activePage: n,
-        updatedAt: a
-      };
-    }
-    case M.UPDATE_PAGE_SIZE: {
-      const n = t.payload;
-      if (n === e.pageSize)
-        return e;
-      if (!Me[n])
-        return console.warn(`Invalid page size: ${n}`), e;
-      const r = e.pages.map((i, l) => ({
-        ...i,
-        index: l,
-        size: n
-      })), s = r.slice(0, -1).map((i, l) => ({
-        id: `auto-break-${l}`,
-        pageNumber: l + 1
-      }));
-      return {
-        ...e,
-        pageSize: n,
-        pages: r,
-        pageBreaks: s,
-        updatedAt: a
-      };
-    }
-    case M.RESET_DOCUMENT:
-      return Ie();
-    case M.UPDATE_CONTINUOUS_CONTENT: {
-      const n = ye(t.payload);
-      return n === e.continuousContent ? e : {
-        ...e,
-        continuousContent: n,
-        updatedAt: a
-      };
-    }
-    case M.UPDATE_PAGE_BOUNDARIES: {
-      const n = Array.isArray(t.payload) ? t.payload : [];
-      if (n.length === e.pageBoundaries.length && n.length > 0 && n[0].id === e.pageBoundaries[0]?.id && n[n.length - 1].id === e.pageBoundaries[n.length - 1]?.id)
-        return e;
-      const r = e.activePage >= n.length ? Math.max(0, n.length - 1) : e.activePage;
-      return {
-        ...e,
-        pageBoundaries: n,
-        totalPages: n.length,
-        activePage: r,
-        updatedAt: a
-      };
-    }
-    case M.ADD_PAGE_BREAK: {
-      const { position: n = "end", pageIndex: r } = t.payload || {}, s = '<page-break data-page-break="true" style="display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;"></page-break>';
-      let i = e.continuousContent;
-      if (n === "end")
-        i = i + s + "<p><br></p>";
-      else if (typeof n == "number") {
-        const l = i.substring(0, n), m = i.substring(n);
-        i = l + s + m;
-      } else if (typeof r == "number" && typeof document < "u") {
-        const l = document.createElement("div");
-        l.innerHTML = i;
-        const m = l.querySelectorAll('page-break, [data-page-break="true"]');
-        if (r === 0 && m.length === 0)
-          i = i + s + "<p><br></p>";
-        else if (r < m.length) {
-          const f = m[r], h = document.createElement("page-break");
-          h.setAttribute("data-page-break", "true"), h.setAttribute("style", "display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;");
-          const d = document.createElement("p");
-          d.innerHTML = "<br>", f.parentNode.insertBefore(h, f.nextSibling), h.parentNode.insertBefore(d, h.nextSibling), i = l.innerHTML;
-        } else
-          i = i + s + "<p><br></p>";
-      }
-      return {
-        ...e,
-        continuousContent: i,
-        updatedAt: a
-      };
-    }
-    case M.REMOVE_PAGE_BREAK: {
-      const { pageIndex: n } = t.payload || {};
-      if (typeof n != "number" || typeof document > "u")
-        return e;
-      const r = document.createElement("div");
-      r.innerHTML = e.continuousContent;
-      const s = r.querySelectorAll('page-break, [data-page-break="true"]');
-      return s[n] && s[n].remove(), r.querySelectorAll('page-break, [data-page-break="true"]').forEach((l, m) => {
-        l.setAttribute("data-page-number", String(m + 2));
-      }), {
-        ...e,
-        continuousContent: r.innerHTML,
-        updatedAt: a
-      };
-    }
-    case M.SET_EDITOR_MODE: {
-      const n = t.payload;
-      if (n === e.editorMode)
-        return e;
-      let r = e.continuousContent, s = e.pages;
-      return n === "continuous" ? r = e.pages.map((l) => l.content).filter((l) => l && l !== se).join(`
-`) || se : e.continuousContent && e.continuousContent !== se && (s = [{ ...de(0, e.pageSize), content: e.continuousContent }]), {
-        ...e,
-        editorMode: n,
-        continuousContent: r,
-        pages: s,
-        updatedAt: a
-      };
-    }
-    case M.SET_ZOOM_LEVEL: {
-      const n = t.payload;
-      return n < Oe || n > Re ? (console.warn(`Invalid zoom level: ${n}. Must be between ${Oe} and ${Re}.`), e) : n === e.zoomLevel ? e : {
-        ...e,
-        zoomLevel: n,
-        updatedAt: a
-      };
-    }
-    case M.ZOOM_IN: {
-      if (!je(e.zoomLevel))
-        return e;
-      const n = e.zoomLevel + Fe;
-      return {
-        ...e,
-        zoomLevel: n,
-        updatedAt: a
-      };
-    }
-    case M.ZOOM_OUT: {
-      if (!Ne(e.zoomLevel))
-        return e;
-      const n = e.zoomLevel - Fe;
-      return {
-        ...e,
-        zoomLevel: n,
-        updatedAt: a
-      };
-    }
-    case M.RESET_ZOOM:
-      return e.zoomLevel === we ? e : {
-        ...e,
-        zoomLevel: we,
-        updatedAt: a
-      };
-    default:
-      return e;
-  }
-}, pt = kt(null), Rr = ({ children: e, initialState: t = {} }) => {
-  const [a, n] = Ct(Dt, Ie(t)), r = be(() => ({
-    initializeDocument: (i) => n({ type: M.INITIALIZE_DOCUMENT, payload: i }),
-    updateTitle: (i) => n({ type: M.UPDATE_TITLE, payload: i }),
-    updatePageContent: (i) => n({ type: M.UPDATE_PAGE_CONTENT, payload: i }),
-    updatePages: (i) => n({ type: M.UPDATE_PAGES, payload: i }),
-    addPage: (i) => n({ type: M.ADD_PAGE, payload: i }),
-    deletePage: (i) => n({ type: M.DELETE_PAGE, payload: i }),
-    setActivePage: (i) => n({ type: M.SET_ACTIVE_PAGE, payload: i }),
-    updatePageSize: (i) => n({ type: M.UPDATE_PAGE_SIZE, payload: i }),
-    resetDocument: () => n({ type: M.RESET_DOCUMENT }),
-    updateContinuousContent: (i) => n({ type: M.UPDATE_CONTINUOUS_CONTENT, payload: i }),
-    updatePageBoundaries: (i) => n({ type: M.UPDATE_PAGE_BOUNDARIES, payload: i }),
-    addPageBreak: (i) => n({ type: M.ADD_PAGE_BREAK, payload: i }),
-    removePageBreak: (i) => n({ type: M.REMOVE_PAGE_BREAK, payload: i }),
-    setEditorMode: (i) => n({ type: M.SET_EDITOR_MODE, payload: i }),
-    insertPageAt: (i) => n({ type: M.INSERT_PAGE_AT, payload: i }),
-    movePageTo: (i) => n({ type: M.MOVE_PAGE_TO, payload: i }),
-    duplicatePage: (i) => n({ type: M.DUPLICATE_PAGE, payload: i }),
-    setZoomLevel: (i) => n({ type: M.SET_ZOOM_LEVEL, payload: i }),
-    zoomIn: () => n({ type: M.ZOOM_IN }),
-    zoomOut: () => n({ type: M.ZOOM_OUT }),
-    resetZoom: () => n({ type: M.RESET_ZOOM })
-  }), []), s = be(() => ({
-    state: a,
-    actions: r,
-    dispatch: n
-  }), [a, r]);
-  return /* @__PURE__ */ c.jsx(pt.Provider, { value: s, children: e });
-}, ft = () => {
-  const e = St(pt);
-  if (!e)
-    throw new Error("useDocument must be used within a DocumentProvider");
-  return e;
-}, gt = () => {
-  const { state: e } = ft();
-  return e;
-}, ht = () => {
-  const { actions: e } = ft();
-  return e;
-};
-var he = { exports: {} }, me = { exports: {} }, L = {};
-/** @license React v16.13.1
- * react-is.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var Ve;
-function Lt() {
-  if (Ve) return L;
-  Ve = 1;
-  var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, a = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, r = e ? Symbol.for("react.strict_mode") : 60108, s = e ? Symbol.for("react.profiler") : 60114, i = e ? Symbol.for("react.provider") : 60109, l = e ? Symbol.for("react.context") : 60110, m = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, h = e ? Symbol.for("react.forward_ref") : 60112, d = e ? Symbol.for("react.suspense") : 60113, x = e ? Symbol.for("react.suspense_list") : 60120, v = e ? Symbol.for("react.memo") : 60115, C = e ? Symbol.for("react.lazy") : 60116, _ = e ? Symbol.for("react.block") : 60121, w = e ? Symbol.for("react.fundamental") : 60117, E = e ? Symbol.for("react.responder") : 60118, S = e ? Symbol.for("react.scope") : 60119;
-  function b(g) {
-    if (typeof g == "object" && g !== null) {
-      var $ = g.$$typeof;
-      switch ($) {
-        case t:
-          switch (g = g.type, g) {
-            case m:
-            case f:
-            case n:
-            case s:
-            case r:
-            case d:
-              return g;
-            default:
-              switch (g = g && g.$$typeof, g) {
-                case l:
-                case h:
-                case C:
-                case v:
-                case i:
-                  return g;
-                default:
-                  return $;
-              }
-          }
-        case a:
-          return $;
-      }
-    }
-  }
-  function O(g) {
-    return b(g) === f;
-  }
-  return L.AsyncMode = m, L.ConcurrentMode = f, L.ContextConsumer = l, L.ContextProvider = i, L.Element = t, L.ForwardRef = h, L.Fragment = n, L.Lazy = C, L.Memo = v, L.Portal = a, L.Profiler = s, L.StrictMode = r, L.Suspense = d, L.isAsyncMode = function(g) {
-    return O(g) || b(g) === m;
-  }, L.isConcurrentMode = O, L.isContextConsumer = function(g) {
-    return b(g) === l;
-  }, L.isContextProvider = function(g) {
-    return b(g) === i;
-  }, L.isElement = function(g) {
-    return typeof g == "object" && g !== null && g.$$typeof === t;
-  }, L.isForwardRef = function(g) {
-    return b(g) === h;
-  }, L.isFragment = function(g) {
-    return b(g) === n;
-  }, L.isLazy = function(g) {
-    return b(g) === C;
-  }, L.isMemo = function(g) {
-    return b(g) === v;
-  }, L.isPortal = function(g) {
-    return b(g) === a;
-  }, L.isProfiler = function(g) {
-    return b(g) === s;
-  }, L.isStrictMode = function(g) {
-    return b(g) === r;
-  }, L.isSuspense = function(g) {
-    return b(g) === d;
-  }, L.isValidElementType = function(g) {
-    return typeof g == "string" || typeof g == "function" || g === n || g === f || g === s || g === r || g === d || g === x || typeof g == "object" && g !== null && (g.$$typeof === C || g.$$typeof === v || g.$$typeof === i || g.$$typeof === l || g.$$typeof === h || g.$$typeof === w || g.$$typeof === E || g.$$typeof === S || g.$$typeof === _);
-  }, L.typeOf = b, L;
-}
-var z = {};
-/** @license React v16.13.1
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var We;
-function zt() {
-  return We || (We = 1, process.env.NODE_ENV !== "production" && (function() {
-    var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, a = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, r = e ? Symbol.for("react.strict_mode") : 60108, s = e ? Symbol.for("react.profiler") : 60114, i = e ? Symbol.for("react.provider") : 60109, l = e ? Symbol.for("react.context") : 60110, m = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, h = e ? Symbol.for("react.forward_ref") : 60112, d = e ? Symbol.for("react.suspense") : 60113, x = e ? Symbol.for("react.suspense_list") : 60120, v = e ? Symbol.for("react.memo") : 60115, C = e ? Symbol.for("react.lazy") : 60116, _ = e ? Symbol.for("react.block") : 60121, w = e ? Symbol.for("react.fundamental") : 60117, E = e ? Symbol.for("react.responder") : 60118, S = e ? Symbol.for("react.scope") : 60119;
-    function b(u) {
-      return typeof u == "string" || typeof u == "function" || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-      u === n || u === f || u === s || u === r || u === d || u === x || typeof u == "object" && u !== null && (u.$$typeof === C || u.$$typeof === v || u.$$typeof === i || u.$$typeof === l || u.$$typeof === h || u.$$typeof === w || u.$$typeof === E || u.$$typeof === S || u.$$typeof === _);
-    }
-    function O(u) {
-      if (typeof u == "object" && u !== null) {
-        var U = u.$$typeof;
-        switch (U) {
-          case t:
-            var W = u.type;
-            switch (W) {
-              case m:
-              case f:
-              case n:
-              case s:
-              case r:
-              case d:
-                return W;
-              default:
-                var fe = W && W.$$typeof;
-                switch (fe) {
-                  case l:
-                  case h:
-                  case C:
-                  case v:
-                  case i:
-                    return fe;
-                  default:
-                    return U;
-                }
-            }
-          case a:
-            return U;
-        }
-      }
-    }
-    var g = m, $ = f, H = l, G = i, K = t, Q = h, re = n, oe = C, ie = v, ne = a, F = s, q = r, V = d, ee = !1;
-    function te(u) {
-      return ee || (ee = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), p(u) || O(u) === m;
-    }
-    function p(u) {
-      return O(u) === f;
-    }
-    function o(u) {
-      return O(u) === l;
-    }
-    function y(u) {
-      return O(u) === i;
-    }
-    function A(u) {
-      return typeof u == "object" && u !== null && u.$$typeof === t;
-    }
-    function P(u) {
-      return O(u) === h;
-    }
-    function N(u) {
-      return O(u) === n;
-    }
-    function R(u) {
-      return O(u) === C;
-    }
-    function k(u) {
-      return O(u) === v;
-    }
-    function j(u) {
-      return O(u) === a;
-    }
-    function D(u) {
-      return O(u) === s;
-    }
-    function I(u) {
-      return O(u) === r;
-    }
-    function Y(u) {
-      return O(u) === d;
-    }
-    z.AsyncMode = g, z.ConcurrentMode = $, z.ContextConsumer = H, z.ContextProvider = G, z.Element = K, z.ForwardRef = Q, z.Fragment = re, z.Lazy = oe, z.Memo = ie, z.Portal = ne, z.Profiler = F, z.StrictMode = q, z.Suspense = V, z.isAsyncMode = te, z.isConcurrentMode = p, z.isContextConsumer = o, z.isContextProvider = y, z.isElement = A, z.isForwardRef = P, z.isFragment = N, z.isLazy = R, z.isMemo = k, z.isPortal = j, z.isProfiler = D, z.isStrictMode = I, z.isSuspense = Y, z.isValidElementType = b, z.typeOf = O;
-  })()), z;
-}
-var Ke;
-function mt() {
-  return Ke || (Ke = 1, process.env.NODE_ENV === "production" ? me.exports = Lt() : me.exports = zt()), me.exports;
-}
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-var Te, Je;
-function Bt() {
-  if (Je) return Te;
-  Je = 1;
-  var e = Object.getOwnPropertySymbols, t = Object.prototype.hasOwnProperty, a = Object.prototype.propertyIsEnumerable;
-  function n(s) {
-    if (s == null)
-      throw new TypeError("Object.assign cannot be called with null or undefined");
-    return Object(s);
-  }
-  function r() {
-    try {
-      if (!Object.assign)
-        return !1;
-      var s = new String("abc");
-      if (s[5] = "de", Object.getOwnPropertyNames(s)[0] === "5")
-        return !1;
-      for (var i = {}, l = 0; l < 10; l++)
-        i["_" + String.fromCharCode(l)] = l;
-      var m = Object.getOwnPropertyNames(i).map(function(h) {
-        return i[h];
-      });
-      if (m.join("") !== "0123456789")
-        return !1;
-      var f = {};
-      return "abcdefghijklmnopqrst".split("").forEach(function(h) {
-        f[h] = h;
-      }), Object.keys(Object.assign({}, f)).join("") === "abcdefghijklmnopqrst";
-    } catch {
-      return !1;
-    }
-  }
-  return Te = r() ? Object.assign : function(s, i) {
-    for (var l, m = n(s), f, h = 1; h < arguments.length; h++) {
-      l = Object(arguments[h]);
-      for (var d in l)
-        t.call(l, d) && (m[d] = l[d]);
-      if (e) {
-        f = e(l);
-        for (var x = 0; x < f.length; x++)
-          a.call(l, f[x]) && (m[f[x]] = l[f[x]]);
-      }
-    }
-    return m;
-  }, Te;
-}
-var Ae, Xe;
-function ze() {
-  if (Xe) return Ae;
-  Xe = 1;
-  var e = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED";
-  return Ae = e, Ae;
-}
-var Pe, Qe;
-function yt() {
-  return Qe || (Qe = 1, Pe = Function.call.bind(Object.prototype.hasOwnProperty)), Pe;
-}
-var _e, et;
-function $t() {
-  if (et) return _e;
-  et = 1;
-  var e = function() {
-  };
-  if (process.env.NODE_ENV !== "production") {
-    var t = /* @__PURE__ */ ze(), a = {}, n = /* @__PURE__ */ yt();
-    e = function(s) {
-      var i = "Warning: " + s;
-      typeof console < "u" && console.error(i);
-      try {
-        throw new Error(i);
-      } catch {
-      }
-    };
-  }
-  function r(s, i, l, m, f) {
-    if (process.env.NODE_ENV !== "production") {
-      for (var h in s)
-        if (n(s, h)) {
-          var d;
-          try {
-            if (typeof s[h] != "function") {
-              var x = Error(
-                (m || "React class") + ": " + l + " type `" + h + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof s[h] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`."
-              );
-              throw x.name = "Invariant Violation", x;
-            }
-            d = s[h](i, h, m, l, null, t);
-          } catch (C) {
-            d = C;
-          }
-          if (d && !(d instanceof Error) && e(
-            (m || "React class") + ": type specification of " + l + " `" + h + "` is invalid; the type checker function must return `null` or an `Error` but returned a " + typeof d + ". You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument)."
-          ), d instanceof Error && !(d.message in a)) {
-            a[d.message] = !0;
-            var v = f ? f() : "";
-            e(
-              "Failed " + l + " type: " + d.message + (v ?? "")
-            );
-          }
-        }
-    }
-  }
-  return r.resetWarningCache = function() {
-    process.env.NODE_ENV !== "production" && (a = {});
-  }, _e = r, _e;
-}
-var ke, tt;
+var Je;
 function Ut() {
-  if (tt) return ke;
-  tt = 1;
-  var e = mt(), t = Bt(), a = /* @__PURE__ */ ze(), n = /* @__PURE__ */ yt(), r = /* @__PURE__ */ $t(), s = function() {
-  };
-  process.env.NODE_ENV !== "production" && (s = function(l) {
-    var m = "Warning: " + l;
-    typeof console < "u" && console.error(m);
-    try {
-      throw new Error(m);
-    } catch {
-    }
-  });
-  function i() {
-    return null;
-  }
-  return ke = function(l, m) {
-    var f = typeof Symbol == "function" && Symbol.iterator, h = "@@iterator";
-    function d(p) {
-      var o = p && (f && p[f] || p[h]);
-      if (typeof o == "function")
-        return o;
-    }
-    var x = "<<anonymous>>", v = {
-      array: E("array"),
-      bigint: E("bigint"),
-      bool: E("boolean"),
-      func: E("function"),
-      number: E("number"),
-      object: E("object"),
-      string: E("string"),
-      symbol: E("symbol"),
-      any: S(),
-      arrayOf: b,
-      element: O(),
-      elementType: g(),
-      instanceOf: $,
-      node: Q(),
-      objectOf: G,
-      oneOf: H,
-      oneOfType: K,
-      shape: oe,
-      exact: ie
-    };
-    function C(p, o) {
-      return p === o ? p !== 0 || 1 / p === 1 / o : p !== p && o !== o;
-    }
-    function _(p, o) {
-      this.message = p, this.data = o && typeof o == "object" ? o : {}, this.stack = "";
-    }
-    _.prototype = Error.prototype;
-    function w(p) {
-      if (process.env.NODE_ENV !== "production")
-        var o = {}, y = 0;
-      function A(N, R, k, j, D, I, Y) {
-        if (j = j || x, I = I || k, Y !== a) {
-          if (m) {
-            var u = new Error(
-              "Calling PropTypes validators directly is not supported by the `prop-types` package. Use `PropTypes.checkPropTypes()` to call them. Read more at http://fb.me/use-check-prop-types"
-            );
-            throw u.name = "Invariant Violation", u;
-          } else if (process.env.NODE_ENV !== "production" && typeof console < "u") {
-            var U = j + ":" + k;
-            !o[U] && // Avoid spamming the console because they are often not actionable except for lib authors
-            y < 3 && (s(
-              "You are manually calling a React.PropTypes validation function for the `" + I + "` prop on `" + j + "`. This is deprecated and will throw in the standalone `prop-types` package. You may be seeing this warning due to a third-party PropTypes library. See https://fb.me/react-warning-dont-call-proptypes for details."
-            ), o[U] = !0, y++);
-          }
-        }
-        return R[k] == null ? N ? R[k] === null ? new _("The " + D + " `" + I + "` is marked as required " + ("in `" + j + "`, but its value is `null`.")) : new _("The " + D + " `" + I + "` is marked as required in " + ("`" + j + "`, but its value is `undefined`.")) : null : p(R, k, j, D, I);
-      }
-      var P = A.bind(null, !1);
-      return P.isRequired = A.bind(null, !0), P;
-    }
-    function E(p) {
-      function o(y, A, P, N, R, k) {
-        var j = y[A], D = q(j);
-        if (D !== p) {
-          var I = V(j);
-          return new _(
-            "Invalid " + N + " `" + R + "` of type " + ("`" + I + "` supplied to `" + P + "`, expected ") + ("`" + p + "`."),
-            { expectedType: p }
-          );
-        }
-        return null;
-      }
-      return w(o);
-    }
-    function S() {
-      return w(i);
-    }
-    function b(p) {
-      function o(y, A, P, N, R) {
-        if (typeof p != "function")
-          return new _("Property `" + R + "` of component `" + P + "` has invalid PropType notation inside arrayOf.");
-        var k = y[A];
-        if (!Array.isArray(k)) {
-          var j = q(k);
-          return new _("Invalid " + N + " `" + R + "` of type " + ("`" + j + "` supplied to `" + P + "`, expected an array."));
-        }
-        for (var D = 0; D < k.length; D++) {
-          var I = p(k, D, P, N, R + "[" + D + "]", a);
-          if (I instanceof Error)
-            return I;
-        }
-        return null;
-      }
-      return w(o);
-    }
-    function O() {
-      function p(o, y, A, P, N) {
-        var R = o[y];
-        if (!l(R)) {
-          var k = q(R);
-          return new _("Invalid " + P + " `" + N + "` of type " + ("`" + k + "` supplied to `" + A + "`, expected a single ReactElement."));
-        }
-        return null;
-      }
-      return w(p);
-    }
-    function g() {
-      function p(o, y, A, P, N) {
-        var R = o[y];
-        if (!e.isValidElementType(R)) {
-          var k = q(R);
-          return new _("Invalid " + P + " `" + N + "` of type " + ("`" + k + "` supplied to `" + A + "`, expected a single ReactElement type."));
-        }
-        return null;
-      }
-      return w(p);
-    }
-    function $(p) {
-      function o(y, A, P, N, R) {
-        if (!(y[A] instanceof p)) {
-          var k = p.name || x, j = te(y[A]);
-          return new _("Invalid " + N + " `" + R + "` of type " + ("`" + j + "` supplied to `" + P + "`, expected ") + ("instance of `" + k + "`."));
-        }
-        return null;
-      }
-      return w(o);
-    }
-    function H(p) {
-      if (!Array.isArray(p))
-        return process.env.NODE_ENV !== "production" && (arguments.length > 1 ? s(
-          "Invalid arguments supplied to oneOf, expected an array, got " + arguments.length + " arguments. A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z])."
-        ) : s("Invalid argument supplied to oneOf, expected an array.")), i;
-      function o(y, A, P, N, R) {
-        for (var k = y[A], j = 0; j < p.length; j++)
-          if (C(k, p[j]))
-            return null;
-        var D = JSON.stringify(p, function(Y, u) {
-          var U = V(u);
-          return U === "symbol" ? String(u) : u;
-        });
-        return new _("Invalid " + N + " `" + R + "` of value `" + String(k) + "` " + ("supplied to `" + P + "`, expected one of " + D + "."));
-      }
-      return w(o);
-    }
-    function G(p) {
-      function o(y, A, P, N, R) {
-        if (typeof p != "function")
-          return new _("Property `" + R + "` of component `" + P + "` has invalid PropType notation inside objectOf.");
-        var k = y[A], j = q(k);
-        if (j !== "object")
-          return new _("Invalid " + N + " `" + R + "` of type " + ("`" + j + "` supplied to `" + P + "`, expected an object."));
-        for (var D in k)
-          if (n(k, D)) {
-            var I = p(k, D, P, N, R + "." + D, a);
-            if (I instanceof Error)
-              return I;
-          }
-        return null;
-      }
-      return w(o);
-    }
-    function K(p) {
-      if (!Array.isArray(p))
-        return process.env.NODE_ENV !== "production" && s("Invalid argument supplied to oneOfType, expected an instance of array."), i;
-      for (var o = 0; o < p.length; o++) {
-        var y = p[o];
-        if (typeof y != "function")
-          return s(
-            "Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + ee(y) + " at index " + o + "."
-          ), i;
-      }
-      function A(P, N, R, k, j) {
-        for (var D = [], I = 0; I < p.length; I++) {
-          var Y = p[I], u = Y(P, N, R, k, j, a);
-          if (u == null)
-            return null;
-          u.data && n(u.data, "expectedType") && D.push(u.data.expectedType);
-        }
-        var U = D.length > 0 ? ", expected one of type [" + D.join(", ") + "]" : "";
-        return new _("Invalid " + k + " `" + j + "` supplied to " + ("`" + R + "`" + U + "."));
-      }
-      return w(A);
-    }
-    function Q() {
-      function p(o, y, A, P, N) {
-        return ne(o[y]) ? null : new _("Invalid " + P + " `" + N + "` supplied to " + ("`" + A + "`, expected a ReactNode."));
-      }
-      return w(p);
-    }
-    function re(p, o, y, A, P) {
-      return new _(
-        (p || "React class") + ": " + o + " type `" + y + "." + A + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + P + "`."
-      );
-    }
-    function oe(p) {
-      function o(y, A, P, N, R) {
-        var k = y[A], j = q(k);
-        if (j !== "object")
-          return new _("Invalid " + N + " `" + R + "` of type `" + j + "` " + ("supplied to `" + P + "`, expected `object`."));
-        for (var D in p) {
-          var I = p[D];
-          if (typeof I != "function")
-            return re(P, N, R, D, V(I));
-          var Y = I(k, D, P, N, R + "." + D, a);
-          if (Y)
-            return Y;
-        }
-        return null;
-      }
-      return w(o);
-    }
-    function ie(p) {
-      function o(y, A, P, N, R) {
-        var k = y[A], j = q(k);
-        if (j !== "object")
-          return new _("Invalid " + N + " `" + R + "` of type `" + j + "` " + ("supplied to `" + P + "`, expected `object`."));
-        var D = t({}, y[A], p);
-        for (var I in D) {
-          var Y = p[I];
-          if (n(p, I) && typeof Y != "function")
-            return re(P, N, R, I, V(Y));
-          if (!Y)
-            return new _(
-              "Invalid " + N + " `" + R + "` key `" + I + "` supplied to `" + P + "`.\nBad object: " + JSON.stringify(y[A], null, "  ") + `
-Valid keys: ` + JSON.stringify(Object.keys(p), null, "  ")
-            );
-          var u = Y(k, I, P, N, R + "." + I, a);
-          if (u)
-            return u;
-        }
-        return null;
-      }
-      return w(o);
-    }
-    function ne(p) {
-      switch (typeof p) {
-        case "number":
-        case "string":
-        case "undefined":
-          return !0;
-        case "boolean":
-          return !p;
-        case "object":
-          if (Array.isArray(p))
-            return p.every(ne);
-          if (p === null || l(p))
-            return !0;
-          var o = d(p);
-          if (o) {
-            var y = o.call(p), A;
-            if (o !== p.entries) {
-              for (; !(A = y.next()).done; )
-                if (!ne(A.value))
-                  return !1;
-            } else
-              for (; !(A = y.next()).done; ) {
-                var P = A.value;
-                if (P && !ne(P[1]))
-                  return !1;
-              }
-          } else
-            return !1;
-          return !0;
-        default:
-          return !1;
-      }
-    }
-    function F(p, o) {
-      return p === "symbol" ? !0 : o ? o["@@toStringTag"] === "Symbol" || typeof Symbol == "function" && o instanceof Symbol : !1;
-    }
-    function q(p) {
-      var o = typeof p;
-      return Array.isArray(p) ? "array" : p instanceof RegExp ? "object" : F(o, p) ? "symbol" : o;
-    }
-    function V(p) {
-      if (typeof p > "u" || p === null)
-        return "" + p;
-      var o = q(p);
-      if (o === "object") {
-        if (p instanceof Date)
-          return "date";
-        if (p instanceof RegExp)
-          return "regexp";
-      }
-      return o;
-    }
-    function ee(p) {
-      var o = V(p);
-      switch (o) {
-        case "array":
-        case "object":
-          return "an " + o;
-        case "boolean":
-        case "date":
-        case "regexp":
-          return "a " + o;
-        default:
-          return o;
-      }
-    }
-    function te(p) {
-      return !p.constructor || !p.constructor.name ? x : p.constructor.name;
-    }
-    return v.checkPropTypes = r, v.resetWarningCache = r.resetWarningCache, v.PropTypes = v, v;
-  }, ke;
+  return Je || (Je = 1, process.env.NODE_ENV === "production" ? ye.exports = Bt() : ye.exports = $t()), ye.exports;
 }
-var Se, nt;
-function Ht() {
-  if (nt) return Se;
-  nt = 1;
-  var e = /* @__PURE__ */ ze();
-  function t() {
+var c = Ut();
+const Ne = 100, Ie = 50, De = 200, Xe = 5, Le = (e) => e < De, ze = (e) => e > Ie, Ht = 96, be = (e) => Math.round(e * Ht), Pe = {
+  NORMAL: {
+    name: "Normal",
+    label: 'Normal (1")',
+    top: 1,
+    bottom: 1,
+    left: 1,
+    right: 1
+  },
+  NARROW: {
+    name: "Narrow",
+    label: 'Narrow (0.5")',
+    top: 0.5,
+    bottom: 0.5,
+    left: 0.5,
+    right: 0.5
+  },
+  MODERATE: {
+    name: "Moderate",
+    label: 'Moderate (1" / 0.75")',
+    top: 1,
+    bottom: 1,
+    left: 0.75,
+    right: 0.75
+  },
+  WIDE: {
+    name: "Wide",
+    label: 'Wide (1" / 2")',
+    top: 1,
+    bottom: 1,
+    left: 2,
+    right: 2
+  },
+  OFFICE_2003: {
+    name: "Office 2003",
+    label: 'Office 2003 (1" / 1.25")',
+    top: 1,
+    bottom: 1,
+    left: 1.25,
+    right: 1.25
   }
-  function a() {
-  }
-  return a.resetWarningCache = t, Se = function() {
-    function n(i, l, m, f, h, d) {
-      if (d !== e) {
-        var x = new Error(
-          "Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types"
-        );
-        throw x.name = "Invariant Violation", x;
-      }
-    }
-    n.isRequired = n;
-    function r() {
-      return n;
-    }
-    var s = {
-      array: n,
-      bigint: n,
-      bool: n,
-      func: n,
-      number: n,
-      object: n,
-      string: n,
-      symbol: n,
-      any: n,
-      arrayOf: r,
-      element: n,
-      elementType: n,
-      instanceOf: r,
-      node: n,
-      objectOf: r,
-      oneOf: r,
-      oneOfType: r,
-      shape: r,
-      exact: r,
-      checkPropTypes: a,
-      resetWarningCache: t
-    };
-    return s.PropTypes = s, s;
-  }, Se;
-}
-var rt;
-function Zt() {
-  if (rt) return he.exports;
-  if (rt = 1, process.env.NODE_ENV !== "production") {
-    var e = mt(), t = !0;
-    he.exports = /* @__PURE__ */ Ut()(e.isElement, t);
-  } else
-    he.exports = /* @__PURE__ */ Ht()();
-  return he.exports;
-}
-var qt = /* @__PURE__ */ Zt();
-const T = /* @__PURE__ */ Ot(qt), bt = {
-  "7.5pt": { pt: 7.5, px: 10, label: "7.5" },
-  "9pt": { pt: 9, px: 12, label: "9" },
-  "10pt": { pt: 10, px: 13, label: "10" },
-  "11pt": { pt: 11, px: 15, label: "11" },
-  "12pt": { pt: 12, px: 16, label: "12" },
-  "14pt": { pt: 14, px: 19, label: "14" },
-  "16pt": { pt: 16, px: 21, label: "16" },
-  "18pt": { pt: 18, px: 24, label: "18" },
-  "20pt": { pt: 20, px: 27, label: "20" },
-  "22pt": { pt: 22, px: 29, label: "22" },
-  "24pt": { pt: 24, px: 32, label: "24" },
-  "26pt": { pt: 26, px: 35, label: "26" },
-  "28pt": { pt: 28, px: 37, label: "28" },
-  "36pt": { pt: 36, px: 48, label: "36" },
-  "48pt": { pt: 48, px: 64, label: "48" },
-  "72pt": { pt: 72, px: 96, label: "72" }
-}, Gt = [
-  { value: "10px", label: "7.5", pt: 7.5 },
-  // 7.5 pt ≈ 10 px
-  { value: "12px", label: "9", pt: 9 },
-  // 9 pt ≈ 12 px
-  { value: "13px", label: "10", pt: 10 },
-  // 10 pt ≈ 13 px
-  { value: "15px", label: "11", pt: 11 },
-  // 11 pt ≈ 15 px (default in Word)
-  { value: "16px", label: "12", pt: 12 },
-  // 12 pt ≈ 16 px
-  { value: "19px", label: "14", pt: 14 },
-  // 14 pt ≈ 19 px
-  { value: "21px", label: "16", pt: 16 },
-  // 16 pt ≈ 21 px
-  { value: "24px", label: "18", pt: 18 },
-  // 18 pt ≈ 24 px
-  { value: "27px", label: "20", pt: 20 },
-  // 20 pt ≈ 27 px
-  { value: "32px", label: "24", pt: 24 },
-  // 24 pt ≈ 32 px
-  { value: "37px", label: "28", pt: 28 },
-  // 28 pt ≈ 37 px
-  { value: "48px", label: "36", pt: 36 },
-  // 36 pt ≈ 48 px
-  { value: "64px", label: "48", pt: 48 },
-  // 48 pt ≈ 64 px
-  { value: "96px", label: "72", pt: 72 }
-  // 72 pt ≈ 96 px
-], Be = "16px", Yt = (e) => Math.round(e * 96 / 72), Ft = (e) => Math.round(e * 72 / 96 * 2) / 2, jr = (e) => {
-  const t = Object.values(bt).find((a) => a.pt === e);
-  return t ? `${t.px}px` : `${Yt(e)}px`;
-}, Nr = (e) => {
-  const t = parseInt(e), a = Object.values(bt).find((n) => n.px === t);
-  return a ? a.pt : Ft(t);
-}, Mr = (e) => {
-  if (!e) return !1;
-  if (e.endsWith("px")) {
-    const t = parseInt(e);
-    return t >= 8 && t <= 144;
-  }
-  if (e.endsWith("pt")) {
-    const t = parseFloat(e);
-    return t >= 6 && t <= 108;
-  }
-  return !1;
-}, Vt = {
-  "10px": "1",
-  // 7.5 pt
-  "12px": "2",
-  // 9 pt
-  "13px": "2",
-  // 10 pt
-  "15px": "3",
-  // 11 pt (Word default)
-  "16px": "3",
-  // 12 pt
-  "19px": "4",
-  // 14 pt
-  "21px": "4",
-  // 16 pt
-  "24px": "5",
-  // 18 pt
-  "27px": "5",
-  // 20 pt
-  "32px": "6",
-  // 24 pt
-  "37px": "6",
-  // 28 pt
-  "48px": "6",
-  // 36 pt
-  "64px": "7",
-  // 48 pt
-  "96px": "7"
-  // 72 pt
-}, ot = {
-  bold: !1,
-  italic: !1,
-  underline: !1,
-  strikethrough: !1,
-  alignLeft: !1,
-  alignCenter: !1,
-  alignRight: !1,
-  alignJustify: !1,
-  fontFamily: "Arial",
-  fontSize: Be,
-  headingLevel: "p"
-  // Add heading level tracking
-}, Wt = () => {
-  const [e, t] = Ee(ot), a = Z((i) => {
-    t((l) => ({
-      ...l,
-      alignLeft: i === "left",
-      alignCenter: i === "center",
-      alignRight: i === "right",
-      alignJustify: i === "justify"
-    }));
-  }, []), n = Z((i) => {
-    try {
-      const l = window.getSelection();
-      if (!l || l.rangeCount === 0)
-        return !1;
-      const m = l.getRangeAt(0);
-      if (!m.toString())
-        return t((h) => ({ ...h, fontSize: i })), !1;
-      try {
-        const h = document.createElement("span");
-        h.style.fontSize = i;
-        const d = m.extractContents();
-        return h.appendChild(d), m.insertNode(h), m.selectNodeContents(h), l.removeAllRanges(), l.addRange(m), t((x) => ({ ...x, fontSize: i })), !0;
-      } catch {
-        const d = Vt[i] || "2";
-        return document.execCommand("fontSize", !1, d), t((x) => ({ ...x, fontSize: i })), !0;
-      }
-    } catch (l) {
-      return console.warn("[useFormatting] Font size change failed:", l), !1;
-    }
-  }, []), r = Z((i, l = null) => {
-    try {
-      if (typeof document.execCommand != "function") {
-        console.warn("[useFormatting] execCommand not supported");
-        return;
-      }
-      if (i === "fontSize") {
-        n(l);
-        return;
-      }
-      switch (document.execCommand(i, !1, l) || console.warn(`[useFormatting] Command "${i}" failed`), i) {
-        case "bold":
-          t((f) => ({ ...f, bold: !f.bold }));
-          break;
-        case "italic":
-          t((f) => ({ ...f, italic: !f.italic }));
-          break;
-        case "underline":
-          t((f) => ({ ...f, underline: !f.underline }));
-          break;
-        case "strikethrough":
-          t((f) => ({ ...f, strikethrough: !f.strikethrough }));
-          break;
-        case "justifyLeft":
-          a("left");
-          break;
-        case "justifyCenter":
-          a("center");
-          break;
-        case "justifyRight":
-          a("right");
-          break;
-        case "justifyFull":
-          a("justify");
-          break;
-        case "fontName":
-          t((f) => ({ ...f, fontFamily: l }));
-          break;
-        case "formatBlock":
-          t((f) => ({ ...f, headingLevel: l }));
-          break;
-        default:
-          break;
-      }
-    } catch (m) {
-      console.warn(`[useFormatting] Error executing command "${i}":`, m);
-    }
-  }, [n, a]), s = Z(() => {
-    t(ot);
-  }, []);
+}, le = "NARROW", mt = (e = le) => {
+  const t = Pe[e] || Pe[le];
   return {
-    currentFormat: e,
-    formatText: r,
-    resetFormat: s
+    top: be(t.top),
+    bottom: be(t.bottom),
+    left: be(t.left),
+    right: be(t.right)
   };
-}, X = {
+}, Gt = (e = le) => {
+  const t = mt(e);
+  return t.top + t.bottom;
+}, Zt = () => Object.keys(Pe), qt = (e) => {
+  const t = Pe[e];
+  return t ? t.label : "Unknown";
+}, ee = {
   A4: {
     name: "A4",
     width: 794,
@@ -1510,361 +370,1567 @@ const T = /* @__PURE__ */ Ot(qt), bt = {
     widthIn: 8.5,
     heightIn: 14
   }
-}, Kt = "A4", Jt = (e) => {
-  const t = X[e] || X[Kt];
+}, yt = "A4", He = (e) => {
+  const t = ee[e] || ee[yt];
   return {
     width: t.width,
     height: t.height
   };
-}, Ir = (e) => Object.keys(X).includes(e), Dr = () => Object.keys(X), at = {
-  top: 40,
-  bottom: 40
-}, ce = 'page-break, [data-page-break="true"]', Et = (e) => X[e] || X.A4, Xt = (e, t = {}) => {
+}, $r = (e) => Object.keys(ee).includes(e), Ur = () => Object.keys(ee), me = yt, ue = "<p><br></p>", Yt = "continuous", he = (e, t = me) => ({
+  id: Ue(),
+  index: e,
+  size: t,
+  content: ue,
+  images: [],
+  isBreakPoint: !1
+}), xe = (e) => typeof e != "string" || e.trim() === "" ? ue : e, bt = (e, t = me) => (e.length > 0 ? e : [he(0, t)]).map((n, r) => ({
+  id: n.id || Ue(),
+  index: r,
+  size: n.size || t,
+  content: xe(n.content),
+  images: n.images || [],
+  isBreakPoint: !!n.isBreakPoint
+})), Ft = (e = me) => [{
+  id: "page-0",
+  pageNumber: 1,
+  top: 0,
+  height: He(e).height
+}], Be = (e = {}) => {
+  const t = (/* @__PURE__ */ new Date()).toISOString(), i = e.pageSize || me, n = bt(e.pages || [he(0, i)], i);
+  return {
+    id: Ue(),
+    title: e.title || "Untitled Document",
+    createdAt: t,
+    updatedAt: t,
+    pageSize: i,
+    pages: n,
+    activePage: e.activePage && e.activePage < n.length ? e.activePage : 0,
+    pageBreaks: e.pageBreaks || [],
+    totalPages: n.length,
+    editorMode: e.editorMode || Yt,
+    continuousContent: e.continuousContent || ue,
+    pageBoundaries: e.pageBoundaries || Ft(i),
+    zoomLevel: e.zoomLevel || Ne,
+    pageMargins: e.pageMargins || le
+  };
+}, N = {
+  INITIALIZE_DOCUMENT: "INITIALIZE_DOCUMENT",
+  UPDATE_TITLE: "UPDATE_TITLE",
+  UPDATE_PAGE_CONTENT: "UPDATE_PAGE_CONTENT",
+  UPDATE_PAGES: "UPDATE_PAGES",
+  ADD_PAGE: "ADD_PAGE",
+  DELETE_PAGE: "DELETE_PAGE",
+  SET_ACTIVE_PAGE: "SET_ACTIVE_PAGE",
+  UPDATE_PAGE_SIZE: "UPDATE_PAGE_SIZE",
+  RESET_DOCUMENT: "RESET_DOCUMENT",
+  UPDATE_CONTINUOUS_CONTENT: "UPDATE_CONTINUOUS_CONTENT",
+  UPDATE_PAGE_BOUNDARIES: "UPDATE_PAGE_BOUNDARIES",
+  ADD_PAGE_BREAK: "ADD_PAGE_BREAK",
+  REMOVE_PAGE_BREAK: "REMOVE_PAGE_BREAK",
+  SET_EDITOR_MODE: "SET_EDITOR_MODE",
+  INSERT_PAGE_AT: "INSERT_PAGE_AT",
+  MOVE_PAGE_TO: "MOVE_PAGE_TO",
+  DUPLICATE_PAGE: "DUPLICATE_PAGE",
+  SET_ZOOM_LEVEL: "SET_ZOOM_LEVEL",
+  ZOOM_IN: "ZOOM_IN",
+  ZOOM_OUT: "ZOOM_OUT",
+  RESET_ZOOM: "RESET_ZOOM",
+  UPDATE_PAGE_MARGINS: "UPDATE_PAGE_MARGINS"
+}, Vt = (e, t) => {
+  const i = (/* @__PURE__ */ new Date()).toISOString();
+  switch (t.type) {
+    case N.INITIALIZE_DOCUMENT: {
+      const { initialContent: n = ue, pageSize: r = me } = t.payload || {}, s = { ...he(0, r), content: xe(n) };
+      return Be({
+        title: e.title,
+        pageSize: r,
+        pages: [s]
+      });
+    }
+    case N.UPDATE_TITLE:
+      return {
+        ...e,
+        title: t.payload,
+        updatedAt: i
+      };
+    case N.UPDATE_PAGE_CONTENT: {
+      const { pageIndex: n, content: r } = t.payload;
+      if (n < 0 || n >= e.pages.length)
+        return e;
+      const s = [...e.pages];
+      return s[n] = {
+        ...s[n],
+        content: xe(r)
+      }, {
+        ...e,
+        pages: s,
+        updatedAt: i
+      };
+    }
+    case N.UPDATE_PAGES: {
+      const n = Array.isArray(t.payload) ? { pages: t.payload } : t.payload || {}, r = bt(n.pages || [], e.pageSize), s = Array.isArray(n.pageBreaks) ? n.pageBreaks : r.slice(0, -1).map((a, u) => ({
+        id: `auto-break-${u}`,
+        pageNumber: u + 1
+      }));
+      return {
+        ...e,
+        pages: r,
+        activePage: Math.min(e.activePage, r.length - 1),
+        pageBreaks: s,
+        totalPages: r.length,
+        updatedAt: i
+      };
+    }
+    case N.ADD_PAGE: {
+      const n = typeof t.payload?.index == "number" ? Math.min(Math.max(t.payload.index, 0), e.pages.length) : e.pages.length, r = [...e.pages];
+      r.splice(n, 0, he(n, e.pageSize));
+      const s = r.map((u, g) => ({
+        ...u,
+        index: g,
+        size: e.pageSize
+      })), a = s.slice(0, -1).map((u, g) => ({
+        id: `auto-break-${g}`,
+        pageNumber: g + 1
+      }));
+      return {
+        ...e,
+        pages: s,
+        activePage: n,
+        pageBreaks: a,
+        totalPages: s.length,
+        updatedAt: i
+      };
+    }
+    case N.DELETE_PAGE: {
+      const n = t.payload;
+      if (e.pages.length <= 1)
+        return e;
+      const r = [...e.pages];
+      r.splice(n, 1);
+      const s = r.map((g, f) => ({
+        ...g,
+        index: f,
+        size: e.pageSize
+      }));
+      let a = e.activePage;
+      a >= s.length ? a = s.length - 1 : n <= a && a > 0 && (a -= 1);
+      const u = s.slice(0, -1).map((g, f) => ({
+        id: `auto-break-${f}`,
+        pageNumber: f + 1
+      }));
+      return {
+        ...e,
+        pages: s,
+        activePage: a,
+        pageBreaks: u,
+        totalPages: s.length,
+        updatedAt: i
+      };
+    }
+    case N.SET_ACTIVE_PAGE: {
+      const n = t.payload;
+      if (n === e.activePage)
+        return e;
+      const r = e.editorMode === "continuous" ? e.pageBoundaries.length : e.pages.length;
+      return n < 0 || n >= r ? e : {
+        ...e,
+        activePage: n,
+        updatedAt: i
+      };
+    }
+    case N.UPDATE_PAGE_SIZE: {
+      const n = t.payload;
+      if (n === e.pageSize)
+        return e;
+      try {
+        He(n);
+      } catch {
+        return console.warn(`Invalid page size: ${n}`), e;
+      }
+      const r = e.pages.map((a, u) => ({
+        ...a,
+        index: u,
+        size: n
+      })), s = r.slice(0, -1).map((a, u) => ({
+        id: `auto-break-${u}`,
+        pageNumber: u + 1
+      }));
+      return {
+        ...e,
+        pageSize: n,
+        pages: r,
+        pageBreaks: s,
+        updatedAt: i
+      };
+    }
+    case N.RESET_DOCUMENT:
+      return Be();
+    case N.UPDATE_CONTINUOUS_CONTENT: {
+      const n = xe(t.payload);
+      return n === e.continuousContent ? e : {
+        ...e,
+        continuousContent: n,
+        updatedAt: i
+      };
+    }
+    case N.UPDATE_PAGE_BOUNDARIES: {
+      const n = Array.isArray(t.payload) ? t.payload : [];
+      if (n.length === e.pageBoundaries.length && n.length > 0 && n[0].id === e.pageBoundaries[0]?.id && n[n.length - 1].id === e.pageBoundaries[n.length - 1]?.id)
+        return e;
+      const r = e.activePage >= n.length ? Math.max(0, n.length - 1) : e.activePage;
+      return {
+        ...e,
+        pageBoundaries: n,
+        totalPages: n.length,
+        activePage: r,
+        updatedAt: i
+      };
+    }
+    case N.ADD_PAGE_BREAK: {
+      const { position: n = "end", pageIndex: r } = t.payload || {}, s = '<page-break data-page-break="true" style="display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;"></page-break>';
+      let a = e.continuousContent;
+      if (n === "end")
+        a = a + s + "<p><br></p>";
+      else if (typeof n == "number") {
+        const u = a.substring(0, n), g = a.substring(n);
+        a = u + s + g;
+      } else if (typeof r == "number" && typeof document < "u") {
+        const u = document.createElement("div");
+        u.innerHTML = a;
+        const g = u.querySelectorAll('page-break, [data-page-break="true"]');
+        if (r === 0 && g.length === 0)
+          a = a + s + "<p><br></p>";
+        else if (r < g.length) {
+          const f = g[r], b = document.createElement("page-break");
+          b.setAttribute("data-page-break", "true"), b.setAttribute("style", "display: block; height: 20px; border-top: 2px dashed #ccc; margin: 20px 0; page-break-after: always;");
+          const y = document.createElement("p");
+          y.innerHTML = "<br>", f.parentNode.insertBefore(b, f.nextSibling), b.parentNode.insertBefore(y, b.nextSibling), a = u.innerHTML;
+        } else
+          a = a + s + "<p><br></p>";
+      }
+      return {
+        ...e,
+        continuousContent: a,
+        updatedAt: i
+      };
+    }
+    case N.REMOVE_PAGE_BREAK: {
+      const { pageIndex: n } = t.payload || {};
+      if (typeof n != "number" || typeof document > "u")
+        return e;
+      const r = document.createElement("div");
+      r.innerHTML = e.continuousContent;
+      const s = r.querySelectorAll('page-break, [data-page-break="true"]');
+      return s[n] && s[n].remove(), r.querySelectorAll('page-break, [data-page-break="true"]').forEach((u, g) => {
+        u.setAttribute("data-page-number", String(g + 2));
+      }), {
+        ...e,
+        continuousContent: r.innerHTML,
+        updatedAt: i
+      };
+    }
+    case N.SET_EDITOR_MODE: {
+      const n = t.payload;
+      if (n === e.editorMode)
+        return e;
+      let r = e.continuousContent, s = e.pages;
+      return n === "continuous" ? r = e.pages.map((u) => u.content).filter((u) => u && u !== ue).join(`
+`) || ue : e.continuousContent && e.continuousContent !== ue && (s = [{ ...he(0, e.pageSize), content: e.continuousContent }]), {
+        ...e,
+        editorMode: n,
+        continuousContent: r,
+        pages: s,
+        updatedAt: i
+      };
+    }
+    case N.SET_ZOOM_LEVEL: {
+      const n = t.payload;
+      return n < Ie || n > De ? (console.warn(`Invalid zoom level: ${n}. Must be between ${Ie} and ${De}.`), e) : n === e.zoomLevel ? e : {
+        ...e,
+        zoomLevel: n,
+        updatedAt: i
+      };
+    }
+    case N.ZOOM_IN: {
+      if (!Le(e.zoomLevel))
+        return e;
+      const n = e.zoomLevel + Xe;
+      return {
+        ...e,
+        zoomLevel: n,
+        updatedAt: i
+      };
+    }
+    case N.ZOOM_OUT: {
+      if (!ze(e.zoomLevel))
+        return e;
+      const n = e.zoomLevel - Xe;
+      return {
+        ...e,
+        zoomLevel: n,
+        updatedAt: i
+      };
+    }
+    case N.RESET_ZOOM:
+      return e.zoomLevel === Ne ? e : {
+        ...e,
+        zoomLevel: Ne,
+        updatedAt: i
+      };
+    case N.UPDATE_PAGE_MARGINS: {
+      const n = t.payload;
+      return n === e.pageMargins ? e : {
+        ...e,
+        pageMargins: n,
+        updatedAt: i
+      };
+    }
+    default:
+      return e;
+  }
+}, Et = Nt(null), Hr = ({ children: e, initialState: t = {} }) => {
+  const [i, n] = Dt(Vt, Be(t)), r = Ae(() => ({
+    initializeDocument: (a) => n({ type: N.INITIALIZE_DOCUMENT, payload: a }),
+    updateTitle: (a) => n({ type: N.UPDATE_TITLE, payload: a }),
+    updatePageContent: (a) => n({ type: N.UPDATE_PAGE_CONTENT, payload: a }),
+    updatePages: (a) => n({ type: N.UPDATE_PAGES, payload: a }),
+    addPage: (a) => n({ type: N.ADD_PAGE, payload: a }),
+    deletePage: (a) => n({ type: N.DELETE_PAGE, payload: a }),
+    setActivePage: (a) => n({ type: N.SET_ACTIVE_PAGE, payload: a }),
+    updatePageSize: (a) => n({ type: N.UPDATE_PAGE_SIZE, payload: a }),
+    resetDocument: () => n({ type: N.RESET_DOCUMENT }),
+    updateContinuousContent: (a) => n({ type: N.UPDATE_CONTINUOUS_CONTENT, payload: a }),
+    updatePageBoundaries: (a) => n({ type: N.UPDATE_PAGE_BOUNDARIES, payload: a }),
+    addPageBreak: (a) => n({ type: N.ADD_PAGE_BREAK, payload: a }),
+    removePageBreak: (a) => n({ type: N.REMOVE_PAGE_BREAK, payload: a }),
+    setEditorMode: (a) => n({ type: N.SET_EDITOR_MODE, payload: a }),
+    insertPageAt: (a) => n({ type: N.INSERT_PAGE_AT, payload: a }),
+    movePageTo: (a) => n({ type: N.MOVE_PAGE_TO, payload: a }),
+    duplicatePage: (a) => n({ type: N.DUPLICATE_PAGE, payload: a }),
+    setZoomLevel: (a) => n({ type: N.SET_ZOOM_LEVEL, payload: a }),
+    zoomIn: () => n({ type: N.ZOOM_IN }),
+    zoomOut: () => n({ type: N.ZOOM_OUT }),
+    resetZoom: () => n({ type: N.RESET_ZOOM }),
+    updatePageMargins: (a) => n({ type: N.UPDATE_PAGE_MARGINS, payload: a })
+  }), []), s = Ae(() => ({
+    state: i,
+    actions: r,
+    dispatch: n
+  }), [i, r]);
+  return /* @__PURE__ */ c.jsx(Et.Provider, { value: s, children: e });
+}, vt = () => {
+  const e = It(Et);
+  if (!e)
+    throw new Error("useDocument must be used within a DocumentProvider");
+  return e;
+}, xt = () => {
+  const { state: e } = vt();
+  return e;
+}, At = () => {
+  const { actions: e } = vt();
+  return e;
+};
+var Ee = { exports: {} }, ve = { exports: {} }, $ = {};
+/** @license React v16.13.1
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var Qe;
+function Wt() {
+  if (Qe) return $;
+  Qe = 1;
+  var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, i = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, r = e ? Symbol.for("react.strict_mode") : 60108, s = e ? Symbol.for("react.profiler") : 60114, a = e ? Symbol.for("react.provider") : 60109, u = e ? Symbol.for("react.context") : 60110, g = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, b = e ? Symbol.for("react.forward_ref") : 60112, y = e ? Symbol.for("react.suspense") : 60113, d = e ? Symbol.for("react.suspense_list") : 60120, O = e ? Symbol.for("react.memo") : 60115, x = e ? Symbol.for("react.lazy") : 60116, h = e ? Symbol.for("react.block") : 60121, C = e ? Symbol.for("react.fundamental") : 60117, z = e ? Symbol.for("react.responder") : 60118, A = e ? Symbol.for("react.scope") : 60119;
+  function _(l) {
+    if (typeof l == "object" && l !== null) {
+      var R = l.$$typeof;
+      switch (R) {
+        case t:
+          switch (l = l.type, l) {
+            case g:
+            case f:
+            case n:
+            case s:
+            case r:
+            case y:
+              return l;
+            default:
+              switch (l = l && l.$$typeof, l) {
+                case u:
+                case b:
+                case x:
+                case O:
+                case a:
+                  return l;
+                default:
+                  return R;
+              }
+          }
+        case i:
+          return R;
+      }
+    }
+  }
+  function k(l) {
+    return _(l) === f;
+  }
+  return $.AsyncMode = g, $.ConcurrentMode = f, $.ContextConsumer = u, $.ContextProvider = a, $.Element = t, $.ForwardRef = b, $.Fragment = n, $.Lazy = x, $.Memo = O, $.Portal = i, $.Profiler = s, $.StrictMode = r, $.Suspense = y, $.isAsyncMode = function(l) {
+    return k(l) || _(l) === g;
+  }, $.isConcurrentMode = k, $.isContextConsumer = function(l) {
+    return _(l) === u;
+  }, $.isContextProvider = function(l) {
+    return _(l) === a;
+  }, $.isElement = function(l) {
+    return typeof l == "object" && l !== null && l.$$typeof === t;
+  }, $.isForwardRef = function(l) {
+    return _(l) === b;
+  }, $.isFragment = function(l) {
+    return _(l) === n;
+  }, $.isLazy = function(l) {
+    return _(l) === x;
+  }, $.isMemo = function(l) {
+    return _(l) === O;
+  }, $.isPortal = function(l) {
+    return _(l) === i;
+  }, $.isProfiler = function(l) {
+    return _(l) === s;
+  }, $.isStrictMode = function(l) {
+    return _(l) === r;
+  }, $.isSuspense = function(l) {
+    return _(l) === y;
+  }, $.isValidElementType = function(l) {
+    return typeof l == "string" || typeof l == "function" || l === n || l === f || l === s || l === r || l === y || l === d || typeof l == "object" && l !== null && (l.$$typeof === x || l.$$typeof === O || l.$$typeof === a || l.$$typeof === u || l.$$typeof === b || l.$$typeof === C || l.$$typeof === z || l.$$typeof === A || l.$$typeof === h);
+  }, $.typeOf = _, $;
+}
+var U = {};
+/** @license React v16.13.1
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var et;
+function Kt() {
+  return et || (et = 1, process.env.NODE_ENV !== "production" && (function() {
+    var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, i = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, r = e ? Symbol.for("react.strict_mode") : 60108, s = e ? Symbol.for("react.profiler") : 60114, a = e ? Symbol.for("react.provider") : 60109, u = e ? Symbol.for("react.context") : 60110, g = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, b = e ? Symbol.for("react.forward_ref") : 60112, y = e ? Symbol.for("react.suspense") : 60113, d = e ? Symbol.for("react.suspense_list") : 60120, O = e ? Symbol.for("react.memo") : 60115, x = e ? Symbol.for("react.lazy") : 60116, h = e ? Symbol.for("react.block") : 60121, C = e ? Symbol.for("react.fundamental") : 60117, z = e ? Symbol.for("react.responder") : 60118, A = e ? Symbol.for("react.scope") : 60119;
+    function _(E) {
+      return typeof E == "string" || typeof E == "function" || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+      E === n || E === f || E === s || E === r || E === y || E === d || typeof E == "object" && E !== null && (E.$$typeof === x || E.$$typeof === O || E.$$typeof === a || E.$$typeof === u || E.$$typeof === b || E.$$typeof === C || E.$$typeof === z || E.$$typeof === A || E.$$typeof === h);
+    }
+    function k(E) {
+      if (typeof E == "object" && E !== null) {
+        var Q = E.$$typeof;
+        switch (Q) {
+          case t:
+            var de = E.type;
+            switch (de) {
+              case g:
+              case f:
+              case n:
+              case s:
+              case r:
+              case y:
+                return de;
+              default:
+                var M = de && de.$$typeof;
+                switch (M) {
+                  case u:
+                  case b:
+                  case x:
+                  case O:
+                  case a:
+                    return M;
+                  default:
+                    return Q;
+                }
+            }
+          case i:
+            return Q;
+        }
+      }
+    }
+    var l = g, R = f, B = u, Z = a, V = t, q = b, ae = n, ne = x, ie = O, re = i, se = s, K = r, F = y, J = !1;
+    function te(E) {
+      return J || (J = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), p(E) || k(E) === g;
+    }
+    function p(E) {
+      return k(E) === f;
+    }
+    function o(E) {
+      return k(E) === u;
+    }
+    function m(E) {
+      return k(E) === a;
+    }
+    function P(E) {
+      return typeof E == "object" && E !== null && E.$$typeof === t;
+    }
+    function T(E) {
+      return k(E) === b;
+    }
+    function I(E) {
+      return k(E) === n;
+    }
+    function w(E) {
+      return k(E) === x;
+    }
+    function S(E) {
+      return k(E) === O;
+    }
+    function j(E) {
+      return k(E) === i;
+    }
+    function L(E) {
+      return k(E) === s;
+    }
+    function D(E) {
+      return k(E) === r;
+    }
+    function Y(E) {
+      return k(E) === y;
+    }
+    U.AsyncMode = l, U.ConcurrentMode = R, U.ContextConsumer = B, U.ContextProvider = Z, U.Element = V, U.ForwardRef = q, U.Fragment = ae, U.Lazy = ne, U.Memo = ie, U.Portal = re, U.Profiler = se, U.StrictMode = K, U.Suspense = F, U.isAsyncMode = te, U.isConcurrentMode = p, U.isContextConsumer = o, U.isContextProvider = m, U.isElement = P, U.isForwardRef = T, U.isFragment = I, U.isLazy = w, U.isMemo = S, U.isPortal = j, U.isProfiler = L, U.isStrictMode = D, U.isSuspense = Y, U.isValidElementType = _, U.typeOf = k;
+  })()), U;
+}
+var tt;
+function Tt() {
+  return tt || (tt = 1, process.env.NODE_ENV === "production" ? ve.exports = Wt() : ve.exports = Kt()), ve.exports;
+}
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+var Se, nt;
+function Jt() {
+  if (nt) return Se;
+  nt = 1;
+  var e = Object.getOwnPropertySymbols, t = Object.prototype.hasOwnProperty, i = Object.prototype.propertyIsEnumerable;
+  function n(s) {
+    if (s == null)
+      throw new TypeError("Object.assign cannot be called with null or undefined");
+    return Object(s);
+  }
+  function r() {
+    try {
+      if (!Object.assign)
+        return !1;
+      var s = new String("abc");
+      if (s[5] = "de", Object.getOwnPropertyNames(s)[0] === "5")
+        return !1;
+      for (var a = {}, u = 0; u < 10; u++)
+        a["_" + String.fromCharCode(u)] = u;
+      var g = Object.getOwnPropertyNames(a).map(function(b) {
+        return a[b];
+      });
+      if (g.join("") !== "0123456789")
+        return !1;
+      var f = {};
+      return "abcdefghijklmnopqrst".split("").forEach(function(b) {
+        f[b] = b;
+      }), Object.keys(Object.assign({}, f)).join("") === "abcdefghijklmnopqrst";
+    } catch {
+      return !1;
+    }
+  }
+  return Se = r() ? Object.assign : function(s, a) {
+    for (var u, g = n(s), f, b = 1; b < arguments.length; b++) {
+      u = Object(arguments[b]);
+      for (var y in u)
+        t.call(u, y) && (g[y] = u[y]);
+      if (e) {
+        f = e(u);
+        for (var d = 0; d < f.length; d++)
+          i.call(u, f[d]) && (g[f[d]] = u[f[d]]);
+      }
+    }
+    return g;
+  }, Se;
+}
+var Ce, rt;
+function Ge() {
+  if (rt) return Ce;
+  rt = 1;
+  var e = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED";
+  return Ce = e, Ce;
+}
+var Oe, ot;
+function Pt() {
+  return ot || (ot = 1, Oe = Function.call.bind(Object.prototype.hasOwnProperty)), Oe;
+}
+var Re, at;
+function Xt() {
+  if (at) return Re;
+  at = 1;
+  var e = function() {
+  };
+  if (process.env.NODE_ENV !== "production") {
+    var t = /* @__PURE__ */ Ge(), i = {}, n = /* @__PURE__ */ Pt();
+    e = function(s) {
+      var a = "Warning: " + s;
+      typeof console < "u" && console.error(a);
+      try {
+        throw new Error(a);
+      } catch {
+      }
+    };
+  }
+  function r(s, a, u, g, f) {
+    if (process.env.NODE_ENV !== "production") {
+      for (var b in s)
+        if (n(s, b)) {
+          var y;
+          try {
+            if (typeof s[b] != "function") {
+              var d = Error(
+                (g || "React class") + ": " + u + " type `" + b + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof s[b] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`."
+              );
+              throw d.name = "Invariant Violation", d;
+            }
+            y = s[b](a, b, g, u, null, t);
+          } catch (x) {
+            y = x;
+          }
+          if (y && !(y instanceof Error) && e(
+            (g || "React class") + ": type specification of " + u + " `" + b + "` is invalid; the type checker function must return `null` or an `Error` but returned a " + typeof y + ". You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument)."
+          ), y instanceof Error && !(y.message in i)) {
+            i[y.message] = !0;
+            var O = f ? f() : "";
+            e(
+              "Failed " + u + " type: " + y.message + (O ?? "")
+            );
+          }
+        }
+    }
+  }
+  return r.resetWarningCache = function() {
+    process.env.NODE_ENV !== "production" && (i = {});
+  }, Re = r, Re;
+}
+var we, it;
+function Qt() {
+  if (it) return we;
+  it = 1;
+  var e = Tt(), t = Jt(), i = /* @__PURE__ */ Ge(), n = /* @__PURE__ */ Pt(), r = /* @__PURE__ */ Xt(), s = function() {
+  };
+  process.env.NODE_ENV !== "production" && (s = function(u) {
+    var g = "Warning: " + u;
+    typeof console < "u" && console.error(g);
+    try {
+      throw new Error(g);
+    } catch {
+    }
+  });
+  function a() {
+    return null;
+  }
+  return we = function(u, g) {
+    var f = typeof Symbol == "function" && Symbol.iterator, b = "@@iterator";
+    function y(p) {
+      var o = p && (f && p[f] || p[b]);
+      if (typeof o == "function")
+        return o;
+    }
+    var d = "<<anonymous>>", O = {
+      array: z("array"),
+      bigint: z("bigint"),
+      bool: z("boolean"),
+      func: z("function"),
+      number: z("number"),
+      object: z("object"),
+      string: z("string"),
+      symbol: z("symbol"),
+      any: A(),
+      arrayOf: _,
+      element: k(),
+      elementType: l(),
+      instanceOf: R,
+      node: q(),
+      objectOf: Z,
+      oneOf: B,
+      oneOfType: V,
+      shape: ne,
+      exact: ie
+    };
+    function x(p, o) {
+      return p === o ? p !== 0 || 1 / p === 1 / o : p !== p && o !== o;
+    }
+    function h(p, o) {
+      this.message = p, this.data = o && typeof o == "object" ? o : {}, this.stack = "";
+    }
+    h.prototype = Error.prototype;
+    function C(p) {
+      if (process.env.NODE_ENV !== "production")
+        var o = {}, m = 0;
+      function P(I, w, S, j, L, D, Y) {
+        if (j = j || d, D = D || S, Y !== i) {
+          if (g) {
+            var E = new Error(
+              "Calling PropTypes validators directly is not supported by the `prop-types` package. Use `PropTypes.checkPropTypes()` to call them. Read more at http://fb.me/use-check-prop-types"
+            );
+            throw E.name = "Invariant Violation", E;
+          } else if (process.env.NODE_ENV !== "production" && typeof console < "u") {
+            var Q = j + ":" + S;
+            !o[Q] && // Avoid spamming the console because they are often not actionable except for lib authors
+            m < 3 && (s(
+              "You are manually calling a React.PropTypes validation function for the `" + D + "` prop on `" + j + "`. This is deprecated and will throw in the standalone `prop-types` package. You may be seeing this warning due to a third-party PropTypes library. See https://fb.me/react-warning-dont-call-proptypes for details."
+            ), o[Q] = !0, m++);
+          }
+        }
+        return w[S] == null ? I ? w[S] === null ? new h("The " + L + " `" + D + "` is marked as required " + ("in `" + j + "`, but its value is `null`.")) : new h("The " + L + " `" + D + "` is marked as required in " + ("`" + j + "`, but its value is `undefined`.")) : null : p(w, S, j, L, D);
+      }
+      var T = P.bind(null, !1);
+      return T.isRequired = P.bind(null, !0), T;
+    }
+    function z(p) {
+      function o(m, P, T, I, w, S) {
+        var j = m[P], L = K(j);
+        if (L !== p) {
+          var D = F(j);
+          return new h(
+            "Invalid " + I + " `" + w + "` of type " + ("`" + D + "` supplied to `" + T + "`, expected ") + ("`" + p + "`."),
+            { expectedType: p }
+          );
+        }
+        return null;
+      }
+      return C(o);
+    }
+    function A() {
+      return C(a);
+    }
+    function _(p) {
+      function o(m, P, T, I, w) {
+        if (typeof p != "function")
+          return new h("Property `" + w + "` of component `" + T + "` has invalid PropType notation inside arrayOf.");
+        var S = m[P];
+        if (!Array.isArray(S)) {
+          var j = K(S);
+          return new h("Invalid " + I + " `" + w + "` of type " + ("`" + j + "` supplied to `" + T + "`, expected an array."));
+        }
+        for (var L = 0; L < S.length; L++) {
+          var D = p(S, L, T, I, w + "[" + L + "]", i);
+          if (D instanceof Error)
+            return D;
+        }
+        return null;
+      }
+      return C(o);
+    }
+    function k() {
+      function p(o, m, P, T, I) {
+        var w = o[m];
+        if (!u(w)) {
+          var S = K(w);
+          return new h("Invalid " + T + " `" + I + "` of type " + ("`" + S + "` supplied to `" + P + "`, expected a single ReactElement."));
+        }
+        return null;
+      }
+      return C(p);
+    }
+    function l() {
+      function p(o, m, P, T, I) {
+        var w = o[m];
+        if (!e.isValidElementType(w)) {
+          var S = K(w);
+          return new h("Invalid " + T + " `" + I + "` of type " + ("`" + S + "` supplied to `" + P + "`, expected a single ReactElement type."));
+        }
+        return null;
+      }
+      return C(p);
+    }
+    function R(p) {
+      function o(m, P, T, I, w) {
+        if (!(m[P] instanceof p)) {
+          var S = p.name || d, j = te(m[P]);
+          return new h("Invalid " + I + " `" + w + "` of type " + ("`" + j + "` supplied to `" + T + "`, expected ") + ("instance of `" + S + "`."));
+        }
+        return null;
+      }
+      return C(o);
+    }
+    function B(p) {
+      if (!Array.isArray(p))
+        return process.env.NODE_ENV !== "production" && (arguments.length > 1 ? s(
+          "Invalid arguments supplied to oneOf, expected an array, got " + arguments.length + " arguments. A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z])."
+        ) : s("Invalid argument supplied to oneOf, expected an array.")), a;
+      function o(m, P, T, I, w) {
+        for (var S = m[P], j = 0; j < p.length; j++)
+          if (x(S, p[j]))
+            return null;
+        var L = JSON.stringify(p, function(Y, E) {
+          var Q = F(E);
+          return Q === "symbol" ? String(E) : E;
+        });
+        return new h("Invalid " + I + " `" + w + "` of value `" + String(S) + "` " + ("supplied to `" + T + "`, expected one of " + L + "."));
+      }
+      return C(o);
+    }
+    function Z(p) {
+      function o(m, P, T, I, w) {
+        if (typeof p != "function")
+          return new h("Property `" + w + "` of component `" + T + "` has invalid PropType notation inside objectOf.");
+        var S = m[P], j = K(S);
+        if (j !== "object")
+          return new h("Invalid " + I + " `" + w + "` of type " + ("`" + j + "` supplied to `" + T + "`, expected an object."));
+        for (var L in S)
+          if (n(S, L)) {
+            var D = p(S, L, T, I, w + "." + L, i);
+            if (D instanceof Error)
+              return D;
+          }
+        return null;
+      }
+      return C(o);
+    }
+    function V(p) {
+      if (!Array.isArray(p))
+        return process.env.NODE_ENV !== "production" && s("Invalid argument supplied to oneOfType, expected an instance of array."), a;
+      for (var o = 0; o < p.length; o++) {
+        var m = p[o];
+        if (typeof m != "function")
+          return s(
+            "Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + J(m) + " at index " + o + "."
+          ), a;
+      }
+      function P(T, I, w, S, j) {
+        for (var L = [], D = 0; D < p.length; D++) {
+          var Y = p[D], E = Y(T, I, w, S, j, i);
+          if (E == null)
+            return null;
+          E.data && n(E.data, "expectedType") && L.push(E.data.expectedType);
+        }
+        var Q = L.length > 0 ? ", expected one of type [" + L.join(", ") + "]" : "";
+        return new h("Invalid " + S + " `" + j + "` supplied to " + ("`" + w + "`" + Q + "."));
+      }
+      return C(P);
+    }
+    function q() {
+      function p(o, m, P, T, I) {
+        return re(o[m]) ? null : new h("Invalid " + T + " `" + I + "` supplied to " + ("`" + P + "`, expected a ReactNode."));
+      }
+      return C(p);
+    }
+    function ae(p, o, m, P, T) {
+      return new h(
+        (p || "React class") + ": " + o + " type `" + m + "." + P + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + T + "`."
+      );
+    }
+    function ne(p) {
+      function o(m, P, T, I, w) {
+        var S = m[P], j = K(S);
+        if (j !== "object")
+          return new h("Invalid " + I + " `" + w + "` of type `" + j + "` " + ("supplied to `" + T + "`, expected `object`."));
+        for (var L in p) {
+          var D = p[L];
+          if (typeof D != "function")
+            return ae(T, I, w, L, F(D));
+          var Y = D(S, L, T, I, w + "." + L, i);
+          if (Y)
+            return Y;
+        }
+        return null;
+      }
+      return C(o);
+    }
+    function ie(p) {
+      function o(m, P, T, I, w) {
+        var S = m[P], j = K(S);
+        if (j !== "object")
+          return new h("Invalid " + I + " `" + w + "` of type `" + j + "` " + ("supplied to `" + T + "`, expected `object`."));
+        var L = t({}, m[P], p);
+        for (var D in L) {
+          var Y = p[D];
+          if (n(p, D) && typeof Y != "function")
+            return ae(T, I, w, D, F(Y));
+          if (!Y)
+            return new h(
+              "Invalid " + I + " `" + w + "` key `" + D + "` supplied to `" + T + "`.\nBad object: " + JSON.stringify(m[P], null, "  ") + `
+Valid keys: ` + JSON.stringify(Object.keys(p), null, "  ")
+            );
+          var E = Y(S, D, T, I, w + "." + D, i);
+          if (E)
+            return E;
+        }
+        return null;
+      }
+      return C(o);
+    }
+    function re(p) {
+      switch (typeof p) {
+        case "number":
+        case "string":
+        case "undefined":
+          return !0;
+        case "boolean":
+          return !p;
+        case "object":
+          if (Array.isArray(p))
+            return p.every(re);
+          if (p === null || u(p))
+            return !0;
+          var o = y(p);
+          if (o) {
+            var m = o.call(p), P;
+            if (o !== p.entries) {
+              for (; !(P = m.next()).done; )
+                if (!re(P.value))
+                  return !1;
+            } else
+              for (; !(P = m.next()).done; ) {
+                var T = P.value;
+                if (T && !re(T[1]))
+                  return !1;
+              }
+          } else
+            return !1;
+          return !0;
+        default:
+          return !1;
+      }
+    }
+    function se(p, o) {
+      return p === "symbol" ? !0 : o ? o["@@toStringTag"] === "Symbol" || typeof Symbol == "function" && o instanceof Symbol : !1;
+    }
+    function K(p) {
+      var o = typeof p;
+      return Array.isArray(p) ? "array" : p instanceof RegExp ? "object" : se(o, p) ? "symbol" : o;
+    }
+    function F(p) {
+      if (typeof p > "u" || p === null)
+        return "" + p;
+      var o = K(p);
+      if (o === "object") {
+        if (p instanceof Date)
+          return "date";
+        if (p instanceof RegExp)
+          return "regexp";
+      }
+      return o;
+    }
+    function J(p) {
+      var o = F(p);
+      switch (o) {
+        case "array":
+        case "object":
+          return "an " + o;
+        case "boolean":
+        case "date":
+        case "regexp":
+          return "a " + o;
+        default:
+          return o;
+      }
+    }
+    function te(p) {
+      return !p.constructor || !p.constructor.name ? d : p.constructor.name;
+    }
+    return O.checkPropTypes = r, O.resetWarningCache = r.resetWarningCache, O.PropTypes = O, O;
+  }, we;
+}
+var Me, st;
+function en() {
+  if (st) return Me;
+  st = 1;
+  var e = /* @__PURE__ */ Ge();
+  function t() {
+  }
+  function i() {
+  }
+  return i.resetWarningCache = t, Me = function() {
+    function n(a, u, g, f, b, y) {
+      if (y !== e) {
+        var d = new Error(
+          "Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types"
+        );
+        throw d.name = "Invariant Violation", d;
+      }
+    }
+    n.isRequired = n;
+    function r() {
+      return n;
+    }
+    var s = {
+      array: n,
+      bigint: n,
+      bool: n,
+      func: n,
+      number: n,
+      object: n,
+      string: n,
+      symbol: n,
+      any: n,
+      arrayOf: r,
+      element: n,
+      elementType: n,
+      instanceOf: r,
+      node: n,
+      objectOf: r,
+      oneOf: r,
+      oneOfType: r,
+      shape: r,
+      exact: r,
+      checkPropTypes: i,
+      resetWarningCache: t
+    };
+    return s.PropTypes = s, s;
+  }, Me;
+}
+var ct;
+function tn() {
+  if (ct) return Ee.exports;
+  if (ct = 1, process.env.NODE_ENV !== "production") {
+    var e = Tt(), t = !0;
+    Ee.exports = /* @__PURE__ */ Qt()(e.isElement, t);
+  } else
+    Ee.exports = /* @__PURE__ */ en()();
+  return Ee.exports;
+}
+var nn = /* @__PURE__ */ tn();
+const v = /* @__PURE__ */ zt(nn), _t = {
+  "7.5pt": { pt: 7.5, px: 10, label: "7.5" },
+  "9pt": { pt: 9, px: 12, label: "9" },
+  "10pt": { pt: 10, px: 13, label: "10" },
+  "11pt": { pt: 11, px: 15, label: "11" },
+  "12pt": { pt: 12, px: 16, label: "12" },
+  "14pt": { pt: 14, px: 19, label: "14" },
+  "16pt": { pt: 16, px: 21, label: "16" },
+  "18pt": { pt: 18, px: 24, label: "18" },
+  "20pt": { pt: 20, px: 27, label: "20" },
+  "22pt": { pt: 22, px: 29, label: "22" },
+  "24pt": { pt: 24, px: 32, label: "24" },
+  "26pt": { pt: 26, px: 35, label: "26" },
+  "28pt": { pt: 28, px: 37, label: "28" },
+  "36pt": { pt: 36, px: 48, label: "36" },
+  "48pt": { pt: 48, px: 64, label: "48" },
+  "72pt": { pt: 72, px: 96, label: "72" }
+}, rn = [
+  { value: "10px", label: "7.5", pt: 7.5 },
+  // 7.5 pt ≈ 10 px
+  { value: "12px", label: "9", pt: 9 },
+  // 9 pt ≈ 12 px
+  { value: "13px", label: "10", pt: 10 },
+  // 10 pt ≈ 13 px
+  { value: "15px", label: "11", pt: 11 },
+  // 11 pt ≈ 15 px (default in Word)
+  { value: "16px", label: "12", pt: 12 },
+  // 12 pt ≈ 16 px
+  { value: "19px", label: "14", pt: 14 },
+  // 14 pt ≈ 19 px
+  { value: "21px", label: "16", pt: 16 },
+  // 16 pt ≈ 21 px
+  { value: "24px", label: "18", pt: 18 },
+  // 18 pt ≈ 24 px
+  { value: "27px", label: "20", pt: 20 },
+  // 20 pt ≈ 27 px
+  { value: "32px", label: "24", pt: 24 },
+  // 24 pt ≈ 32 px
+  { value: "37px", label: "28", pt: 28 },
+  // 28 pt ≈ 37 px
+  { value: "48px", label: "36", pt: 36 },
+  // 36 pt ≈ 48 px
+  { value: "64px", label: "48", pt: 48 },
+  // 48 pt ≈ 64 px
+  { value: "96px", label: "72", pt: 72 }
+  // 72 pt ≈ 96 px
+], Ze = "16px", on = (e) => Math.round(e * 96 / 72), an = (e) => Math.round(e * 72 / 96 * 2) / 2, Gr = (e) => {
+  const t = Object.values(_t).find((i) => i.pt === e);
+  return t ? `${t.px}px` : `${on(e)}px`;
+}, Zr = (e) => {
+  const t = parseInt(e), i = Object.values(_t).find((n) => n.px === t);
+  return i ? i.pt : an(t);
+}, qr = (e) => {
+  if (!e) return !1;
+  if (e.endsWith("px")) {
+    const t = parseInt(e);
+    return t >= 8 && t <= 144;
+  }
+  if (e.endsWith("pt")) {
+    const t = parseFloat(e);
+    return t >= 6 && t <= 108;
+  }
+  return !1;
+}, sn = {
+  "10px": "1",
+  // 7.5 pt
+  "12px": "2",
+  // 9 pt
+  "13px": "2",
+  // 10 pt
+  "15px": "3",
+  // 11 pt (Word default)
+  "16px": "3",
+  // 12 pt
+  "19px": "4",
+  // 14 pt
+  "21px": "4",
+  // 16 pt
+  "24px": "5",
+  // 18 pt
+  "27px": "5",
+  // 20 pt
+  "32px": "6",
+  // 24 pt
+  "37px": "6",
+  // 28 pt
+  "48px": "6",
+  // 36 pt
+  "64px": "7",
+  // 48 pt
+  "96px": "7"
+  // 72 pt
+}, lt = {
+  bold: !1,
+  italic: !1,
+  underline: !1,
+  strikethrough: !1,
+  alignLeft: !1,
+  alignCenter: !1,
+  alignRight: !1,
+  alignJustify: !1,
+  fontFamily: "Arial",
+  fontSize: Ze,
+  headingLevel: "p"
+  // Add heading level tracking
+}, cn = () => {
+  const [e, t] = Te(lt), i = G((a) => {
+    t((u) => ({
+      ...u,
+      alignLeft: a === "left",
+      alignCenter: a === "center",
+      alignRight: a === "right",
+      alignJustify: a === "justify"
+    }));
+  }, []), n = G((a) => {
+    try {
+      const u = window.getSelection();
+      if (!u || u.rangeCount === 0)
+        return !1;
+      const g = u.getRangeAt(0);
+      if (!g.toString())
+        return t((b) => ({ ...b, fontSize: a })), !1;
+      try {
+        const b = document.createElement("span");
+        b.style.fontSize = a;
+        const y = g.extractContents();
+        return b.appendChild(y), g.insertNode(b), g.selectNodeContents(b), u.removeAllRanges(), u.addRange(g), t((d) => ({ ...d, fontSize: a })), !0;
+      } catch {
+        const y = sn[a] || "2";
+        return document.execCommand("fontSize", !1, y), t((d) => ({ ...d, fontSize: a })), !0;
+      }
+    } catch (u) {
+      return console.warn("[useFormatting] Font size change failed:", u), !1;
+    }
+  }, []), r = G((a, u = null) => {
+    try {
+      if (typeof document.execCommand != "function") {
+        console.warn("[useFormatting] execCommand not supported");
+        return;
+      }
+      if (a === "fontSize") {
+        n(u);
+        return;
+      }
+      switch (document.execCommand(a, !1, u) || console.warn(`[useFormatting] Command "${a}" failed`), a) {
+        case "bold":
+          t((f) => ({ ...f, bold: !f.bold }));
+          break;
+        case "italic":
+          t((f) => ({ ...f, italic: !f.italic }));
+          break;
+        case "underline":
+          t((f) => ({ ...f, underline: !f.underline }));
+          break;
+        case "strikethrough":
+          t((f) => ({ ...f, strikethrough: !f.strikethrough }));
+          break;
+        case "justifyLeft":
+          i("left");
+          break;
+        case "justifyCenter":
+          i("center");
+          break;
+        case "justifyRight":
+          i("right");
+          break;
+        case "justifyFull":
+          i("justify");
+          break;
+        case "fontName":
+          t((f) => ({ ...f, fontFamily: u }));
+          break;
+        case "formatBlock":
+          t((f) => ({ ...f, headingLevel: u }));
+          break;
+        default:
+          break;
+      }
+    } catch (g) {
+      console.warn(`[useFormatting] Error executing command "${a}":`, g);
+    }
+  }, [n, i]), s = G(() => {
+    t(lt);
+  }, []);
+  return {
+    currentFormat: e,
+    formatText: r,
+    resetFormat: s
+  };
+}, pe = 'page-break, [data-page-break="true"]', kt = (e) => ee[e] || ee.A4, ln = (e, t = {}) => {
   if (!e || typeof document > "u")
     return [];
-  const a = t.pageSize || "A4", n = Et(a), r = e.querySelectorAll(ce), s = [];
+  const i = t.pageSize || "A4", n = kt(i), r = e.querySelectorAll(pe), s = [];
   s.push({
     id: "page-0",
     pageNumber: 1,
     top: 0,
     height: n.height
   });
-  const i = e.getBoundingClientRect(), l = e.scrollTop;
-  return r.forEach((m, f) => {
-    const d = m.getBoundingClientRect().top - i.top + l;
+  const a = e.getBoundingClientRect(), u = e.scrollTop;
+  return r.forEach((g, f) => {
+    const y = g.getBoundingClientRect().top - a.top + u;
     s.push({
       id: `page-${f + 1}`,
       pageNumber: f + 2,
-      top: d,
+      top: y,
       height: n.height
     });
   }), s;
-}, vt = (e, t = 100) => {
-  const n = Et(e).height - at.top - at.bottom, r = t / 100;
-  return n / r;
-}, Qt = (e, t) => {
+}, St = (e, t = 100, i = le) => {
+  const n = kt(e), r = Gt(i), s = n.height - r, a = t / 100;
+  return s / a;
+}, un = (e, t) => {
   if (!e || !t)
     return 0;
   try {
-    const a = t.querySelectorAll(ce);
-    if (a.length === 0)
+    const i = t.querySelectorAll(pe);
+    if (i.length === 0)
       return 0;
     const n = e.getBoundingClientRect(), r = n.top + n.height / 2;
-    for (let s = a.length - 1; s >= 0; s--)
-      if (a[s].getBoundingClientRect().top < r)
+    for (let s = i.length - 1; s >= 0; s--)
+      if (i[s].getBoundingClientRect().top < r)
         return s + 1;
     return 0;
-  } catch (a) {
-    return console.warn("[getCurrentPage] Failed to calculate page:", a), 0;
+  } catch (i) {
+    return console.warn("[getCurrentPage] Failed to calculate page:", i), 0;
   }
-}, it = (e) => {
+}, ut = (e) => {
   if (!e)
     return [];
   const t = Array.from(e.children);
   if (t.length === 0)
     return [];
-  let a = [], n = [];
+  let i = [], n = [];
   for (const r of t)
-    r.tagName === "PAGE-BREAK" || r.getAttribute("data-page-break") === "true" ? n.length > 0 && (a.push(n), n = []) : n.push(r);
-  return n.length > 0 && a.push(n), a.length === 0 && t.length > 0 && a.push(t.filter(
+    r.tagName === "PAGE-BREAK" || r.getAttribute("data-page-break") === "true" ? n.length > 0 && (i.push(n), n = []) : n.push(r);
+  return n.length > 0 && i.push(n), i.length === 0 && t.length > 0 && i.push(t.filter(
     (r) => !(r.tagName === "PAGE-BREAK" || r.getAttribute("data-page-break") === "true")
-  )), a;
-}, en = (e, t) => {
+  )), i;
+}, dn = (e, t) => {
   if (!e)
     return !1;
   try {
-    const a = document.createElement("page-break");
-    return a.setAttribute("data-page-break", "true"), a.setAttribute("contenteditable", "false"), a.setAttribute("data-page-number", t || "2"), e.parentNode.insertBefore(a, e), !0;
-  } catch (a) {
-    return console.warn("[insertPageBreakBefore] Failed to insert page break:", a), !1;
+    const i = document.createElement("page-break");
+    return i.setAttribute("data-page-break", "true"), i.setAttribute("contenteditable", "false"), i.setAttribute("data-page-number", t || "2"), e.parentNode.insertBefore(i, e), !0;
+  } catch (i) {
+    return console.warn("[insertPageBreakBefore] Failed to insert page break:", i), !1;
   }
-}, tn = (e, t, a, n, r, s) => {
+}, pn = (e, t, i, n, r, s, a) => {
   if (!e)
     return !1;
   try {
-    const l = vt(a, n) * (t - 1), m = Array.from(e.children);
-    let f = 0, h = null;
-    for (let d = 0; d < m.length; d++) {
-      const x = m[d];
-      if (x.tagName === "PAGE-BREAK" || x.getAttribute("data-page-break") === "true")
+    const g = St(i, n, r) * (t - 1), f = Array.from(e.children);
+    let b = 0, y = null;
+    for (let d = 0; d < f.length; d++) {
+      const O = f[d];
+      if (O.tagName === "PAGE-BREAK" || O.getAttribute("data-page-break") === "true")
         continue;
-      const v = x.getBoundingClientRect().height;
-      if (f + v > l) {
-        h = x;
+      const x = O.getBoundingClientRect().height;
+      if (b + x > g) {
+        y = O;
         break;
       }
-      f += v;
+      b += x;
     }
-    if (h) {
+    if (y) {
       const d = document.createElement("page-break");
-      if (d.setAttribute("data-page-break", "true"), d.setAttribute("contenteditable", "false"), d.setAttribute("data-page-number", String(t)), h.parentNode.insertBefore(d, h), r) {
-        const x = e.innerHTML;
-        r(x);
+      if (d.setAttribute("data-page-break", "true"), d.setAttribute("contenteditable", "false"), d.setAttribute("data-page-number", String(t)), y.parentNode.insertBefore(d, y), s) {
+        const O = e.innerHTML;
+        s(O);
       }
-      return s && setTimeout(() => {
-        s();
+      return a && setTimeout(() => {
+        a();
       }, 50), !0;
     } else {
       const d = document.createElement("page-break");
       d.setAttribute("data-page-break", "true"), d.setAttribute("contenteditable", "false"), d.setAttribute("data-page-number", String(t)), e.appendChild(d);
-      const x = document.createElement("p");
-      if (x.innerHTML = "<br>", e.appendChild(x), r) {
-        const v = e.innerHTML;
-        r(v);
+      const O = document.createElement("p");
+      if (O.innerHTML = "<br>", e.appendChild(O), s) {
+        const x = e.innerHTML;
+        s(x);
       }
-      return s && setTimeout(() => {
-        s();
+      return a && setTimeout(() => {
+        a();
       }, 50), !0;
     }
-  } catch (i) {
-    return console.error("[insertPageBreakAtBoundary] Failed to insert page break:", i), !1;
+  } catch (u) {
+    return console.error("[insertPageBreakAtBoundary] Failed to insert page break:", u), !1;
   }
-}, nn = (e, t, a, n, r, s, i) => {
+}, fn = (e, t, i, n, r, s, a) => {
   if (!e)
     return !1;
-  if (a().length <= 1)
+  if (i().length <= 1)
     return console.warn("[removePageAndContent] Cannot delete the only page"), !1;
   try {
-    const m = Array.from(e.querySelectorAll(ce));
-    if (t > m.length)
+    const g = Array.from(e.querySelectorAll(pe));
+    if (t > g.length)
       return console.warn("[removePageAndContent] Invalid page index"), !1;
     const f = window.getSelection();
-    let h = !1, d = [], x = null;
+    let b = !1, y = [], d = null;
     if (t === 0) {
-      const C = m[0];
-      if (!C)
+      const x = g[0];
+      if (!x)
         return console.warn("[removePageAndContent] No page break found for first page"), !1;
-      let _ = e.firstChild;
-      for (; _ && _ !== C; )
-        d.push(_), _ = _.nextSibling;
-      x = C;
+      let h = e.firstChild;
+      for (; h && h !== x; )
+        y.push(h), h = h.nextSibling;
+      d = x;
     } else {
-      const C = m[t - 1];
-      if (!C)
+      const x = g[t - 1];
+      if (!x)
         return console.warn("[removePageAndContent] Page break not found"), !1;
-      const _ = m[t];
-      let w = C.nextSibling;
-      for (; w && w !== _; )
-        d.push(w), w = w.nextSibling;
-      x = C;
+      const h = g[t];
+      let C = x.nextSibling;
+      for (; C && C !== h; )
+        y.push(C), C = C.nextSibling;
+      d = x;
     }
     if (f && f.rangeCount > 0) {
-      const _ = f.getRangeAt(0).startContainer;
-      for (const w of d)
-        if (w.contains(_) || w === _) {
-          h = !0;
+      const h = f.getRangeAt(0).startContainer;
+      for (const C of y)
+        if (C.contains(h) || C === h) {
+          b = !0;
           break;
         }
     }
-    if (x && x.parentNode && x.remove(), d.forEach((C) => {
-      C.parentNode && C.remove();
-    }), e.querySelectorAll(ce).forEach((C, _) => {
-      C.setAttribute("data-page-number", String(_ + 2));
-    }), h && s && setTimeout(() => {
+    if (d && d.parentNode && d.remove(), y.forEach((x) => {
+      x.parentNode && x.remove();
+    }), e.querySelectorAll(pe).forEach((x, h) => {
+      x.setAttribute("data-page-number", String(h + 2));
+    }), b && s && setTimeout(() => {
       s(0);
     }, 50), n) {
-      const C = e.innerHTML;
-      n(C);
+      const x = e.innerHTML;
+      n(x);
     }
     return r && setTimeout(() => {
-      r(), i && setTimeout(() => {
-        i();
+      r(), a && setTimeout(() => {
+        a();
       }, 150);
     }, 100), !0;
-  } catch (m) {
-    return console.error("[removePageAndContent] Failed to remove page:", m), !1;
+  } catch (g) {
+    return console.error("[removePageAndContent] Failed to remove page:", g), !1;
   }
-}, rn = 200, on = 50, st = 3, an = 20, sn = (e, t) => {
+}, gn = 200, hn = 50, dt = 3, mn = 20, yn = (e, t) => {
   if (!e || e.length === 0)
     return null;
-  let a = 0, n = null;
+  let i = 0, n = null;
   for (let r = 0; r < e.length; r++) {
     const s = e[r];
     if (!s || !s.getBoundingClientRect)
       continue;
-    const i = s.getBoundingClientRect().height;
-    if (i < 1)
+    const a = s.getBoundingClientRect().height;
+    if (a < 1)
       continue;
-    if (a + i > t)
+    if (i + a > t)
       return n === null ? r > 0 ? {
         overflowIndex: r,
         overflowElement: s,
-        accumulatedHeight: a
+        accumulatedHeight: i
       } : null : {
         overflowIndex: r,
         overflowElement: s,
-        accumulatedHeight: a
+        accumulatedHeight: i
       };
-    a += i, n = s;
+    i += a, n = s;
   }
   return null;
-}, cn = (e, t, a, n, r, s, i) => {
-  if (!e || s.current)
+}, bn = (e, t, i, n, r, s, a, u) => {
+  if (!e || a.current)
     return !1;
   try {
-    s.current = !0;
-    const l = vt(t, a);
-    let m = it(e), f = !1, h = 0;
-    for (let d = 0; d < m.length && h < st; d++) {
-      const x = m[d], v = sn(x, l);
-      if (v && v.overflowIndex > 0) {
-        let C = 0;
-        for (let S = 0; S < x.length; S++) {
-          const b = x[S];
-          b && b.getBoundingClientRect && (C += b.getBoundingClientRect().height);
+    a.current = !0;
+    const g = St(t, i, n);
+    let f = ut(e), b = !1, y = 0;
+    for (let d = 0; d < f.length && y < dt; d++) {
+      const O = f[d], x = yn(O, g);
+      if (x && x.overflowIndex > 0) {
+        let h = 0;
+        for (let _ = 0; _ < O.length; _++) {
+          const k = O[_];
+          k && k.getBoundingClientRect && (h += k.getBoundingClientRect().height);
         }
-        if (C - l < an)
+        if (h - g < mn)
           continue;
-        const w = d + 2;
-        en(v.overflowElement, w) && (f = !0, h++, m = it(e));
+        const z = d + 2;
+        dn(x.overflowElement, z) && (b = !0, y++, f = ut(e));
       }
     }
-    if (f) {
-      if (n) {
+    if (b) {
+      if (r) {
         const d = e.innerHTML;
-        n(d);
+        r(d);
       }
       setTimeout(() => {
-        r && r(), h >= st && i && setTimeout(() => {
-          s.current || i();
+        s && s(), y >= dt && u && setTimeout(() => {
+          a.current || u();
         }, 100);
-      }, on);
+      }, hn);
     }
-    return f;
-  } catch (l) {
-    return console.warn("[checkAndReflow] Reflow failed:", l), !1;
+    return b;
+  } catch (g) {
+    return console.warn("[checkAndReflow] Reflow failed:", g), !1;
   } finally {
-    s.current = !1;
+    a.current = !1;
   }
-}, ln = (e, t, a = rn) => {
+}, En = (e, t, i = gn) => {
   t.current && clearTimeout(t.current), t.current = setTimeout(() => {
     t.current = null, e();
-  }, a);
-}, un = 400, xt = (e, t) => {
+  }, i);
+}, vn = 400, Ct = (e, t) => {
   if (e) {
     e.focus();
     try {
-      let a = null, n = 0;
+      let i = null, n = 0;
       if (t === 0)
-        a = e.firstChild, n = 0;
+        i = e.firstChild, n = 0;
       else {
-        const s = e.querySelectorAll(ce)[t - 1];
-        s && s.nextSibling && (a = s.nextSibling, n = 0);
+        const s = e.querySelectorAll(pe)[t - 1];
+        s && s.nextSibling && (i = s.nextSibling, n = 0);
       }
-      if (a) {
+      if (i) {
         const r = document.createRange(), s = window.getSelection();
-        a.nodeType === Node.TEXT_NODE ? r.setStart(a, n) : r.setStart(a, 0), r.collapse(!0), s.removeAllRanges(), s.addRange(r);
+        i.nodeType === Node.TEXT_NODE ? r.setStart(i, n) : r.setStart(i, 0), r.collapse(!0), s.removeAllRanges(), s.addRange(r);
       }
-    } catch (a) {
-      console.warn("[positionCursorAtPage] Failed to position cursor:", a);
+    } catch (i) {
+      console.warn("[positionCursorAtPage] Failed to position cursor:", i);
     }
   }
-}, dn = (e, t, a, n) => {
+}, xn = (e, t, i, n) => {
   if (!e || !t) {
     console.warn("[scrollToPage] Missing refs");
     return;
   }
   try {
     let r = null;
-    if (a === 0)
+    if (i === 0)
       r = t;
     else {
-      const i = t.querySelectorAll(ce)[a - 1];
-      if (i)
-        r = i;
+      const a = t.querySelectorAll(pe)[i - 1];
+      if (a)
+        r = a;
       else {
-        console.warn("[scrollToPage] Page break not found for page", a);
+        console.warn("[scrollToPage] Page break not found for page", i);
         return;
       }
     }
     if (r) {
-      const s = r.getBoundingClientRect(), i = e.getBoundingClientRect(), l = e.scrollTop + (s.top - i.top);
-      console.log("[scrollToPage] Scrolling to page", a, "scrollTop:", l), e.scrollTo({
-        top: l,
+      const s = r.getBoundingClientRect(), a = e.getBoundingClientRect(), u = e.scrollTop + (s.top - a.top);
+      console.log("[scrollToPage] Scrolling to page", i, "scrollTop:", u), e.scrollTo({
+        top: u,
         behavior: "smooth"
       }), setTimeout(() => {
-        n ? n(a) : xt(t, a);
-      }, un);
+        n ? n(i) : Ct(t, i);
+      }, vn);
     }
   } catch (r) {
     console.error("[scrollToPage] Error:", r);
   }
-}, pn = (e, t, a = {}, n = 300) => {
+}, An = (e, t, i = {}, n = 300) => {
   t.current && clearTimeout(t.current), t.current = setTimeout(() => {
-    t.current = null, e(a);
+    t.current = null, e(i);
   }, Math.max(0, n));
-}, fn = 300, gn = (e, t, a = 100) => {
-  const n = ht(), r = J(null), s = J(null), i = J(e), l = J(a), m = J(!1);
-  ae(() => {
-    i.current = e;
-  }, [e]), ae(() => {
-    l.current = a;
-  }, [a]), ae(() => () => {
-    r.current && clearTimeout(r.current), s.current && clearTimeout(s.current);
+}, Tn = 300, Pn = (e, t, i = 100, n = "NARROW") => {
+  const r = At(), s = X(null), a = X(null), u = X(e), g = X(i), f = X(n), b = X(!1);
+  oe(() => {
+    u.current = e;
+  }, [e]), oe(() => {
+    g.current = i;
+  }, [i]), oe(() => {
+    f.current = n;
+  }, [n]), oe(() => () => {
+    s.current && clearTimeout(s.current), a.current && clearTimeout(a.current);
   }, []);
-  const f = Z((b = {}) => t?.current ? Xt(t.current, b) : [], [t]), h = Z((b = {}) => {
-    const O = f(b);
-    return n.updatePageBoundaries(O), O;
-  }, [f, n]), d = Z(async (b) => {
+  const y = G((l = {}) => t?.current ? ln(t.current, l) : [], [t]), d = G((l = {}) => {
+    const R = y(l);
+    return r.updatePageBoundaries(R), R;
+  }, [y, r]), O = G(async (l) => {
     if (!t?.current)
       return !1;
-    const O = i.current || "A4", g = l.current || 100;
-    return tn(
+    const R = u.current || "A4", B = g.current || 100, Z = f.current || "NARROW";
+    return pn(
       t.current,
-      b,
-      O,
-      g,
-      n.updateContinuousContent,
-      h
+      l,
+      R,
+      B,
+      Z,
+      r.updateContinuousContent,
+      d
     );
-  }, [t, n, h]), x = Z(() => {
+  }, [t, r, d]), x = G(() => {
     if (!t?.current)
       return;
-    const b = i.current || "A4", O = l.current || 100;
-    cn(
+    const l = u.current || "A4", R = g.current || 100, B = f.current || "NARROW";
+    bn(
       t.current,
+      l,
+      R,
+      B,
+      r.updateContinuousContent,
+      d,
       b,
-      O,
-      n.updateContinuousContent,
-      h,
-      m,
       x
     );
-  }, [t, n, h]), v = Z((b) => {
-    ln(x, s, b);
-  }, [x]), C = Z((b = {}) => {
-    const O = typeof b.delay == "number" ? b.delay : fn;
-    pn(h, r, b, O);
-  }, [h]), _ = Z((b) => !b?.current || !t?.current ? 0 : Qt(b.current, t.current), [t]), w = Z((b) => {
-    t?.current && xt(t.current, b);
-  }, [t]), E = Z((b, O) => {
-    if (!O?.current || !t?.current) {
+  }, [t, r, d]), h = G((l) => {
+    En(x, a, l);
+  }, [x]), C = G((l = {}) => {
+    const R = typeof l.delay == "number" ? l.delay : Tn;
+    An(d, s, l, R);
+  }, [d]), z = G((l) => !l?.current || !t?.current ? 0 : un(l.current, t.current), [t]), A = G((l) => {
+    t?.current && Ct(t.current, l);
+  }, [t]), _ = G((l, R) => {
+    if (!R?.current || !t?.current) {
       console.warn("[scrollToPage] Missing refs");
       return;
     }
-    dn(O.current, t.current, b, w);
-  }, [t, w]), S = Z((b) => t?.current ? nn(
+    xn(R.current, t.current, l, A);
+  }, [t, A]), k = G((l) => t?.current ? fn(
     t.current,
-    b,
-    f,
-    n.updateContinuousContent,
-    h,
-    w,
+    l,
+    y,
+    r.updateContinuousContent,
+    d,
+    A,
     x
-  ) : !1, [t, f, n, h, w, x]);
+  ) : !1, [t, y, r, d, A, x]);
   return {
-    calculatePageBoundaries: f,
+    calculatePageBoundaries: y,
     checkAndUpdateBoundaries: C,
-    updateBoundaries: h,
-    getCurrentPage: _,
-    scrollToPage: E,
-    positionCursorAtPage: w,
+    updateBoundaries: d,
+    getCurrentPage: z,
+    scrollToPage: _,
+    positionCursorAtPage: A,
     checkAndReflow: x,
-    triggerAutoReflow: v,
-    removePageAndContent: S,
-    insertPageBreakAtBoundary: d,
-    boundaryTimeoutRef: r,
-    reflowTimeoutRef: s
+    triggerAutoReflow: h,
+    removePageAndContent: k,
+    insertPageBreakAtBoundary: O,
+    boundaryTimeoutRef: s,
+    reflowTimeoutRef: a
   };
 };
 /**
@@ -1873,13 +1939,13 @@ const T = /* @__PURE__ */ Ot(qt), bt = {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const hn = (e) => e.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase(), mn = (e) => e.replace(
+const _n = (e) => e.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase(), kn = (e) => e.replace(
   /^([A-Z])|[\s-_]+(\w)/g,
-  (t, a, n) => n ? n.toUpperCase() : a.toLowerCase()
-), ct = (e) => {
-  const t = mn(e);
+  (t, i, n) => n ? n.toUpperCase() : i.toLowerCase()
+), pt = (e) => {
+  const t = kn(e);
   return t.charAt(0).toUpperCase() + t.slice(1);
-}, Tt = (...e) => e.filter((t, a, n) => !!t && t.trim() !== "" && n.indexOf(t) === a).join(" ").trim(), yn = (e) => {
+}, Ot = (...e) => e.filter((t, i, n) => !!t && t.trim() !== "" && n.indexOf(t) === i).join(" ").trim(), Sn = (e) => {
   for (const t in e)
     if (t.startsWith("aria-") || t === "role" || t === "title")
       return !0;
@@ -1890,7 +1956,7 @@ const hn = (e) => e.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase(), mn = (
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-var bn = {
+var Cn = {
   xmlns: "http://www.w3.org/2000/svg",
   width: 24,
   height: 24,
@@ -1907,31 +1973,31 @@ var bn = {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const En = De(
+const On = $e(
   ({
     color: e = "currentColor",
     size: t = 24,
-    strokeWidth: a = 2,
+    strokeWidth: i = 2,
     absoluteStrokeWidth: n,
     className: r = "",
     children: s,
-    iconNode: i,
-    ...l
-  }, m) => Ce(
+    iconNode: a,
+    ...u
+  }, g) => je(
     "svg",
     {
-      ref: m,
-      ...bn,
+      ref: g,
+      ...Cn,
       width: t,
       height: t,
       stroke: e,
-      strokeWidth: n ? Number(a) * 24 / Number(t) : a,
-      className: Tt("lucide", r),
-      ...!s && !yn(l) && { "aria-hidden": "true" },
-      ...l
+      strokeWidth: n ? Number(i) * 24 / Number(t) : i,
+      className: Ot("lucide", r),
+      ...!s && !Sn(u) && { "aria-hidden": "true" },
+      ...u
     },
     [
-      ...i.map(([f, h]) => Ce(f, h)),
+      ...a.map(([f, b]) => je(f, b)),
       ...Array.isArray(s) ? s : [s]
     ]
   )
@@ -1942,20 +2008,20 @@ const En = De(
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const B = (e, t) => {
-  const a = De(
-    ({ className: n, ...r }, s) => Ce(En, {
+const H = (e, t) => {
+  const i = $e(
+    ({ className: n, ...r }, s) => je(On, {
       ref: s,
       iconNode: t,
-      className: Tt(
-        `lucide-${hn(ct(e))}`,
+      className: Ot(
+        `lucide-${_n(pt(e))}`,
         `lucide-${e}`,
         n
       ),
       ...r
     })
   );
-  return a.displayName = ct(e), a;
+  return i.displayName = pt(e), i;
 };
 /**
  * @license lucide-react v0.544.0 - ISC
@@ -1963,110 +2029,50 @@ const B = (e, t) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const vn = [
+const Rn = [
   [
     "path",
     { d: "M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8", key: "mg9rjx" }
   ]
-], xn = B("bold", vn);
+], wn = H("bold", Rn);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Tn = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]], An = B("chevron-left", Tn);
+const Mn = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]], jn = H("chevron-left", Mn);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Pn = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]], _n = B("chevron-right", Pn);
+const Nn = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]], In = H("chevron-right", Nn);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const kn = [
+const Dn = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   ["path", { d: "m9 15 2 2 4-4", key: "1grp1n" }]
-], Sn = B("file-check", kn);
+], Ln = H("file-check", Dn);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Cn = [
+const zn = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   ["path", { d: "M10 9H8", key: "b1mrlr" }],
   ["path", { d: "M16 13H8", key: "t4e002" }],
   ["path", { d: "M16 17H8", key: "z1uh3a" }]
-], ve = B("file-text", Cn);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const wn = [
-  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
-  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
-  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
-  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
-], On = B("hash", wn);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const Rn = [
-  ["path", { d: "M4 12h8", key: "17cfdx" }],
-  ["path", { d: "M4 18V6", key: "1rz3zl" }],
-  ["path", { d: "M12 18V6", key: "zqpxq5" }],
-  ["path", { d: "m17 12 3-2v8", key: "1hhhft" }]
-], jn = B("heading-1", Rn);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const Nn = [
-  ["path", { d: "M4 12h8", key: "17cfdx" }],
-  ["path", { d: "M4 18V6", key: "1rz3zl" }],
-  ["path", { d: "M12 18V6", key: "zqpxq5" }],
-  ["path", { d: "M21 18h-4c0-4 4-3 4-6 0-1.5-2-2.5-4-1", key: "9jr5yi" }]
-], Mn = B("heading-2", Nn);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const In = [
-  ["path", { d: "M4 12h8", key: "17cfdx" }],
-  ["path", { d: "M4 18V6", key: "1rz3zl" }],
-  ["path", { d: "M12 18V6", key: "zqpxq5" }],
-  ["path", { d: "M17.5 10.5c1.7-1 3.5 0 3.5 1.5a2 2 0 0 1-2 2", key: "68ncm8" }],
-  ["path", { d: "M17 17.5c2 1.5 4 .3 4-1.5a2 2 0 0 0-2-2", key: "1ejuhz" }]
-], Dn = B("heading-3", In);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const Ln = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
-], zn = B("image", Ln);
+], _e = H("file-text", zn);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
@@ -2074,10 +2080,11 @@ const Ln = [
  * See the LICENSE file in the root directory of this source tree.
  */
 const Bn = [
-  ["line", { x1: "19", x2: "10", y1: "4", y2: "4", key: "15jd3p" }],
-  ["line", { x1: "14", x2: "5", y1: "20", y2: "20", key: "bu0au3" }],
-  ["line", { x1: "15", x2: "9", y1: "4", y2: "20", key: "uljnxc" }]
-], $n = B("italic", Bn);
+  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
+  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
+  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
+  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
+], $n = H("hash", Bn);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
@@ -2085,23 +2092,11 @@ const Bn = [
  * See the LICENSE file in the root directory of this source tree.
  */
 const Un = [
-  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
-  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
-], Hn = B("link", Un);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const Zn = [
-  ["path", { d: "M11 5h10", key: "1cz7ny" }],
-  ["path", { d: "M11 12h10", key: "1438ji" }],
-  ["path", { d: "M11 19h10", key: "11t30w" }],
-  ["path", { d: "M4 4h1v5", key: "10yrso" }],
-  ["path", { d: "M4 9h2", key: "r1h2o0" }],
-  ["path", { d: "M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02", key: "xtkcd5" }]
-], qn = B("list-ordered", Zn);
+  ["path", { d: "M4 12h8", key: "17cfdx" }],
+  ["path", { d: "M4 18V6", key: "1rz3zl" }],
+  ["path", { d: "M12 18V6", key: "zqpxq5" }],
+  ["path", { d: "m17 12 3-2v8", key: "1hhhft" }]
+], Hn = H("heading-1", Un);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
@@ -2109,40 +2104,111 @@ const Zn = [
  * See the LICENSE file in the root directory of this source tree.
  */
 const Gn = [
+  ["path", { d: "M4 12h8", key: "17cfdx" }],
+  ["path", { d: "M4 18V6", key: "1rz3zl" }],
+  ["path", { d: "M12 18V6", key: "zqpxq5" }],
+  ["path", { d: "M21 18h-4c0-4 4-3 4-6 0-1.5-2-2.5-4-1", key: "9jr5yi" }]
+], Zn = H("heading-2", Gn);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const qn = [
+  ["path", { d: "M4 12h8", key: "17cfdx" }],
+  ["path", { d: "M4 18V6", key: "1rz3zl" }],
+  ["path", { d: "M12 18V6", key: "zqpxq5" }],
+  ["path", { d: "M17.5 10.5c1.7-1 3.5 0 3.5 1.5a2 2 0 0 1-2 2", key: "68ncm8" }],
+  ["path", { d: "M17 17.5c2 1.5 4 .3 4-1.5a2 2 0 0 0-2-2", key: "1ejuhz" }]
+], Yn = H("heading-3", qn);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const Fn = [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
+], Vn = H("image", Fn);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const Wn = [
+  ["line", { x1: "19", x2: "10", y1: "4", y2: "4", key: "15jd3p" }],
+  ["line", { x1: "14", x2: "5", y1: "20", y2: "20", key: "bu0au3" }],
+  ["line", { x1: "15", x2: "9", y1: "4", y2: "20", key: "uljnxc" }]
+], Kn = H("italic", Wn);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const Jn = [
+  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
+  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
+], Xn = H("link", Jn);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const Qn = [
+  ["path", { d: "M11 5h10", key: "1cz7ny" }],
+  ["path", { d: "M11 12h10", key: "1438ji" }],
+  ["path", { d: "M11 19h10", key: "11t30w" }],
+  ["path", { d: "M4 4h1v5", key: "10yrso" }],
+  ["path", { d: "M4 9h2", key: "r1h2o0" }],
+  ["path", { d: "M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02", key: "xtkcd5" }]
+], er = H("list-ordered", Qn);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const tr = [
   ["path", { d: "M3 5h.01", key: "18ugdj" }],
   ["path", { d: "M3 12h.01", key: "nlz23k" }],
   ["path", { d: "M3 19h.01", key: "noohij" }],
   ["path", { d: "M8 5h13", key: "1pao27" }],
   ["path", { d: "M8 12h13", key: "1za7za" }],
   ["path", { d: "M8 19h13", key: "m83p4d" }]
-], At = B("list", Gn);
+], Rt = H("list", tr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Yn = [
+const nr = [
   ["path", { d: "M5 12h14", key: "1ays0h" }],
   ["path", { d: "M12 5v14", key: "s699le" }]
-], Fn = B("plus", Yn);
+], rr = H("plus", nr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Vn = [
+const or = [
   ["path", { d: "M21 7v6h-6", key: "3ptur4" }],
   ["path", { d: "M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7", key: "1kgawr" }]
-], Wn = B("redo", Vn);
+], ar = H("redo", or);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Kn = [
+const ir = [
   [
     "path",
     {
@@ -2151,167 +2217,167 @@ const Kn = [
     }
   ],
   ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
-], Jn = B("settings", Kn);
+], ft = H("settings", ir);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Xn = [
+const sr = [
   ["path", { d: "M16 4H9a3 3 0 0 0-2.83 4", key: "43sutm" }],
   ["path", { d: "M14 12a4 4 0 0 1 0 8H6", key: "nlfj13" }],
   ["line", { x1: "4", x2: "20", y1: "12", y2: "12", key: "1e0a9i" }]
-], Qn = B("strikethrough", Xn);
+], cr = H("strikethrough", sr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const er = [
+const lr = [
   ["path", { d: "M12 3v18", key: "108xh3" }],
   ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
   ["path", { d: "M3 9h18", key: "1pudct" }],
   ["path", { d: "M3 15h18", key: "5xshup" }]
-], tr = B("table", er);
+], ur = H("table", lr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const nr = [
+const dr = [
   ["path", { d: "M21 5H3", key: "1fi0y6" }],
   ["path", { d: "M17 12H7", key: "16if0g" }],
   ["path", { d: "M19 19H5", key: "vjpgq2" }]
-], rr = B("text-align-center", nr);
+], pr = H("text-align-center", dr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const or = [
+const fr = [
   ["path", { d: "M21 5H3", key: "1fi0y6" }],
   ["path", { d: "M21 12H9", key: "dn1m92" }],
   ["path", { d: "M21 19H7", key: "4cu937" }]
-], ar = B("text-align-end", or);
+], gr = H("text-align-end", fr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const ir = [
+const hr = [
   ["path", { d: "M3 5h18", key: "1u36vt" }],
   ["path", { d: "M3 12h18", key: "1i2n21" }],
   ["path", { d: "M3 19h18", key: "awlh7x" }]
-], sr = B("text-align-justify", ir);
+], mr = H("text-align-justify", hr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const cr = [
+const yr = [
   ["path", { d: "M21 5H3", key: "1fi0y6" }],
   ["path", { d: "M15 12H3", key: "6jk70r" }],
   ["path", { d: "M17 19H3", key: "z6ezky" }]
-], lr = B("text-align-start", cr);
+], br = H("text-align-start", yr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const ur = [
+const Er = [
   ["path", { d: "M6 4v6a6 6 0 0 0 12 0V4", key: "9kb039" }],
   ["line", { x1: "4", x2: "20", y1: "20", y2: "20", key: "nun2al" }]
-], dr = B("underline", ur);
+], vr = H("underline", Er);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const pr = [
+const xr = [
   ["path", { d: "M3 7v6h6", key: "1v2h90" }],
   ["path", { d: "M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13", key: "1r6uu6" }]
-], fr = B("undo", pr);
+], Ar = H("undo", xr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const gr = [
+const Tr = [
   ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
   ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
-], hr = B("x", gr);
+], Pr = H("x", Tr);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const mr = [
+const _r = [
   ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
   ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
   ["line", { x1: "11", x2: "11", y1: "8", y2: "14", key: "1vmskp" }],
   ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
-], yr = B("zoom-in", mr);
+], kr = H("zoom-in", _r);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const br = [
+const Sr = [
   ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
   ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
   ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
-], Er = B("zoom-out", br), vr = ({ editorView: e, isCollapsed: t, onToggle: a, wordCount: n, pageCount: r }) => {
-  const s = gt(), { pages: i, activePage: l, continuousContent: m, editorMode: f } = s, [h, d] = Ee(0), [x, v] = Ee([]);
-  ae(() => {
+], Cr = H("zoom-out", Sr), Or = ({ editorView: e, isCollapsed: t, onToggle: i, wordCount: n, pageCount: r }) => {
+  const s = xt(), { pages: a, activePage: u, continuousContent: g, editorMode: f } = s, [b, y] = Te(0), [d, O] = Te([]);
+  oe(() => {
     if (n !== void 0 && r !== void 0) {
-      if (d(n), m) {
-        const E = document.createElement("div");
-        E.innerHTML = m;
-        const S = E.querySelectorAll("h1, h2, h3, h4, h5, h6"), b = Array.from(S).map((O, g) => {
-          const $ = parseInt(O.tagName.charAt(1)), H = O.textContent.trim();
-          return H ? {
-            id: `heading-${g}`,
-            level: $,
-            text: H,
+      if (y(n), g) {
+        const z = document.createElement("div");
+        z.innerHTML = g;
+        const A = z.querySelectorAll("h1, h2, h3, h4, h5, h6"), _ = Array.from(A).map((k, l) => {
+          const R = parseInt(k.tagName.charAt(1)), B = k.textContent.trim();
+          return B ? {
+            id: `heading-${l}`,
+            level: R,
+            text: B,
             page: 1
             // Continuous mode doesn't have meaningful page numbers for headings
           } : null;
         }).filter(Boolean);
-        v(b);
+        O(_);
       }
       return;
     }
-    let _ = 0;
-    const w = [];
-    i.forEach((E, S) => {
-      if (E.content) {
-        const b = document.createElement("div");
-        b.innerHTML = E.content;
-        const g = (b.textContent || b.innerText || "").trim().split(/\s+/).filter((H) => H.length > 0);
-        _ += g.length, b.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((H, G) => {
-          const K = parseInt(H.tagName.charAt(1)), Q = H.textContent.trim();
-          Q && w.push({
-            id: `heading-${S}-${G}`,
-            level: K,
-            text: Q,
-            page: S + 1
+    let h = 0;
+    const C = [];
+    a.forEach((z, A) => {
+      if (z.content) {
+        const _ = document.createElement("div");
+        _.innerHTML = z.content;
+        const l = (_.textContent || _.innerText || "").trim().split(/\s+/).filter((B) => B.length > 0);
+        h += l.length, _.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((B, Z) => {
+          const V = parseInt(B.tagName.charAt(1)), q = B.textContent.trim();
+          q && C.push({
+            id: `heading-${A}-${Z}`,
+            level: V,
+            text: q,
+            page: A + 1
           });
         });
       }
-    }), d(_), v(w);
-  }, [i, n, r, m]);
-  const C = r !== void 0 ? r : i.length;
+    }), y(h), O(C);
+  }, [a, n, r, g]);
+  const x = r !== void 0 ? r : a.length;
   return /* @__PURE__ */ c.jsxs(
     "aside",
     {
@@ -2322,17 +2388,17 @@ const br = [
       children: [
         /* @__PURE__ */ c.jsxs("div", { className: "sidebar-header", children: [
           /* @__PURE__ */ c.jsxs("div", { className: "sidebar-title", children: [
-            /* @__PURE__ */ c.jsx(ve, { size: 18 }),
+            /* @__PURE__ */ c.jsx(_e, { size: 18 }),
             /* @__PURE__ */ c.jsx("h2", { children: "Document Info" })
           ] }),
           /* @__PURE__ */ c.jsx(
             "button",
             {
               className: "sidebar-toggle",
-              onClick: a,
+              onClick: i,
               "aria-label": t ? "Expand sidebar" : "Collapse sidebar",
               title: t ? "Expand sidebar" : "Collapse sidebar",
-              children: t ? /* @__PURE__ */ c.jsx(_n, { size: 16 }) : /* @__PURE__ */ c.jsx(An, { size: 16 })
+              children: t ? /* @__PURE__ */ c.jsx(In, { size: 16 }) : /* @__PURE__ */ c.jsx(jn, { size: 16 })
             }
           )
         ] }),
@@ -2341,48 +2407,48 @@ const br = [
             /* @__PURE__ */ c.jsx("h3", { children: "Statistics" }),
             /* @__PURE__ */ c.jsxs("div", { className: "stat-item", children: [
               /* @__PURE__ */ c.jsxs("div", { className: "stat-label", children: [
-                /* @__PURE__ */ c.jsx(Sn, { size: 14 }),
+                /* @__PURE__ */ c.jsx(Ln, { size: 14 }),
                 /* @__PURE__ */ c.jsx("span", { children: "Pages:" })
               ] }),
-              /* @__PURE__ */ c.jsx("span", { className: "stat-value", children: C })
+              /* @__PURE__ */ c.jsx("span", { className: "stat-value", children: x })
             ] }),
             /* @__PURE__ */ c.jsxs("div", { className: "stat-item", "data-testid": "word-count", children: [
               /* @__PURE__ */ c.jsxs("div", { className: "stat-label", children: [
-                /* @__PURE__ */ c.jsx(On, { size: 14 }),
+                /* @__PURE__ */ c.jsx($n, { size: 14 }),
                 /* @__PURE__ */ c.jsx("span", { children: "Words:" })
               ] }),
-              /* @__PURE__ */ c.jsx("span", { className: "stat-value", children: h.toLocaleString() })
+              /* @__PURE__ */ c.jsx("span", { className: "stat-value", children: b.toLocaleString() })
             ] }),
             /* @__PURE__ */ c.jsxs("div", { className: "stat-item", children: [
               /* @__PURE__ */ c.jsxs("div", { className: "stat-label", children: [
-                /* @__PURE__ */ c.jsx(ve, { size: 14 }),
+                /* @__PURE__ */ c.jsx(_e, { size: 14 }),
                 /* @__PURE__ */ c.jsx("span", { children: "Active Page:" })
               ] }),
-              /* @__PURE__ */ c.jsx("span", { className: "stat-value", children: l + 1 })
+              /* @__PURE__ */ c.jsx("span", { className: "stat-value", children: u + 1 })
             ] })
           ] }),
-          x.length > 0 && /* @__PURE__ */ c.jsxs("div", { className: "sidebar-section", children: [
+          d.length > 0 && /* @__PURE__ */ c.jsxs("div", { className: "sidebar-section", children: [
             /* @__PURE__ */ c.jsxs("h3", { children: [
-              /* @__PURE__ */ c.jsx(At, { size: 14, style: { display: "inline-block", marginRight: "6px", verticalAlign: "middle" } }),
+              /* @__PURE__ */ c.jsx(Rt, { size: 14, style: { display: "inline-block", marginRight: "6px", verticalAlign: "middle" } }),
               "Document Outline"
             ] }),
-            /* @__PURE__ */ c.jsx("div", { className: "document-outline", "data-testid": "outline", children: x.map((_) => {
-              const w = _.level === 1 ? jn : _.level === 2 ? Mn : Dn;
+            /* @__PURE__ */ c.jsx("div", { className: "document-outline", "data-testid": "outline", children: d.map((h) => {
+              const C = h.level === 1 ? Hn : h.level === 2 ? Zn : Yn;
               return /* @__PURE__ */ c.jsxs(
                 "div",
                 {
-                  className: `outline-item outline-level-${_.level}`,
-                  style: { marginLeft: `${(_.level - 1) * 12}px` },
+                  className: `outline-item outline-level-${h.level}`,
+                  style: { marginLeft: `${(h.level - 1) * 12}px` },
                   children: [
-                    /* @__PURE__ */ c.jsx(w, { size: 12, className: "outline-icon" }),
-                    /* @__PURE__ */ c.jsx("span", { className: "outline-text", children: _.text }),
+                    /* @__PURE__ */ c.jsx(C, { size: 12, className: "outline-icon" }),
+                    /* @__PURE__ */ c.jsx("span", { className: "outline-text", children: h.text }),
                     /* @__PURE__ */ c.jsxs("span", { className: "outline-page", children: [
                       "p.",
-                      _.page
+                      h.page
                     ] })
                   ]
                 },
-                _.id
+                h.id
               );
             }) })
           ] }),
@@ -2396,57 +2462,57 @@ const br = [
     }
   );
 };
-function xr() {
+function Rr() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (e) => {
     const t = Math.random() * 16 | 0;
     return (e === "x" ? t : t & 3 | 8).toString(16);
   });
 }
-function Tr(e) {
-  return new Promise((t, a) => {
+function wr(e) {
+  return new Promise((t, i) => {
     if (!["image/png", "image/jpeg", "image/gif", "image/webp"].includes(e.type)) {
-      a(new Error("Invalid image format. Supported formats: png, jpeg, gif, webp"));
+      i(new Error("Invalid image format. Supported formats: png, jpeg, gif, webp"));
       return;
     }
     if (e.size > 5 * 1024 * 1024) {
-      a(new Error("Image exceeds maximum size of 5MB"));
+      i(new Error("Image exceeds maximum size of 5MB"));
       return;
     }
     const r = new FileReader();
     r.onload = (s) => {
-      const i = s.target.result;
-      if (i.split(",")[1].length * 3 / 4 > 5 * 1024 * 1024) {
-        a(new Error("Image exceeds maximum size of 5MB"));
+      const a = s.target.result;
+      if (a.split(",")[1].length * 3 / 4 > 5 * 1024 * 1024) {
+        i(new Error("Image exceeds maximum size of 5MB"));
         return;
       }
       try {
-        const f = `editor-image-${xr()}`;
-        localStorage.setItem(f, i), t(f);
+        const f = `editor-image-${Rr()}`;
+        localStorage.setItem(f, a), t(f);
       } catch (f) {
-        f.name === "QuotaExceededError" ? a(new Error("Storage quota exceeded")) : a(f);
+        f.name === "QuotaExceededError" ? i(new Error("Storage quota exceeded")) : i(f);
       }
     }, r.onerror = () => {
-      a(new Error("Error reading image file"));
+      i(new Error("Error reading image file"));
     }, r.readAsDataURL(e);
   });
 }
-function Lr(e) {
+function Yr(e) {
   return localStorage.getItem(e);
 }
-function zr(e) {
+function Fr(e) {
   localStorage.removeItem(e);
 }
-function Br() {
+function Vr() {
   Object.keys(localStorage).forEach((e) => {
     e.startsWith("editor-image-") && localStorage.removeItem(e);
   });
 }
-function $r() {
+function Wr() {
   return Object.keys(localStorage).filter(
     (e) => e.startsWith("editor-image-")
   );
 }
-class Ar {
+class Mr {
   constructor(t = "Editor") {
     this.namespace = t;
   }
@@ -2457,42 +2523,42 @@ class Ar {
    * @param {any} data - Optional data to log
    * @returns {string} Formatted message
    */
-  _format(t, a, n) {
-    return `[${(/* @__PURE__ */ new Date()).toISOString()}] [${this.namespace}] [${t}] ${a}`;
+  _format(t, i, n) {
+    return `[${(/* @__PURE__ */ new Date()).toISOString()}] [${this.namespace}] [${t}] ${i}`;
   }
   /**
    * Info level logging
    * @param {string} message - Info message
    * @param {any} data - Optional data
    */
-  info(t, a) {
+  info(t, i) {
   }
   /**
    * Warning level logging
    * @param {string} message - Warning message
    * @param {any} data - Optional data
    */
-  warn(t, a) {
+  warn(t, i) {
   }
   /**
    * Error level logging
    * @param {string} message - Error message
    * @param {Error|any} error - Error object or data
    */
-  error(t, a) {
+  error(t, i) {
   }
   /**
    * Debug level logging
    * @param {string} message - Debug message
    * @param {any} data - Optional data
    */
-  debug(t, a) {
+  debug(t, i) {
   }
 }
-const lt = new Ar("Editor"), $e = ({
+const gt = new Mr("Editor"), qe = ({
   currentFormat: e,
   onFormatText: t,
-  onAddPageBreak: a
+  onAddPageBreak: i
 }) => {
   const n = async (r) => {
     try {
@@ -2504,10 +2570,10 @@ const lt = new Ar("Editor"), $e = ({
         alert("Image exceeds maximum size of 5MB");
         return;
       }
-      const i = await Tr(r), l = localStorage.getItem(i);
-      l && (document.execCommand("insertImage", !1, l), lt.info("Image inserted", { key: i }));
+      const a = await wr(r), u = localStorage.getItem(a);
+      u && (document.execCommand("insertImage", !1, u), gt.info("Image inserted", { key: a }));
     } catch (s) {
-      lt.error("Error uploading image", s);
+      gt.error("Error uploading image", s);
     }
   };
   return /* @__PURE__ */ c.jsxs("div", { className: "editor-toolbar", children: [
@@ -2516,7 +2582,7 @@ const lt = new Ar("Editor"), $e = ({
       {
         onClick: () => t("undo"),
         title: "Undo",
-        children: /* @__PURE__ */ c.jsx(fr, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(Ar, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2524,7 +2590,7 @@ const lt = new Ar("Editor"), $e = ({
       {
         onClick: () => t("redo"),
         title: "Redo",
-        children: /* @__PURE__ */ c.jsx(Wn, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(ar, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx("div", { className: "toolbar-separator" }),
@@ -2534,7 +2600,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("bold"),
         className: e.bold ? "active" : "",
         title: "Bold",
-        children: /* @__PURE__ */ c.jsx(xn, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(wn, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2543,7 +2609,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("italic"),
         className: e.italic ? "active" : "",
         title: "Italic",
-        children: /* @__PURE__ */ c.jsx($n, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(Kn, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2552,7 +2618,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("underline"),
         className: e.underline ? "active" : "",
         title: "Underline",
-        children: /* @__PURE__ */ c.jsx(dr, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(vr, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2561,7 +2627,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("strikethrough"),
         className: e.strikethrough ? "active" : "",
         title: "Strikethrough",
-        children: /* @__PURE__ */ c.jsx(Qn, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(cr, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx("div", { className: "toolbar-separator" }),
@@ -2571,7 +2637,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("justifyLeft"),
         className: e.alignLeft ? "active" : "",
         title: "Align Left",
-        children: /* @__PURE__ */ c.jsx(lr, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(br, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2580,7 +2646,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("justifyCenter"),
         className: e.alignCenter ? "active" : "",
         title: "Align Center",
-        children: /* @__PURE__ */ c.jsx(rr, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(pr, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2589,7 +2655,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("justifyRight"),
         className: e.alignRight ? "active" : "",
         title: "Align Right",
-        children: /* @__PURE__ */ c.jsx(ar, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(gr, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2598,7 +2664,7 @@ const lt = new Ar("Editor"), $e = ({
         onClick: () => t("justifyFull"),
         className: e.alignJustify ? "active" : "",
         title: "Justify",
-        children: /* @__PURE__ */ c.jsx(sr, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(mr, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx("div", { className: "toolbar-separator" }),
@@ -2621,9 +2687,9 @@ const lt = new Ar("Editor"), $e = ({
       "select",
       {
         onChange: (r) => t("fontSize", r.target.value),
-        defaultValue: Be,
+        defaultValue: Ze,
         title: "Font Size",
-        children: Gt.map(({ value: r, label: s, pt: i }) => /* @__PURE__ */ c.jsx("option", { value: r, children: s }, r))
+        children: rn.map(({ value: r, label: s, pt: a }) => /* @__PURE__ */ c.jsx("option", { value: r, children: s }, r))
       }
     ),
     /* @__PURE__ */ c.jsxs(
@@ -2649,7 +2715,7 @@ const lt = new Ar("Editor"), $e = ({
       {
         onClick: () => t("insertUnorderedList"),
         title: "Bullet List",
-        children: /* @__PURE__ */ c.jsx(At, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(Rt, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2657,7 +2723,7 @@ const lt = new Ar("Editor"), $e = ({
       {
         onClick: () => t("insertOrderedList"),
         title: "Numbered List",
-        children: /* @__PURE__ */ c.jsx(qn, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(er, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx("div", { className: "toolbar-separator" }),
@@ -2669,7 +2735,7 @@ const lt = new Ar("Editor"), $e = ({
           r && t("createLink", r);
         },
         title: "Insert Link",
-        children: /* @__PURE__ */ c.jsx(Hn, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(Xn, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2677,15 +2743,15 @@ const lt = new Ar("Editor"), $e = ({
       {
         onClick: () => t("insertHTML", '<table border="1"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>'),
         title: "Insert Table",
-        children: /* @__PURE__ */ c.jsx(tr, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(ur, { size: 16 })
       }
     ),
-    a && /* @__PURE__ */ c.jsx(
+    i && /* @__PURE__ */ c.jsx(
       "button",
       {
-        onClick: a,
+        onClick: i,
         title: "Insert Page Break",
-        children: /* @__PURE__ */ c.jsx(ve, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(_e, { size: 16 })
       }
     ),
     /* @__PURE__ */ c.jsx(
@@ -2703,95 +2769,91 @@ const lt = new Ar("Editor"), $e = ({
       {
         onClick: () => document.getElementById("image-upload").click(),
         title: "Insert Image",
-        children: /* @__PURE__ */ c.jsx(zn, { size: 16 })
+        children: /* @__PURE__ */ c.jsx(Vn, { size: 16 })
       }
     )
   ] });
 };
-$e.propTypes = {
-  currentFormat: T.shape({
-    bold: T.bool,
-    italic: T.bool,
-    underline: T.bool,
-    strikethrough: T.bool,
-    alignLeft: T.bool,
-    alignCenter: T.bool,
-    alignRight: T.bool,
-    alignJustify: T.bool,
-    fontFamily: T.string,
-    fontSize: T.string,
-    headingLevel: T.string
+qe.propTypes = {
+  currentFormat: v.shape({
+    bold: v.bool,
+    italic: v.bool,
+    underline: v.bool,
+    strikethrough: v.bool,
+    alignLeft: v.bool,
+    alignCenter: v.bool,
+    alignRight: v.bool,
+    alignJustify: v.bool,
+    fontFamily: v.string,
+    fontSize: v.string,
+    headingLevel: v.string
   }).isRequired,
-  onFormatText: T.func.isRequired,
-  onAddPageBreak: T.func
+  onFormatText: v.func.isRequired,
+  onAddPageBreak: v.func
 };
-$e.defaultProps = {
+qe.defaultProps = {
   onAddPageBreak: void 0
 };
-const Ue = ({
+const Ye = ({
   content: e,
   dimensions: t,
-  pageSize: a,
+  pageSize: i,
   pageBoundaries: n = [],
   editorRef: r,
   onInput: s,
-  onKeyDown: i,
-  onClick: l,
-  onScroll: m,
-  zoomLevel: f = 100
+  onKeyDown: a,
+  onClick: u,
+  onScroll: g,
+  zoomLevel: f = 100,
+  pageMargins: b = le
 }) => {
-  const h = {
-    top: 48,
-    bottom: 48,
-    left: 48,
-    right: 48
-  }, d = f / 100, x = (E, S) => {
-    if (!E) return !1;
-    const b = E.getBoundingClientRect(), O = S - b.top;
-    return O < h.top || O > b.height - h.bottom;
-  }, v = (E) => E ? E.nodeType === Node.ELEMENT_NODE ? E.tagName === "PAGE-BREAK" || E.getAttribute("data-page-break") === "true" : E.parentElement && v(E.parentElement) : !1, C = (E) => {
-    const S = window.getSelection();
-    if (!S || S.rangeCount === 0) return;
-    const b = S.getRangeAt(0), { startContainer: O, endContainer: g } = b;
-    if ((v(O) || v(g)) && (E.key.length === 1 || E.key === "Enter" || E.key === " "))
-      return E.preventDefault(), !1;
-    if (E.key === "Tab")
-      return E.preventDefault(), document.execCommand("insertHTML", !1, "&nbsp;&nbsp;&nbsp;&nbsp;"), !1;
-    if ((E.key === "Backspace" || E.key === "Delete") && (v(O) || v(g)))
-      return E.preventDefault(), !1;
-    i && i(E);
-  }, _ = (E) => {
+  const y = mt(b), d = f / 100, O = (A, _) => {
+    if (!A) return !1;
+    const k = A.getBoundingClientRect(), l = _ - k.top;
+    return l < y.top || l > k.height - y.bottom;
+  }, x = (A) => A ? A.nodeType === Node.ELEMENT_NODE ? A.tagName === "PAGE-BREAK" || A.getAttribute("data-page-break") === "true" : A.parentElement && x(A.parentElement) : !1, h = (A) => {
+    const _ = window.getSelection();
+    if (!_ || _.rangeCount === 0) return;
+    const k = _.getRangeAt(0), { startContainer: l, endContainer: R } = k;
+    if ((x(l) || x(R)) && (A.key.length === 1 || A.key === "Enter" || A.key === " "))
+      return A.preventDefault(), !1;
+    if (A.key === "Tab")
+      return A.preventDefault(), document.execCommand("insertHTML", !1, "&nbsp;&nbsp;&nbsp;&nbsp;"), !1;
+    if ((A.key === "Backspace" || A.key === "Delete") && (x(l) || x(R)))
+      return A.preventDefault(), !1;
+    a && a(A);
+  }, C = (A) => {
     if (!r.current) return;
-    const S = E.target;
-    if (v(S)) {
-      E.preventDefault();
+    const _ = A.target;
+    if (x(_)) {
+      A.preventDefault();
       return;
     }
-    if (x(r.current, E.clientY)) {
-      E.preventDefault();
-      const b = r.current.getBoundingClientRect();
-      if (E.clientY - b.top < h.top) {
-        const g = r.current.firstElementChild;
-        if (g && g.tagName !== "PAGE-BREAK") {
-          const $ = document.createRange(), H = window.getSelection();
-          $.setStart(g, 0), $.collapse(!0), H.removeAllRanges(), H.addRange($);
+    if (O(r.current, A.clientY)) {
+      A.preventDefault();
+      const k = r.current.getBoundingClientRect();
+      if (A.clientY - k.top < y.top) {
+        const R = r.current.firstElementChild;
+        if (R && R.tagName !== "PAGE-BREAK") {
+          const B = document.createRange(), Z = window.getSelection();
+          B.setStart(R, 0), B.collapse(!0), Z.removeAllRanges(), Z.addRange(B);
         }
       } else {
-        const g = r.current.lastElementChild;
-        if (g && g.tagName !== "PAGE-BREAK") {
-          const $ = document.createRange(), H = window.getSelection();
-          $.selectNodeContents(g), $.collapse(!1), H.removeAllRanges(), H.addRange($);
+        const R = r.current.lastElementChild;
+        if (R && R.tagName !== "PAGE-BREAK") {
+          const B = document.createRange(), Z = window.getSelection();
+          B.selectNodeContents(R), B.collapse(!1), Z.removeAllRanges(), Z.addRange(B);
         }
       }
       return;
     }
-    l && l(E);
-  }, w = (E) => {
-    const S = window.getSelection();
-    if (!S || S.rangeCount === 0) return;
-    const b = S.getRangeAt(0), { startContainer: O } = b;
-    if (v(O))
-      return E.preventDefault(), !1;
+    u && u(A);
+  }, z = (A) => {
+    const _ = window.getSelection();
+    if (!_ || _.rangeCount === 0) return;
+    const k = _.getRangeAt(0), { startContainer: l } = k;
+    if (x(l))
+      return A.preventDefault(), !1;
   };
   return /* @__PURE__ */ c.jsxs(
     "div",
@@ -2809,15 +2871,15 @@ const Ue = ({
         transition: "transform 0.2s ease-out"
       },
       children: [
-        n.map((E, S) => {
-          const b = E.top + t.height;
+        n.map((A, _) => {
+          const k = A.top + t.height;
           return /* @__PURE__ */ c.jsx(
             "div",
             {
               className: "page-height-marker",
               style: {
                 position: "absolute",
-                top: `${b}px`,
+                top: `${k}px`,
                 left: 0,
                 right: 0,
                 height: "2px",
@@ -2825,9 +2887,9 @@ const Ue = ({
                 zIndex: 10,
                 pointerEvents: "none"
               },
-              title: `End of Page ${E.pageNumber} (${t.height}px)`
+              title: `End of Page ${A.pageNumber} (${t.height}px)`
             },
-            `boundary-marker-${E.id}`
+            `boundary-marker-${A.id}`
           );
         }),
         /* @__PURE__ */ c.jsx(
@@ -2843,13 +2905,13 @@ const Ue = ({
               minHeight: `${t.height}px`,
               width: `${t.width}px`,
               backgroundColor: "white",
-              padding: `${h.top}px ${h.right}px ${h.bottom}px ${h.left}px`,
+              padding: `${y.top}px ${y.right}px ${y.bottom}px ${y.left}px`,
               boxSizing: "border-box",
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
               outline: "none",
               cursor: "text",
               fontFamily: "Arial, sans-serif",
-              fontSize: Be,
+              fontSize: Ze,
               lineHeight: "1.15",
               color: "#333",
               wordWrap: "break-word",
@@ -2858,10 +2920,10 @@ const Ue = ({
               border: "1px solid #e0e0e0"
             },
             onInput: s,
-            onKeyDown: C,
-            onBeforeInput: w,
-            onClick: _,
-            onScroll: m,
+            onKeyDown: h,
+            onBeforeInput: z,
+            onClick: C,
+            onScroll: g,
             "data-testid": "continuous-editor"
           }
         )
@@ -2869,69 +2931,75 @@ const Ue = ({
     }
   );
 };
-Ue.propTypes = {
-  content: T.string.isRequired,
-  dimensions: T.shape({
-    width: T.number.isRequired,
-    height: T.number.isRequired
+Ye.propTypes = {
+  content: v.string.isRequired,
+  dimensions: v.shape({
+    width: v.number.isRequired,
+    height: v.number.isRequired
   }).isRequired,
-  pageSize: T.oneOf(["A4", "Letter", "Legal"]).isRequired,
-  pageBoundaries: T.arrayOf(
-    T.shape({
-      id: T.string.isRequired,
-      pageNumber: T.number.isRequired,
-      top: T.number,
-      height: T.number
+  pageSize: v.oneOf(["A4", "Letter", "Legal"]).isRequired,
+  pageBoundaries: v.arrayOf(
+    v.shape({
+      id: v.string.isRequired,
+      pageNumber: v.number.isRequired,
+      top: v.number,
+      height: v.number
     })
   ),
-  editorRef: T.shape({
-    current: T.instanceOf(typeof Element < "u" ? Element : Object)
+  editorRef: v.shape({
+    current: v.instanceOf(typeof Element < "u" ? Element : Object)
   }).isRequired,
-  onInput: T.func.isRequired,
-  onKeyDown: T.func,
-  onClick: T.func,
-  onScroll: T.func,
-  zoomLevel: T.number
+  onInput: v.func.isRequired,
+  onKeyDown: v.func,
+  onClick: v.func,
+  onScroll: v.func,
+  zoomLevel: v.number,
+  pageMargins: v.string
 };
-Ue.defaultProps = {
+Ye.defaultProps = {
   pageBoundaries: [],
   onKeyDown: void 0,
   onClick: void 0,
   onScroll: void 0,
-  zoomLevel: 100
+  zoomLevel: 100,
+  pageMargins: le
 };
-const He = ({
+const Fe = ({
   pageBoundaries: e = [{ id: "page-0", pageNumber: 1 }],
   activePage: t = 0,
-  pageSize: a = "A4",
-  zoomLevel: n = 100,
-  canZoomIn: r = !0,
-  canZoomOut: s = !0,
-  onNavigate: i,
-  onAddPage: l,
-  onDeletePage: m,
-  onPageSizeChange: f,
-  onZoomIn: h,
-  onZoomOut: d,
+  pageSize: i = "A4",
+  pageMargins: n = le,
+  zoomLevel: r = 100,
+  canZoomIn: s = !0,
+  canZoomOut: a = !0,
+  onNavigate: u,
+  onAddPage: g,
+  onDeletePage: f,
+  onPageSizeChange: b,
+  onPageMarginsChange: y,
+  onZoomIn: d,
+  onZoomOut: O,
   onZoomReset: x
 } = {}) => {
-  const v = Math.max(e?.length || 0, 1), C = (S) => {
-    i && i(S);
-  }, _ = () => {
-    l && l();
-  }, w = (S) => {
-    if (v <= 1) {
+  const h = Math.max(e?.length || 0, 1), C = (l) => {
+    u && u(l);
+  }, z = () => {
+    g && g();
+  }, A = (l) => {
+    if (h <= 1) {
       console.warn("[PageManager] Cannot delete the only page");
       return;
     }
-    m && m(S);
-  }, E = (S) => {
-    f && f(S);
+    f && f(l);
+  }, _ = (l) => {
+    b && b(l);
+  }, k = (l) => {
+    y && y(l);
   };
   return /* @__PURE__ */ c.jsxs("div", { className: "page-manager", children: [
     /* @__PURE__ */ c.jsxs("div", { className: "page-size-controls", children: [
       /* @__PURE__ */ c.jsxs("label", { htmlFor: "page-size-selector", children: [
-        /* @__PURE__ */ c.jsx(Jn, { size: 14, style: { marginRight: "4px", verticalAlign: "middle" } }),
+        /* @__PURE__ */ c.jsx(ft, { size: 14, style: { marginRight: "4px", verticalAlign: "middle" } }),
         "Page Size:"
       ] }),
       /* @__PURE__ */ c.jsxs(
@@ -2940,13 +3008,30 @@ const He = ({
           id: "page-size-selector",
           role: "combobox",
           "aria-label": "Page size selector",
-          value: a,
-          onChange: (S) => E(S.target.value),
+          value: i,
+          onChange: (l) => _(l.target.value),
           children: [
             /* @__PURE__ */ c.jsx("option", { value: "A4", children: "A4" }),
             /* @__PURE__ */ c.jsx("option", { value: "Letter", children: "Letter" }),
             /* @__PURE__ */ c.jsx("option", { value: "Legal", children: "Legal" })
           ]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ c.jsxs("div", { className: "page-margins-controls", children: [
+      /* @__PURE__ */ c.jsxs("label", { htmlFor: "page-margins-selector", children: [
+        /* @__PURE__ */ c.jsx(ft, { size: 14, style: { marginRight: "4px", verticalAlign: "middle" } }),
+        "Margins:"
+      ] }),
+      /* @__PURE__ */ c.jsx(
+        "select",
+        {
+          id: "page-margins-selector",
+          role: "combobox",
+          "aria-label": "Page margins selector",
+          value: n,
+          onChange: (l) => k(l.target.value),
+          children: Zt().map((l) => /* @__PURE__ */ c.jsx("option", { value: l, children: qt(l) }, l))
         }
       )
     ] }),
@@ -2956,11 +3041,11 @@ const He = ({
         {
           type: "button",
           className: "zoom-button",
-          onClick: d,
-          disabled: !s,
+          onClick: O,
+          disabled: !a,
           "aria-label": "Zoom out",
           title: "Zoom out (Ctrl + -)",
-          children: /* @__PURE__ */ c.jsx(Er, { size: 14 })
+          children: /* @__PURE__ */ c.jsx(Cr, { size: 14 })
         }
       ),
       /* @__PURE__ */ c.jsxs(
@@ -2972,7 +3057,7 @@ const He = ({
           "aria-label": "Reset zoom",
           title: "Reset zoom to 100% (Ctrl + 0)",
           children: [
-            n,
+            r,
             "%"
           ]
         }
@@ -2982,88 +3067,91 @@ const He = ({
         {
           type: "button",
           className: "zoom-button",
-          onClick: h,
-          disabled: !r,
+          onClick: d,
+          disabled: !s,
           "aria-label": "Zoom in",
           title: "Zoom in (Ctrl + +)",
-          children: /* @__PURE__ */ c.jsx(yr, { size: 14 })
+          children: /* @__PURE__ */ c.jsx(kr, { size: 14 })
         }
       )
     ] }),
-    /* @__PURE__ */ c.jsx("div", { className: "page-list", children: (e && e.length > 0 ? e : [{ id: "page-0", pageNumber: 1 }]).map((S, b) => /* @__PURE__ */ c.jsxs("div", { className: "page-item", children: [
+    /* @__PURE__ */ c.jsx("div", { className: "page-list", children: (e && e.length > 0 ? e : [{ id: "page-0", pageNumber: 1 }]).map((l, R) => /* @__PURE__ */ c.jsxs("div", { className: "page-item", children: [
       /* @__PURE__ */ c.jsxs(
         "button",
         {
           type: "button",
-          className: `page-button ${b === t ? "active" : ""}`,
-          onClick: () => C(b),
-          "aria-label": `Go to page ${b + 1}`,
-          "aria-current": b === t ? "page" : void 0,
+          className: `page-button ${R === t ? "active" : ""}`,
+          onClick: () => C(R),
+          "aria-label": `Go to page ${R + 1}`,
+          "aria-current": R === t ? "page" : void 0,
           children: [
-            /* @__PURE__ */ c.jsx(ve, { size: 14 }),
+            /* @__PURE__ */ c.jsx(_e, { size: 14 }),
             /* @__PURE__ */ c.jsxs("span", { children: [
               "Page ",
-              b + 1
+              R + 1
             ] })
           ]
         }
       ),
-      v > 1 && /* @__PURE__ */ c.jsx(
+      h > 1 && /* @__PURE__ */ c.jsx(
         "button",
         {
           type: "button",
           className: "delete-page-button",
-          onClick: (O) => {
-            O.stopPropagation(), w(b);
+          onClick: (B) => {
+            B.stopPropagation(), A(R);
           },
-          "aria-label": `Delete page ${b + 1}`,
+          "aria-label": `Delete page ${R + 1}`,
           title: "Delete this page and its content",
-          children: /* @__PURE__ */ c.jsx(hr, { size: 14 })
+          children: /* @__PURE__ */ c.jsx(Pr, { size: 14 })
         }
       )
-    ] }, S.id || `page-${b}`)) }),
+    ] }, l.id || `page-${R}`)) }),
     /* @__PURE__ */ c.jsxs(
       "button",
       {
         type: "button",
         className: "add-page-button",
-        onClick: _,
+        onClick: z,
         "aria-label": "Add new page",
         title: "Add new page at end",
         children: [
-          /* @__PURE__ */ c.jsx(Fn, { size: 16 }),
+          /* @__PURE__ */ c.jsx(rr, { size: 16 }),
           /* @__PURE__ */ c.jsx("span", { children: "Add Page" })
         ]
       }
     )
   ] });
 };
-He.propTypes = {
-  pageBoundaries: T.arrayOf(
-    T.shape({
-      id: T.string.isRequired,
-      pageNumber: T.number.isRequired,
-      top: T.number,
-      height: T.number
+Fe.propTypes = {
+  pageBoundaries: v.arrayOf(
+    v.shape({
+      id: v.string.isRequired,
+      pageNumber: v.number.isRequired,
+      top: v.number,
+      height: v.number
     })
   ),
-  activePage: T.number,
-  pageSize: T.oneOf(["A4", "Letter", "Legal"]),
-  zoomLevel: T.number,
-  canZoomIn: T.bool,
-  canZoomOut: T.bool,
-  onNavigate: T.func,
-  onAddPage: T.func,
-  onDeletePage: T.func,
-  onPageSizeChange: T.func,
-  onZoomIn: T.func,
-  onZoomOut: T.func,
-  onZoomReset: T.func
+  activePage: v.number,
+  pageSize: v.oneOf(["A4", "Letter", "Legal"]),
+  pageMargins: v.string,
+  zoomLevel: v.number,
+  canZoomIn: v.bool,
+  canZoomOut: v.bool,
+  onNavigate: v.func,
+  onAddPage: v.func,
+  onDeletePage: v.func,
+  onPageSizeChange: v.func,
+  onPageMarginsChange: v.func,
+  onZoomIn: v.func,
+  onZoomOut: v.func,
+  onZoomReset: v.func
 };
-He.defaultProps = {
+Fe.defaultProps = {
   pageBoundaries: [{ id: "page-0", pageNumber: 1 }],
   activePage: 0,
   pageSize: "A4",
+  pageMargins: le,
   zoomLevel: 100,
   canZoomIn: !0,
   canZoomOut: !0,
@@ -3071,264 +3159,274 @@ He.defaultProps = {
   onAddPage: void 0,
   onDeletePage: void 0,
   onPageSizeChange: void 0,
+  onPageMarginsChange: void 0,
   onZoomIn: void 0,
   onZoomOut: void 0,
   onZoomReset: void 0
 };
-const Pr = xe.memo(He), _r = 50, kr = 50, ut = 50, Sr = 100, Cr = 500, Ze = De(({
+const jr = ke.memo(Fe), Nr = 50, Ir = 50, ht = 50, Dr = 100, Lr = 500, Ve = $e(({
   pageManagerComponent: e = null,
   onNavigatePage: t,
-  onAddPage: a,
+  onAddPage: i,
   onDeletePage: n,
   onPageSizeChange: r,
-  onChange: s,
-  showSidebar: i = !0,
-  showToolbar: l = !0,
-  showPageManager: m = !0
-}, f) => {
-  const h = gt(), d = ht(), { pageSize: x, continuousContent: v, pageBoundaries: C, activePage: _, zoomLevel: w } = h, E = J(null), S = J(null), { currentFormat: b, formatText: O } = Wt(), {
-    checkAndUpdateBoundaries: g,
-    getCurrentPage: $,
-    scrollToPage: H,
-    updateBoundaries: G,
-    triggerAutoReflow: K,
-    removePageAndContent: Q,
-    insertPageBreakAtBoundary: re
-  } = gn(x, S, w), oe = be(() => Jt(x), [x]), [ie, ne] = Ee(!1), F = J(null), q = J(!1), V = J(!1), ee = J(!1), te = J(v);
-  ae(() => {
-    if (S.current) {
-      if (!ee.current) {
-        S.current.innerHTML = v, ee.current = !0, te.current = v;
-        const u = setTimeout(() => {
-          G();
-        }, _r);
-        return () => clearTimeout(u);
+  onPageMarginsChange: s,
+  onChange: a,
+  showSidebar: u = !0,
+  showToolbar: g = !0,
+  showPageManager: f = !0
+}, b) => {
+  const y = xt(), d = At(), { pageSize: O, pageMargins: x, continuousContent: h, pageBoundaries: C, activePage: z, zoomLevel: A } = y, _ = X(null), k = X(null), { currentFormat: l, formatText: R } = cn(), {
+    checkAndUpdateBoundaries: B,
+    getCurrentPage: Z,
+    scrollToPage: V,
+    updateBoundaries: q,
+    triggerAutoReflow: ae,
+    removePageAndContent: ne,
+    insertPageBreakAtBoundary: ie
+  } = Pn(O, k, A, x), re = Ae(() => He(O), [O]), [se, K] = Te(!1), F = X(null), J = X(!1), te = X(!1), p = X(!1), o = X(h);
+  oe(() => {
+    if (k.current) {
+      if (!p.current) {
+        k.current.innerHTML = h, p.current = !0, o.current = h;
+        const M = setTimeout(() => {
+          q();
+        }, Nr);
+        return () => clearTimeout(M);
       }
-      if (te.current !== v) {
-        if (S.current.innerHTML !== v) {
-          S.current.innerHTML = v;
-          const U = setTimeout(() => {
-            if (G(), q.current) {
-              q.current = !1;
-              const W = Math.max(0, C.length - 1);
-              d.setActivePage(W), setTimeout(() => {
-                H(W, E);
-              }, ut);
+      if (o.current !== h) {
+        if (k.current.innerHTML !== h) {
+          k.current.innerHTML = h;
+          const W = setTimeout(() => {
+            if (q(), J.current) {
+              J.current = !1;
+              const ce = Math.max(0, C.length - 1);
+              d.setActivePage(ce), setTimeout(() => {
+                V(ce, _);
+              }, ht);
             }
-          }, kr);
-          return te.current = v, () => clearTimeout(U);
+          }, Ir);
+          return o.current = h, () => clearTimeout(W);
         }
-        te.current = v;
+        o.current = h;
       }
     }
-  }, [v, G, C.length, d, H]), ae(() => {
-    s && ee.current && s(v);
-  }, [v, s]), wt(f, () => ({
+  }, [h, q, C.length, d, V]), oe(() => {
+    a && p.current && a(h);
+  }, [h, a]), Lt(b, () => ({
     /**
      * Get the current HTML content from the editor
      * @returns {string} The HTML content with page breaks
      */
-    getHTMLContent: () => v,
+    getHTMLContent: () => h,
     /**
      * Get the plain text content (HTML stripped)
      * @returns {string} Plain text content
      */
-    getPlainText: () => v.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(),
+    getPlainText: () => h.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(),
     /**
      * Set the editor content programmatically
      * @param {string} html - HTML content to set
      */
-    setContent: (u) => {
-      d.updateContinuousContent(u), S.current && (S.current.innerHTML = u, setTimeout(() => {
-        G();
+    setContent: (M) => {
+      d.updateContinuousContent(M), k.current && (k.current.innerHTML = M, setTimeout(() => {
+        q();
       }, 50));
     }
-  }), [v, d, G]), ae(() => {
-    const u = setTimeout(() => {
-      S.current && S.current.focus();
+  }), [h, d, q]), oe(() => {
+    const M = setTimeout(() => {
+      k.current && k.current.focus();
     }, 200);
-    return () => clearTimeout(u);
+    return () => clearTimeout(M);
   }, []);
-  const p = Z((u) => {
-    const U = u.currentTarget.innerHTML;
-    d.updateContinuousContent(U), g(), K(200);
-    const W = $(E);
-    W !== _ && d.setActivePage(W);
-  }, [g, d, $, _, K, E]), o = Z((u) => {
-    d.updatePageSize(u), G({ pageSize: u }), r && r(u);
-  }, [d, G, r]), y = Z((u) => {
-    u < 0 || u >= C.length || (V.current = !0, d.setActivePage(u), H(u, E), setTimeout(() => {
-      V.current = !1;
-    }, Cr), t && t(u));
-  }, [d, H, t, C.length]), A = Z(() => {
-    const u = C.length + 1;
-    re(u) && (q.current = !0, setTimeout(() => {
-      if (q.current) {
-        q.current = !1;
-        const W = Math.max(0, C.length - 1);
-        d.setActivePage(W), setTimeout(() => {
-          H(W, E);
-        }, ut);
+  const m = G((M) => {
+    const W = M.currentTarget.innerHTML;
+    d.updateContinuousContent(W), B(), ae(200);
+    const ce = Z(_);
+    ce !== z && d.setActivePage(ce);
+  }, [B, d, Z, z, ae, _]), P = G((M) => {
+    d.updatePageSize(M), q({ pageSize: M }), r && r(M);
+  }, [d, q, r]), T = G((M) => {
+    d.updatePageMargins(M), q({ pageMargins: M }), s && s(M);
+  }, [d, q, s]), I = G((M) => {
+    M < 0 || M >= C.length || (te.current = !0, d.setActivePage(M), V(M, _), setTimeout(() => {
+      te.current = !1;
+    }, Lr), t && t(M));
+  }, [d, V, t, C.length]), w = G(() => {
+    const M = C.length + 1;
+    ie(M) && (J.current = !0, setTimeout(() => {
+      if (J.current) {
+        J.current = !1;
+        const ce = Math.max(0, C.length - 1);
+        d.setActivePage(ce), setTimeout(() => {
+          V(ce, _);
+        }, ht);
       }
-    }, 100)), a && a();
-  }, [C.length, re, d, H, a]), P = Z(() => {
-    const u = window.getSelection();
-    if (u && u.rangeCount > 0) {
-      if (!S?.current) return;
-      const fe = `<page-break data-page-break="true" contenteditable="false" data-page-number="${S.current.querySelectorAll('page-break, [data-page-break="true"]').length + 2}"></page-break><p><br></p>`;
-      document.execCommand("insertHTML", !1, fe), setTimeout(() => {
-        G();
-        const _t = $(E);
-        d.setActivePage(_t);
+    }, 100)), i && i();
+  }, [C.length, ie, d, V, i]), S = G(() => {
+    const M = window.getSelection();
+    if (M && M.rangeCount > 0) {
+      if (!k?.current) return;
+      const Mt = `<page-break data-page-break="true" contenteditable="false" data-page-number="${k.current.querySelectorAll('page-break, [data-page-break="true"]').length + 2}"></page-break><p><br></p>`;
+      document.execCommand("insertHTML", !1, Mt), setTimeout(() => {
+        q();
+        const jt = Z(_);
+        d.setActivePage(jt);
       }, 150);
     }
-  }, [G, $, d, E]), N = Z((u) => {
+  }, [q, Z, d, _]), j = G((M) => {
     if (C.length <= 1) {
       console.warn("Cannot delete the only page");
       return;
     }
-    Q(u) && (d.setActivePage(0), n && n(u));
-  }, [C.length, Q, d, n]), R = Z(() => {
+    ne(M) && (d.setActivePage(0), n && n(M));
+  }, [C.length, ne, d, n]), L = G(() => {
     d.zoomIn();
-  }, [d]), k = Z(() => {
+  }, [d]), D = G(() => {
     d.zoomOut();
-  }, [d]), j = Z(() => {
+  }, [d]), Y = G(() => {
     d.resetZoom();
   }, [d]);
-  ae(() => {
-    const u = (U) => {
-      if (!(!S.current && !E.current) && (U.ctrlKey || U.metaKey))
-        switch (U.key) {
+  oe(() => {
+    const M = (W) => {
+      if (!(!k.current && !_.current) && (W.ctrlKey || W.metaKey))
+        switch (W.key) {
           case "+":
           case "=":
-            U.preventDefault(), R();
+            W.preventDefault(), L();
             break;
           case "-":
           case "_":
-            U.preventDefault(), k();
+            W.preventDefault(), D();
             break;
           case "0":
-            U.preventDefault(), j();
+            W.preventDefault(), Y();
             break;
         }
     };
-    return window.addEventListener("keydown", u), () => {
-      window.removeEventListener("keydown", u);
+    return window.addEventListener("keydown", M), () => {
+      window.removeEventListener("keydown", M);
     };
-  }, [R, k, j]);
-  const D = Z(() => {
-    !E.current || !S.current || V.current || (F.current && clearTimeout(F.current), F.current = setTimeout(() => {
-      if (V.current) {
+  }, [L, D, Y]);
+  const E = G(() => {
+    !_.current || !k.current || te.current || (F.current && clearTimeout(F.current), F.current = setTimeout(() => {
+      if (te.current) {
         F.current = null;
         return;
       }
-      const u = $(E);
-      u !== _ && u >= 0 && d.setActivePage(u), F.current = null;
-    }, Sr));
-  }, [$, _, d]), I = be(() => {
-    if (!v) return 0;
-    const U = v.replace(/<[^>]*>/g, " ").match(/\b\w+\b/g);
-    return U ? U.length : 0;
-  }, [v]), Y = C.length || 1;
-  return ae(() => () => {
+      const M = Z(_);
+      M !== z && M >= 0 && d.setActivePage(M), F.current = null;
+    }, Dr));
+  }, [Z, z, d]), Q = Ae(() => {
+    if (!h) return 0;
+    const W = h.replace(/<[^>]*>/g, " ").match(/\b\w+\b/g);
+    return W ? W.length : 0;
+  }, [h]), de = C.length || 1;
+  return oe(() => () => {
     F.current && clearTimeout(F.current);
   }, []), /* @__PURE__ */ c.jsxs("div", { className: "multi-page-editor", children: [
-    l && /* @__PURE__ */ c.jsx(
-      $e,
+    g && /* @__PURE__ */ c.jsx(
+      qe,
       {
-        currentFormat: b,
-        onFormatText: O,
-        onAddPageBreak: P
+        currentFormat: l,
+        onFormatText: R,
+        onAddPageBreak: S
       }
     ),
     /* @__PURE__ */ c.jsxs("div", { className: "editor-container", children: [
-      i && /* @__PURE__ */ c.jsx(
-        vr,
+      u && /* @__PURE__ */ c.jsx(
+        Or,
         {
           editorView: null,
-          isCollapsed: ie,
-          onToggle: () => ne((u) => !u),
-          wordCount: I,
-          pageCount: Y
+          isCollapsed: se,
+          onToggle: () => K((M) => !M),
+          wordCount: Q,
+          pageCount: de
         }
       ),
       /* @__PURE__ */ c.jsx(
         "div",
         {
           className: "editor-viewport continuous-scroll",
-          ref: E,
-          onScroll: D,
+          ref: _,
+          onScroll: E,
           children: /* @__PURE__ */ c.jsx(
-            Ue,
+            Ye,
             {
-              content: v,
-              dimensions: oe,
-              pageSize: x,
+              content: h,
+              dimensions: re,
+              pageSize: O,
+              pageMargins: x,
               pageBoundaries: C,
-              editorRef: S,
-              onInput: p,
-              onClick: () => S.current?.focus(),
-              zoomLevel: w
+              editorRef: k,
+              onInput: m,
+              onClick: () => k.current?.focus(),
+              zoomLevel: A
             }
           )
         }
       ),
-      m && /* @__PURE__ */ c.jsx("div", { className: "page-manager-sidebar", children: e ? xe.cloneElement(e, {
-        onNavigate: y,
-        onAddPage: A,
-        onDeletePage: N,
-        onPageSizeChange: o,
-        zoomLevel: w,
-        canZoomIn: je(w),
-        canZoomOut: Ne(w),
-        onZoomIn: R,
-        onZoomOut: k,
-        onZoomReset: j
+      f && /* @__PURE__ */ c.jsx("div", { className: "page-manager-sidebar", children: e ? ke.cloneElement(e, {
+        onNavigate: I,
+        onAddPage: w,
+        onDeletePage: j,
+        onPageSizeChange: P,
+        onPageMarginsChange: T,
+        zoomLevel: A,
+        canZoomIn: Le(A),
+        canZoomOut: ze(A),
+        onZoomIn: L,
+        onZoomOut: D,
+        onZoomReset: Y
       }) : /* @__PURE__ */ c.jsx(
-        Pr,
+        jr,
         {
           pageBoundaries: C,
-          activePage: _,
-          pageSize: x,
-          zoomLevel: w,
-          canZoomIn: je(w),
-          canZoomOut: Ne(w),
-          onNavigate: y,
-          onAddPage: A,
-          onDeletePage: N,
-          onPageSizeChange: o,
-          onZoomIn: R,
-          onZoomOut: k,
-          onZoomReset: j
+          activePage: z,
+          pageSize: O,
+          pageMargins: x,
+          zoomLevel: A,
+          canZoomIn: Le(A),
+          canZoomOut: ze(A),
+          onNavigate: I,
+          onAddPage: w,
+          onDeletePage: j,
+          onPageSizeChange: P,
+          onPageMarginsChange: T,
+          onZoomIn: L,
+          onZoomOut: D,
+          onZoomReset: Y
         }
       ) })
     ] })
   ] });
 });
-Ze.displayName = "HtmlEditor";
-Ze.propTypes = {
-  pageManagerComponent: T.element,
-  onNavigatePage: T.func,
-  onAddPage: T.func,
-  onDeletePage: T.func,
-  onPageSizeChange: T.func,
-  onChange: T.func,
-  showSidebar: T.bool,
-  showToolbar: T.bool,
-  showPageManager: T.bool
+Ve.displayName = "HtmlEditor";
+Ve.propTypes = {
+  pageManagerComponent: v.element,
+  onNavigatePage: v.func,
+  onAddPage: v.func,
+  onDeletePage: v.func,
+  onPageSizeChange: v.func,
+  onPageMarginsChange: v.func,
+  onChange: v.func,
+  showSidebar: v.bool,
+  showToolbar: v.bool,
+  showPageManager: v.bool
 };
-Ze.defaultProps = {
+Ve.defaultProps = {
   pageManagerComponent: null,
   onNavigatePage: void 0,
   onAddPage: void 0,
   onDeletePage: void 0,
   onPageSizeChange: void 0,
+  onPageMarginsChange: void 0,
   onChange: void 0,
   showSidebar: !0,
   showToolbar: !0,
   showPageManager: !0
 };
-class Pt extends xe.Component {
+class wt extends ke.Component {
   constructor(t) {
     super(t), this.state = {
       hasError: !1,
@@ -3339,11 +3437,11 @@ class Pt extends xe.Component {
   static getDerivedStateFromError(t) {
     return { hasError: !0 };
   }
-  componentDidCatch(t, a) {
-    console.error("[ErrorBoundary] Caught error:", t), console.error("[ErrorBoundary] Error info:", a), this.setState({
+  componentDidCatch(t, i) {
+    console.error("[ErrorBoundary] Caught error:", t), console.error("[ErrorBoundary] Error info:", i), this.setState({
       error: t,
-      errorInfo: a
-    }), this.props.onError && this.props.onError(t, a);
+      errorInfo: i
+    }), this.props.onError && this.props.onError(t, i);
   }
   handleReset = () => {
     this.setState({
@@ -3401,56 +3499,56 @@ class Pt extends xe.Component {
     ] }) : this.props.children;
   }
 }
-Pt.propTypes = {
-  children: T.node.isRequired,
-  fallback: T.node,
-  onError: T.func,
-  onReset: T.func,
-  showDetails: T.bool
+wt.propTypes = {
+  children: v.node.isRequired,
+  fallback: v.node,
+  onError: v.func,
+  onReset: v.func,
+  showDetails: v.bool
 };
-Pt.defaultProps = {
+wt.defaultProps = {
   fallback: null,
   onError: void 0,
   onReset: void 0,
   showDetails: process.env.NODE_ENV === "development"
 };
-const Ur = {
-  A4: { width: X.A4.width, height: X.A4.height },
-  Letter: { width: X.Letter.width, height: X.Letter.height },
-  Legal: { width: X.Legal.width, height: X.Legal.height }
+const Kr = {
+  A4: { width: ee.A4.width, height: ee.A4.height },
+  Letter: { width: ee.Letter.width, height: ee.Letter.height },
+  Legal: { width: ee.Legal.width, height: ee.Legal.height }
 };
 export {
-  Gt as COMMON_FONT_SIZES,
-  Be as DEFAULT_FONT_SIZE,
-  Kt as DEFAULT_PAGE_SIZE,
-  Rr as DocumentProvider,
-  $e as EditorToolbar,
-  Pt as ErrorBoundary,
-  bt as FONT_SIZE_MAP,
-  Ze as HtmlEditor,
-  Ur as PAGE_DIMENSIONS,
-  X as PAGE_SIZES,
-  Pr as PageManager,
-  Ue as PageView,
-  vr as Sidebar,
-  Br as clearImages,
-  zr as deleteImage,
-  $r as getAllImageKeys,
-  Dr as getAvailablePageSizes,
-  Lr as getImage,
-  Jt as getPageDimensions,
-  jr as getPixelValue,
-  Nr as getPointValue,
-  Mr as isValidFontSize,
-  Ir as isValidPageSize,
-  Ar as logger,
-  Ft as pixelsToPoints,
-  Yt as pointsToPixels,
-  Tr as saveImage,
-  gn as useContinuousReflow,
-  ft as useDocument,
-  ht as useDocumentActions,
-  gt as useDocumentState,
-  Wt as useFormatting
+  rn as COMMON_FONT_SIZES,
+  Ze as DEFAULT_FONT_SIZE,
+  yt as DEFAULT_PAGE_SIZE,
+  Hr as DocumentProvider,
+  qe as EditorToolbar,
+  wt as ErrorBoundary,
+  _t as FONT_SIZE_MAP,
+  Ve as HtmlEditor,
+  Kr as PAGE_DIMENSIONS,
+  ee as PAGE_SIZES,
+  jr as PageManager,
+  Ye as PageView,
+  Or as Sidebar,
+  Vr as clearImages,
+  Fr as deleteImage,
+  Wr as getAllImageKeys,
+  Ur as getAvailablePageSizes,
+  Yr as getImage,
+  He as getPageDimensions,
+  Gr as getPixelValue,
+  Zr as getPointValue,
+  qr as isValidFontSize,
+  $r as isValidPageSize,
+  Mr as logger,
+  an as pixelsToPoints,
+  on as pointsToPixels,
+  wr as saveImage,
+  Pn as useContinuousReflow,
+  vt as useDocument,
+  At as useDocumentActions,
+  xt as useDocumentState,
+  cn as useFormatting
 };
 //# sourceMappingURL=htmleditor.es.js.map

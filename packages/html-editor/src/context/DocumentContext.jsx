@@ -1,18 +1,13 @@
 import React, { createContext, useContext, useReducer, useCallback, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { DEFAULT_ZOOM, MIN_ZOOM, MAX_ZOOM, ZOOM_STEP, canZoomIn as checkCanZoomIn, canZoomOut as checkCanZoomOut } from '../lib/editor/zoom-utils.js';
+import { DEFAULT_MARGIN_PRESET } from '../lib/editor/margin-utils.js';
+import { getPageDimensions, DEFAULT_PAGE_SIZE as PAGE_SIZE_DEFAULT } from '../lib/editor/page-sizes.js';
 
 // Constants moved outside for performance
-const DEFAULT_PAGE_SIZE = 'A4';
+const DEFAULT_PAGE_SIZE = PAGE_SIZE_DEFAULT;
 const EMPTY_PARAGRAPH = '<p><br></p>';
 const DEFAULT_EDITOR_MODE = 'continuous';
-
-// Page dimensions at 72 DPI (PDF standard)
-const PAGE_DIMENSIONS = {
-  A4: { width: 595, height: 842 },
-  Letter: { width: 612, height: 792 },
-  Legal: { width: 612, height: 1008 }
-};
 
 // Helper functions moved outside reducer for better performance and reusability
 const createEmptyPage = (index, size = DEFAULT_PAGE_SIZE) => ({
@@ -44,7 +39,7 @@ const withMinimumPage = (pages, pageSize = DEFAULT_PAGE_SIZE) => {
 };
 
 const createDefaultBoundary = (pageSize = DEFAULT_PAGE_SIZE) => {
-  const dimensions = PAGE_DIMENSIONS[pageSize] || PAGE_DIMENSIONS.A4;
+  const dimensions = getPageDimensions(pageSize);
   return [{
     id: 'page-0',
     pageNumber: 1,
@@ -71,7 +66,8 @@ const buildInitialState = (overrides = {}) => {
     editorMode: overrides.editorMode || DEFAULT_EDITOR_MODE,
     continuousContent: overrides.continuousContent || EMPTY_PARAGRAPH,
     pageBoundaries: overrides.pageBoundaries || createDefaultBoundary(pageSize),
-    zoomLevel: overrides.zoomLevel || DEFAULT_ZOOM
+    zoomLevel: overrides.zoomLevel || DEFAULT_ZOOM,
+    pageMargins: overrides.pageMargins || DEFAULT_MARGIN_PRESET
   };
 };
 
@@ -97,7 +93,8 @@ const ActionTypes = {
   SET_ZOOM_LEVEL: 'SET_ZOOM_LEVEL',
   ZOOM_IN: 'ZOOM_IN',
   ZOOM_OUT: 'ZOOM_OUT',
-  RESET_ZOOM: 'RESET_ZOOM'
+  RESET_ZOOM: 'RESET_ZOOM',
+  UPDATE_PAGE_MARGINS: 'UPDATE_PAGE_MARGINS'
 };
 
 // Reducer
@@ -262,8 +259,10 @@ const documentReducer = (state, action) => {
         return state;
       }
       
-      // Validate page size
-      if (!PAGE_DIMENSIONS[newSize]) {
+      // Validate page size using getPageDimensions
+      try {
+        getPageDimensions(newSize);
+      } catch {
         console.warn(`Invalid page size: ${newSize}`);
         return state;
       }
@@ -490,6 +489,21 @@ const documentReducer = (state, action) => {
       };
     }
 
+    case ActionTypes.UPDATE_PAGE_MARGINS: {
+      const newMargins = action.payload;
+      
+      // Early exit if margins haven't changed
+      if (newMargins === state.pageMargins) {
+        return state;
+      }
+      
+      return {
+        ...state,
+        pageMargins: newMargins,
+        updatedAt: now
+      };
+    }
+
     default:
       return state;
   }
@@ -524,7 +538,8 @@ export const DocumentProvider = ({ children, initialState = {} }) => {
     setZoomLevel: (level) => dispatch({ type: ActionTypes.SET_ZOOM_LEVEL, payload: level }),
     zoomIn: () => dispatch({ type: ActionTypes.ZOOM_IN }),
     zoomOut: () => dispatch({ type: ActionTypes.ZOOM_OUT }),
-    resetZoom: () => dispatch({ type: ActionTypes.RESET_ZOOM })
+    resetZoom: () => dispatch({ type: ActionTypes.RESET_ZOOM }),
+    updatePageMargins: (margins) => dispatch({ type: ActionTypes.UPDATE_PAGE_MARGINS, payload: margins })
   }), []);
 
   const value = useMemo(() => ({

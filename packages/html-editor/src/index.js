@@ -28,7 +28,7 @@ export { default as PageManager } from './components/editor/PageManager';
 export { useFormatting, useContinuousReflow } from './hooks';
 
 // === STORAGE UTILITIES ===
-export { saveImage, getImage, deleteImage, clearImages, getAllImageKeys } from './lib/storage/local-storage';
+export { saveImage, getImage, deleteImage, clearImages, getAllImageKeys } from './lib/storage/index-db';
 
 // === CONSTANTS ===
 // Page dimensions at 96 DPI (Microsoft Word standard for screen display)

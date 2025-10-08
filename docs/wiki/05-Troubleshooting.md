@@ -104,37 +104,48 @@
    console.log('Memory usage:', performance.memory);
    ```
 
-### Local Storage Issues
+### Image Storage Issues
 
-**Problem**: Images or data not saving to localStorage.
+**Problem**: Images or data not saving to IndexedDB.
 
 **Solutions**:
-1. **Check Storage Quota**: localStorage has limited space (~5MB)
+1. **Check Browser Support**: Verify IndexedDB is available
    ```javascript
-   // Check storage usage
-   const used = JSON.stringify(localStorage).length;
-   const quota = 5 * 1024 * 1024; // 5MB
-   console.log('Storage used:', used, 'bytes');
-   ```
-
-2. **Verify Browser Support**: Some environments restrict localStorage
-   ```javascript
-   // Test localStorage support
-   try {
-     localStorage.setItem('test', 'test');
-     localStorage.removeItem('test');
-     console.log('localStorage supported');
-   } catch (e) {
-     console.log('localStorage not supported:', e);
+   // Test IndexedDB support
+   if (!window.indexedDB) {
+     console.error('IndexedDB not supported in this browser');
+   } else {
+     console.log('IndexedDB is available');
    }
    ```
 
-3. **Image Size Validation**: Large images may exceed limits
+2. **Verify Database Quota**: IndexedDB has much larger quota than localStorage
    ```javascript
-   // Check image size before saving
-   if (dataUrl.length > 1 * 1024 * 1024) { // 1MB
-     throw new Error('Image too large for localStorage');
+   // Check storage quota (if supported)
+   if (navigator.storage && navigator.storage.estimate) {
+     navigator.storage.estimate().then(estimate => {
+       console.log('Storage used:', estimate.usage, 'bytes');
+       console.log('Storage quota:', estimate.quota, 'bytes');
+       console.log('Percentage used:', (estimate.usage / estimate.quota * 100).toFixed(2) + '%');
+     });
    }
+   ```
+
+3. **Image Size Validation**: Large images are validated at 5MB limit
+   ```javascript
+   // Image size is validated before saving
+   // Adjust MAX_IMAGE_SIZE in index-db.js if needed
+   if (file.size > 5 * 1024 * 1024) {
+     throw new Error('Image exceeds maximum size of 5MB');
+   }
+   ```
+
+4. **Clear Old Images**: Use clearImages() if database gets too large
+   ```javascript
+   import { clearImages } from '@prabhath-tharaka/html-editor';
+   
+   // Clear all stored images
+   await clearImages();
    ```
 
 ## Debugging Techniques
@@ -266,27 +277,33 @@ if (typeof document !== 'undefined' && document.execCommand) {
 
 ### "QuotaExceededError"
 
-**Cause**: localStorage quota exceeded.
+**Cause**: IndexedDB quota exceeded or database access issues.
 
 **Solution**:
 ```javascript
-// Implement storage cleanup
-function cleanupStorage() {
-  const keys = Object.keys(localStorage);
-  const imageKeys = keys.filter(key => key.startsWith('image_'));
-  
-  // Remove oldest images first
-  imageKeys.sort((a, b) => {
-    const metaA = JSON.parse(localStorage.getItem('image_metadata') || '{}')[a];
-    const metaB = JSON.parse(localStorage.getItem('image_metadata') || '{}')[b];
-    return (metaA?.timestamp || 0) - (metaB?.timestamp || 0);
-  });
-  
-  // Remove excess images
-  while (imageKeys.length > MAX_IMAGES) {
-    const key = imageKeys.shift();
-    localStorage.removeItem(key);
+import { clearImages, getAllImageKeys } from '@prabhath-tharaka/html-editor';
+
+// Check current storage usage
+async function checkStorageUsage() {
+  if (navigator.storage && navigator.storage.estimate) {
+    const estimate = await navigator.storage.estimate();
+    const percentUsed = (estimate.usage / estimate.quota * 100).toFixed(2);
+    console.log(`Storage: ${percentUsed}% used (${estimate.usage} / ${estimate.quota} bytes)`);
+    
+    if (percentUsed > 80) {
+      console.warn('Storage is running low, consider cleaning up images');
+    }
   }
+  
+  // Get count of stored images
+  const imageKeys = await getAllImageKeys();
+  console.log(`Total images stored: ${imageKeys.length}`);
+}
+
+// Clear all images if needed
+async function cleanupImages() {
+  await clearImages();
+  console.log('All images cleared from IndexedDB');
 }
 ```
 

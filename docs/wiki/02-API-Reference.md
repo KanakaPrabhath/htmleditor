@@ -174,13 +174,13 @@ const { updateContinuousContent, setActivePage, updatePageSize } = useDocumentAc
 ### Storage Utilities
 
 ```typescript
-// Save image to local storage
-saveImage(key: string, dataUrl: string): Promise<void>
+// Save image to IndexedDB
+saveImage(file: File): Promise<string>
 
-// Get image from local storage
+// Get image from IndexedDB
 getImage(key: string): Promise<string | null>
 
-// Delete image from local storage
+// Delete image from IndexedDB
 deleteImage(key: string): Promise<void>
 
 // Clear all images
@@ -188,6 +188,19 @@ clearImages(): Promise<void>
 
 // Get all image keys
 getAllImageKeys(): Promise<string[]>
+```
+
+**Example Usage:**
+```javascript
+import { saveImage, getImage } from '@prabhath-tharaka/html-editor';
+
+// Save an image
+const fileInput = document.getElementById('imageInput');
+const file = fileInput.files[0];
+const key = await saveImage(file);
+
+// Retrieve the image
+const dataUrl = await getImage(key);
 ```
 
 ### Logger Utility

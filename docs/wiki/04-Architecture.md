@@ -36,7 +36,7 @@ The HTML editor follows a modular, component-based architecture with clear separ
 │         │                          │                       │
 │         │                          │                       │
 │         ▼                          ▼                       │
-│  Local Storage API          Console Logging                │
+│  IndexedDB API              Console Logging                │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -334,24 +334,34 @@ function renderPageContent(pageIndex) {
 
 ## Storage Architecture
 
-### Local Storage Integration
+### IndexedDB Integration
 
 ```javascript
-// Image storage utilities
-async function saveImage(key, dataUrl) {
+// Image storage utilities using IndexedDB
+async function saveImage(file) {
   try {
     // Validate image size
-    if (dataUrl.length > MAX_IMAGE_SIZE) {
+    if (file.size > MAX_IMAGE_SIZE) {
       throw new Error('Image too large');
     }
     
-    // Store in localStorage
-    localStorage.setItem(`image_${key}`, dataUrl);
+    const db = await openDatabase();
+    const key = `editor-image-${generateUUID()}`;
+    const dataUrl = await readFileAsDataURL(file);
     
-    // Update image metadata
-    const metadata = getImageMetadata() || {};
-    metadata[key] = { size: dataUrl.length, timestamp: Date.now() };
-    localStorage.setItem('image_metadata', JSON.stringify(metadata));
+    const transaction = db.transaction(['images'], 'readwrite');
+    const objectStore = transaction.objectStore('images');
+    
+    const imageData = {
+      key,
+      dataUrl,
+      size: file.size,
+      type: file.type,
+      timestamp: Date.now()
+    };
+    
+    await objectStore.add(imageData);
+    return key;
     
   } catch (error) {
     logger.error('Failed to save image:', error);
@@ -364,10 +374,14 @@ async function getImage(key) {
   const cached = imageCache.get(key);
   if (cached) return cached;
   
-  const dataUrl = localStorage.getItem(`image_${key}`);
-  if (dataUrl) {
-    imageCache.set(key, dataUrl);
-    return dataUrl;
+  const db = await openDatabase();
+  const transaction = db.transaction(['images'], 'readonly');
+  const objectStore = transaction.objectStore('images');
+  const result = await objectStore.get(key);
+  
+  if (result) {
+    imageCache.set(key, result.dataUrl);
+    return result.dataUrl;
   }
   
   return null;
@@ -420,24 +434,23 @@ function supportsExecCommand() {
   return typeof document.execCommand === 'function';
 }
 
-function supportsLocalStorage() {
+function supportsIndexedDB() {
   try {
-    const test = 'test';
-    localStorage.setItem(test, test);
-    localStorage.removeItem(test);
-    return true;
+    return typeof indexedDB !== 'undefined';
   } catch (e) {
     return false;
   }
 }
 
 // Fallback implementations
-function getImageFallback(key) {
-  if (!supportsLocalStorage()) {
-    return Promise.resolve(null);
+async function getImageFallback(key) {
+  if (!supportsIndexedDB()) {
+    console.warn('IndexedDB not supported, images will not persist');
+    return null;
   }
   
   // Continue with normal implementation
+  return await getImage(key);
 }
 ```
 

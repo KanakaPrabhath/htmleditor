@@ -105,7 +105,7 @@ packages/html-editor/
 │   │   │   └── utils/
 │   │   │       └── logger.js                 # Logging utilities
 │   │   └── storage/
-│   │       └── local-storage.js              # Local storage utilities
+│   │       └── index-db.js                   # IndexedDB storage utilities
 │   └── index.js                             # Library entry point
 ├── package.json                             # Package configuration
 ├── vite.config.js                          # Build configuration

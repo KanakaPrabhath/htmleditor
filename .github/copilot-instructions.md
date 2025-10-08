@@ -156,8 +156,8 @@ const {
   - `useContinuousReflow.js` - Automatic content reflow engine for continuous mode
   - `useFormatting.js` - Text formatting state and commands
   - `index.js` - Centralized hook exports
-- **Storage**: `packages/html-editor/src/lib/storage/` - LocalStorage persistence for images
-  - `local-storage.js` - Image storage utilities
+- **Storage**: `packages/html-editor/src/lib/storage/` - IndexedDB persistence for images
+  - `index-db.js` - Image storage utilities using IndexedDB
 - **Editor Logic**: `packages/html-editor/src/lib/editor/` - Business logic and models
   - `utils/` - Logger and utilities
 - **Context**: `packages/html-editor/src/context/DocumentContext.jsx` - Document state and actions
@@ -172,9 +172,10 @@ const {
 - Runtime errors: Cannot delete last page, invalid page navigation
 
 ### Image Storage Convention
-- Images saved to localStorage via `saveImage()` in `packages/html-editor/src/lib/storage/local-storage.js`
-- Return localStorage key as image URL for contenteditable integration
+- Images saved to IndexedDB via `saveImage()` in `packages/html-editor/src/lib/storage/index-db.js`
+- Return storage key; retrieve image data URL via `getImage(key)` for contenteditable integration
 - Handle uploads via `EditorToolbar` image button with validation
+- IndexedDB provides better scalability for documents with many large images
 
 ## Common Implementation Gotchas
 

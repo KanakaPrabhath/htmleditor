@@ -18,7 +18,7 @@ import {
   Redo,
   Image as ImageIcon
 } from 'lucide-react';
-import { saveImage } from '../../lib/storage/local-storage';
+import { saveImage, getImage } from '../../lib/storage/index-db';
 import { logger } from '../../lib/editor/utils/logger';
 import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 
@@ -48,7 +48,7 @@ const EditorToolbar = ({
       }
 
       const key = await saveImage(file);
-      const imageUrl = localStorage.getItem(key);
+      const imageUrl = await getImage(key);
       
       if (imageUrl) {
         document.execCommand('insertImage', false, imageUrl);

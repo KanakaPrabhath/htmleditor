@@ -215,9 +215,10 @@ export function applyImageDimensions(element, { width, height }) {
 /**
  * Create resize overlay for an image
  * @param {HTMLElement} imageElement - Image element to resize
+ * @param {Object} options - Resize options
  * @returns {HTMLElement} Resize overlay element
  */
-export function createResizeOverlay(imageElement) {
+export function createResizeOverlay(imageElement, options = DEFAULT_IMAGE_RESIZE_OPTIONS) {
   if (!isResizableImage(imageElement)) return null;
   
   // Create overlay container
@@ -260,8 +261,16 @@ export function createResizeOverlay(imageElement) {
   // Create aspect ratio toggle button
   const aspectRatioButton = document.createElement('div');
   aspectRatioButton.className = 'aspect-ratio-toggle';
-  aspectRatioButton.innerHTML = '🔗';
-  aspectRatioButton.title = 'Toggle aspect ratio preservation';
+  // Initialize based on default options - if aspect ratio is preserved by default, show locked (🔗)
+  // But according to user's requirement, it should show unlocked (🔓) when image opens
+  const defaultPreserveRatio = options.preserveAspectRatio && options.aspectRatio;
+  if (defaultPreserveRatio) {
+    aspectRatioButton.innerHTML = '🔓';
+    aspectRatioButton.title = 'Toggle aspect ratio preservation (currently ON)';
+  } else {
+    aspectRatioButton.innerHTML = '🔗';
+    aspectRatioButton.title = 'Toggle aspect ratio preservation (currently OFF)';
+  }
   aspectRatioButton.style.position = 'absolute';
   aspectRatioButton.style.top = '-15px';
   aspectRatioButton.style.right = '-15px';

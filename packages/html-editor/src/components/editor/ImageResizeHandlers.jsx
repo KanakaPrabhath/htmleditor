@@ -48,7 +48,7 @@ const ImageResizeHandlers = ({
     imageElement.classList.add('selected');
 
     // Create resize overlay
-    const overlay = createResizeOverlay(imageElement);
+    const overlay = createResizeOverlay(imageElement, resizeOptionsRef.current);
     if (overlay) {
       resizeOverlayRef.current = overlay;
       resizeImageRef.current = imageElement;
@@ -117,13 +117,30 @@ const ImageResizeHandlers = ({
     // Update the aspect ratio toggle button
     const toggleButton = event.currentTarget;
     if (newPreserveRatio) {
-      toggleButton.innerHTML = '🔗';
+      toggleButton.innerHTML = '🔓';
       toggleButton.title = 'Toggle aspect ratio preservation (currently ON)';
       toggleButton.classList.remove('locked');
     } else {
-      toggleButton.innerHTML = '🔓';
+      toggleButton.innerHTML = '🔗';
       toggleButton.title = 'Toggle aspect ratio preservation (currently OFF)';
       toggleButton.classList.add('locked');
+    }
+  }, []);
+
+  /**
+   * Update aspect ratio toggle button state
+   */
+  const updateAspectRatioToggleButton = useCallback((toggleButton, preserveAspectRatio) => {
+    if (toggleButton) {
+      if (preserveAspectRatio) {
+        toggleButton.innerHTML = '🔓';
+        toggleButton.title = 'Toggle aspect ratio preservation (currently ON)';
+        toggleButton.classList.remove('locked');
+      } else {
+        toggleButton.innerHTML = '🔗';
+        toggleButton.title = 'Toggle aspect ratio preservation (currently OFF)';
+        toggleButton.classList.add('locked');
+      }
     }
   }, []);
 
@@ -364,15 +381,7 @@ const ImageResizeHandlers = ({
         if (resizeOverlayRef.current) {
           const toggleButton = resizeOverlayRef.current.querySelector('.aspect-ratio-toggle');
           if (toggleButton) {
-            if (newPreserveRatio) {
-              toggleButton.innerHTML = '🔗';
-              toggleButton.title = 'Toggle aspect ratio preservation (currently ON)';
-              toggleButton.classList.remove('locked');
-            } else {
-              toggleButton.innerHTML = '🔓';
-              toggleButton.title = 'Toggle aspect ratio preservation (currently OFF)';
-              toggleButton.classList.add('locked');
-            }
+            updateAspectRatioToggleButton(toggleButton, newPreserveRatio);
           }
         }
       }

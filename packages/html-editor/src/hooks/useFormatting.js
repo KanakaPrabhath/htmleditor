@@ -1,5 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { DEFAULT_FONT_SIZE } from '../lib/editor/font-sizes';
+import {
+  isResizableImage,
+  createResizeOverlay,
+  removeResizeOverlay,
+  updateResizeOverlay,
+  RESIZE_HANDLERS,
+  DEFAULT_IMAGE_RESIZE_OPTIONS
+} from '../lib/editor/image-resize-utils';
 
 // Constants for better maintainability
 // Font size mapping for execCommand (legacy HTML font sizes 1-7)
@@ -31,7 +39,11 @@ const DEFAULT_FORMAT = {
   alignJustify: false,
   fontFamily: 'Arial',
   fontSize: DEFAULT_FONT_SIZE,
-  headingLevel: 'p' // Add heading level tracking
+  headingLevel: 'p', // Add heading level tracking
+  // Image resize state
+  imageSelected: false,
+  imageResizeOptions: DEFAULT_IMAGE_RESIZE_OPTIONS,
+  preserveAspectRatio: true
 };
 
 /**
@@ -143,25 +155,19 @@ export const useFormatting = () => {
           break;
         case 'strikethrough':
           setCurrentFormat(prev => ({ ...prev, strikethrough: !prev.strikethrough }));
-          break;
         case 'justifyLeft':
           updateAlignment('left');
           break;
         case 'justifyCenter':
           updateAlignment('center');
-          break;
         case 'justifyRight':
           updateAlignment('right');
-          break;
         case 'justifyFull':
           updateAlignment('justify');
-          break;
         case 'fontName':
           setCurrentFormat(prev => ({ ...prev, fontFamily: value }));
-          break;
         case 'formatBlock':
           setCurrentFormat(prev => ({ ...prev, headingLevel: value }));
-          break;
         default:
           // Commands like insertUnorderedList, createLink, etc. don't need state updates
           break;
@@ -171,16 +177,330 @@ export const useFormatting = () => {
     }
   }, [handleFontSize, updateAlignment]);
 
+  // Image resize state and refs
+  const resizeOverlayRef = useRef(null);
+  const resizeImageRef = useRef(null);
+  const resizeStartRef = useRef(null);
+  const resizeHandlerRef = useRef(null);
+  const resizeOptionsRef = useRef(DEFAULT_IMAGE_RESIZE_OPTIONS);
+
+  /**
+   * Handle image selection
+   */
+  const handleImageSelection = useCallback((imageElement) => {
+    if (!isResizableImage(imageElement)) return;
+
+    // Clear any existing resize overlay
+    if (resizeOverlayRef.current) {
+      removeResizeOverlay(resizeOverlayRef.current);
+      resizeOverlayRef.current = null;
+    }
+
+    // Mark image as selected
+    imageElement.classList.add('selected');
+
+    // Create resize overlay
+    const overlay = createResizeOverlay(imageElement);
+    if (overlay) {
+      resizeOverlayRef.current = overlay;
+      resizeImageRef.current = imageElement;
+      
+      // Add overlay to document body
+      document.body.appendChild(overlay);
+      
+      // Update format state
+      setCurrentFormat(prev => ({
+        ...prev,
+        imageSelected: true,
+        preserveAspectRatio: resizeOptionsRef.current.preserveAspectRatio
+      }));
+    }
+  }, []);
+
+  /**
+   * Clear image selection
+   */
+  const clearImageSelection = useCallback(() => {
+    if (resizeImageRef.current) {
+      resizeImageRef.current.classList.remove('selected');
+      resizeImageRef.current = null;
+    }
+
+    if (resizeOverlayRef.current) {
+      removeResizeOverlay(resizeOverlayRef.current);
+      resizeOverlayRef.current = null;
+    }
+
+    resizeStartRef.current = null;
+    resizeHandlerRef.current = null;
+
+    setCurrentFormat(prev => ({
+      ...prev,
+      imageSelected: false
+    }));
+  }, []);
+
+  /**
+   * Handle aspect ratio toggle
+   */
+  const toggleAspectRatio = useCallback(() => {
+    const newPreserveRatio = !resizeOptionsRef.current.preserveAspectRatio;
+    
+    resizeOptionsRef.current = {
+      ...resizeOptionsRef.current,
+      preserveAspectRatio: newPreserveRatio,
+      aspectRatio: newPreserveRatio
+    };
+
+    setCurrentFormat(prev => ({
+      ...prev,
+      preserveAspectRatio: newPreserveRatio
+    }));
+  }, []);
+
+  /**
+   * Start image resize operation
+   */
+  const startImageResize = useCallback((handler, startX, startY) => {
+    if (!resizeImageRef.current) return;
+
+    resizeStartRef.current = {
+      x: startX,
+      y: startY,
+      width: resizeImageRef.current.offsetWidth,
+      height: resizeImageRef.current.offsetHeight
+    };
+
+    resizeHandlerRef.current = handler;
+
+    // Add resize class to prevent text selection
+    document.body.classList.add('resize-in-progress');
+
+    // Update cursor based on handler
+    document.body.style.cursor = getCursorForHandler(handler);
+  }, []);
+
+  /**
+   * Perform image resize operation
+   */
+  const performImageResize = useCallback((currentX, currentY) => {
+    if (!resizeImageRef.current || !resizeStartRef.current || !resizeHandlerRef.current) return;
+
+    const { x: startX, y: startY, width: startWidth, height: startHeight } = resizeStartRef.current;
+    const handler = resizeHandlerRef.current;
+
+    // Calculate new dimensions
+    const newDimensions = calculateResizeDimensions({
+      handler,
+      startX,
+      startY,
+      currentX,
+      currentY,
+      startWidth,
+      startHeight,
+      options: resizeOptionsRef.current
+    });
+
+    // Apply new dimensions to the image
+    applyImageDimensions(resizeImageRef.current, newDimensions);
+
+    // Update resize overlay
+    if (resizeOverlayRef.current) {
+      updateResizeOverlay(resizeOverlayRef.current, resizeImageRef.current);
+    }
+  }, []);
+
+  /**
+   * End image resize operation
+   */
+  const endImageResize = useCallback(() => {
+    resizeStartRef.current = null;
+    resizeHandlerRef.current = null;
+
+    // Remove resize classes
+    document.body.classList.remove('resize-in-progress');
+    document.body.style.cursor = '';
+
+    // Update content in document context
+    if (resizeImageRef.current) {
+      // Trigger input event to update document state
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      resizeImageRef.current.dispatchEvent(inputEvent);
+    }
+  }, []);
+
   /**
    * Reset formatting to default
    */
   const resetFormat = useCallback(() => {
+    clearImageSelection();
     setCurrentFormat(DEFAULT_FORMAT);
+  }, [clearImageSelection]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (resizeOverlayRef.current) {
+        removeResizeOverlay(resizeOverlayRef.current);
+      }
+    };
   }, []);
 
   return {
     currentFormat,
     formatText,
-    resetFormat
+    resetFormat,
+    // Image resize functionality - now delegated to ImageResizeHandlers
+    toggleAspectRatio
   };
 };
+
+/**
+ * Helper function to get cursor for resize handler
+ */
+function getCursorForHandler(handler) {
+  switch (handler) {
+    case RESIZE_HANDLERS.TOP_LEFT:
+    case RESIZE_HANDLERS.BOTTOM_RIGHT:
+      return 'nwse-resize';
+    case RESIZE_HANDLERS.TOP_RIGHT:
+    case RESIZE_HANDLERS.BOTTOM_LEFT:
+      return 'nesw-resize';
+    case RESIZE_HANDLRES.TOP:
+    case RESIZE_HANDLERS.BOTTOM:
+      return 'ns-resize';
+    case RESIZE_HANDLERS.LEFT:
+    case RESIZE_HANDLERS.RIGHT:
+      return 'ew-resize';
+    default:
+      return 'default';
+  }
+}
+
+/**
+ * Helper function to calculate resize dimensions
+ */
+function calculateResizeDimensions({
+  handler,
+  startX,
+  startY,
+  currentX,
+  currentY,
+  startWidth,
+  startHeight,
+  options = DEFAULT_IMAGE_RESIZE_OPTIONS
+}) {
+  const deltaX = currentX - startX;
+  const deltaY = currentY - startY;
+  
+  let newWidth = startWidth;
+  let newHeight = startHeight;
+  
+  // Calculate based on handler position
+  switch (handler) {
+    case RESIZE_HANDLERS.TOP_LEFT:
+      newWidth = Math.max(options.minWidth, startWidth - deltaX);
+      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      break;
+      
+    case RESIZE_HANDLERS.TOP_RIGHT:
+      newWidth = Math.max(options.minWidth, startWidth + deltaX);
+      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      break;
+      
+    case RESIZE_HANDLERS.BOTTOM_LEFT:
+      newWidth = Math.max(options.minWidth, startWidth - deltaX);
+      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      break;
+      
+    case RESIZE_HANDLERS.BOTTOM_RIGHT:
+      newWidth = Math.max(options.minWidth, startWidth + deltaX);
+      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      break;
+      
+    case RESIZE_HANDLERS.TOP:
+      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      break;
+      
+    case RESIZE_HANDLERS.BOTTOM:
+      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      break;
+      
+    case RESIZE_HANDLERS.LEFT:
+      newWidth = Math.max(options.minWidth, startWidth - deltaX);
+      break;
+      
+    case RESIZE_HANDLERS.RIGHT:
+      newWidth = Math.max(options.minWidth, startWidth + deltaX);
+      break;
+      
+    default:
+      return { width: newWidth, height: newHeight };
+  }
+  
+  // Apply aspect ratio if needed
+  if (options.preserveAspectRatio && options.aspectRatio) {
+    const aspectRatio = startWidth / startHeight;
+    
+    // For corner handlers, maintain aspect ratio
+    if ([RESIZE_HANDLERS.TOP_LEFT, RESIZE_HANDLERS.TOP_RIGHT, 
+         RESIZE_HANDLERS.BOTTOM_LEFT, RESIZE_HANDLERS.BOTTOM_RIGHT].includes(handler)) {
+      // Use the larger dimension to maintain aspect ratio
+      if (newWidth / aspectRatio > newHeight) {
+        newHeight = Math.max(options.minHeight, newWidth / aspectRatio);
+      } else {
+        newWidth = Math.max(options.minWidth, newHeight * aspectRatio);
+      }
+    }
+    // For edge handlers, maintain aspect ratio
+    else if ([RESIZE_HANDLERS.TOP, RESIZE_HANDLERS.BOTTOM].includes(handler)) {
+      newWidth = newHeight * aspectRatio;
+    } else if ([RESIZE_HANDLERS.LEFT, RESIZE_HANDLERS.RIGHT].includes(handler)) {
+      newHeight = newWidth / aspectRatio;
+    }
+  }
+  
+  // Apply max dimensions
+  if (options.maxWidth && newWidth > options.maxWidth) {
+    newWidth = options.maxWidth;
+    if (options.preserveAspectRatio && options.aspectRatio) {
+      newHeight = newWidth / (startWidth / startHeight);
+    }
+  }
+  
+  if (options.maxHeight && newHeight > options.maxHeight) {
+    newHeight = options.maxHeight;
+    if (options.preserveAspectRatio && options.aspectRatio) {
+      newWidth = newHeight * (startWidth / startHeight);
+    }
+  }
+  
+  // Ensure minimum dimensions
+  newWidth = Math.max(options.minWidth, newWidth);
+  newHeight = Math.max(options.minHeight, newHeight);
+  
+  return {
+    width: Math.round(newWidth),
+    height: Math.round(newHeight)
+  };
+}
+
+/**
+ * Helper function to apply image dimensions
+ */
+function applyImageDimensions(element, { width, height }) {
+  if (!isResizableImage(element)) return;
+  
+  // For img elements
+  if (element.tagName === 'IMG') {
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+    element.width = width;
+    element.height = height;
+  }
+  // For div elements with background images
+  else if (element.tagName === 'DIV') {
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+  }
+}

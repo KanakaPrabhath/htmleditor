@@ -217,6 +217,75 @@ const EditorToolbar = ({
           <FileText size={16} />
         </button>
       )}
+
+      {/* Image resize controls - enhanced with better visual feedback */}
+      {currentFormat.imageSelected && (
+        <div className="toolbar-group">
+          <button 
+            onClick={() => onFormatText('toggleImageAspectRatio')} 
+            title={currentFormat.preserveAspectRatio ? 'Toggle aspect ratio preservation (currently ON)' : 'Toggle aspect ratio preservation (currently OFF)'}
+            className={`toolbar-button ${currentFormat.preserveAspectRatio ? 'active' : ''}`}
+          >
+            {currentFormat.preserveAspectRatio ? '🔗' : '🔓'}
+          </button>
+          
+          {/* Add image resize options dropdown */}
+          <div className="toolbar-separator" />
+          
+          <div className="toolbar-group">
+            <select 
+              title="Image width"
+              className="toolbar-button"
+              onChange={(e) => {
+                const value = e.target.value;
+                // Handle image width changes
+                if (value === 'auto') {
+                  document.execCommand('styleWithCSS', false, true);
+                  document.execCommand('removeFormat', false, 'width');
+                } else {
+                  document.execCommand('styleWithCSS', false, true);
+                  document.execCommand('styleWithCSS', false, `width: ${value}`);
+                }
+              }}
+            >
+              <option value="">Width...</option>
+              <option value="auto">Auto</option>
+              <option value="100px">100px</option>
+              <option value="200px">200px</option>
+              <option value="300px">300px</option>
+              <option value="50%">50%</option>
+              <option value="100%">100%</option>
+            </select>
+            
+            <select 
+              title="Image height"
+              className="toolbar-button"
+              onChange={(e) => {
+                const value = e.target.value;
+                // Handle image height changes
+                if (value === 'auto') {
+                  document.execCommand('styleWithCSS', false, true);
+                  document.execCommand('removeFormat', false, 'height');
+                } else {
+                  document.execCommand('styleWithCSS', false, true);
+                  document.execCommand('styleWithCSS', false, `height: ${value}`);
+                }
+              }}
+            >
+              <option value="">Height...</option>
+              <option value="auto">Auto</option>
+              <option value="100px">100px</option>
+              <option value="200px">200px</option>
+              <option value="300px">300px</option>
+              <option value="50%">50%</option>
+              <option value="100%">100%</option>
+            </select>
+          </div>
+        </div>
+      )}
+      
+      {/* Fixed: Added missing closing tags */}
+      <div className="toolbar-separator" />
       
       <input 
         type="file" 
@@ -231,7 +300,7 @@ const EditorToolbar = ({
       >
         <ImageIcon size={16} />
       </button>
-    </div>
+      </div>
   );
 };
 

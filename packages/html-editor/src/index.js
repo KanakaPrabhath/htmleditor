@@ -18,6 +18,7 @@ export { default as ErrorBoundary } from './components/ErrorBoundary';
 export { default as EditorToolbar } from './components/editor/EditorToolbar';
 export { default as Sidebar } from './components/editor/Sidebar';
 export { default as PageView } from './components/editor/PageView';
+export { default as ImageResizeHandlers } from './components/editor/ImageResizeHandlers';
 
 // PageManager - COMPLETELY STANDALONE
 // Use this in external apps with your own state management
@@ -59,3 +60,17 @@ export {
 
 // === LOGGER UTILITY ===
 export { default as logger } from './lib/editor/utils/logger';
+
+// === IMAGE RESIZE UTILITIES ===
+// Image resize utilities for custom implementations
+export {
+  DEFAULT_IMAGE_RESIZE_OPTIONS,
+  RESIZE_HANDLERS,
+  calculateResizeDimensions,
+  isResizableImage,
+  getImageDimensions,
+  applyImageDimensions,
+  createResizeOverlay,
+  updateResizeOverlay,
+  removeResizeOverlay
+} from './lib/editor/image-resize-utils';

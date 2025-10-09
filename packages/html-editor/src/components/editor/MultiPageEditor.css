@@ -765,3 +765,107 @@ page-break,
     display: none !important;
   }
 }
+
+/* Image Resize Styles */
+.image-resize-overlay {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+  border: 1px dashed #007bff;
+  box-sizing: border-box;
+}
+
+.resize-handler {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #007bff;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 1001;
+}
+
+.resize-handler:hover {
+  background-color: #0056b3;
+  transform: scale(1.2);
+  transition: all 0.2s ease;
+}
+
+.aspect-ratio-toggle {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  width: 20px;
+  height: 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  pointer-events: all;
+  z-index: 1001;
+}
+
+.aspect-ratio-toggle:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.aspect-ratio-toggle.locked::after {
+  content: '🔒';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+/* Image selection styles */
+.continuous-content img.selected {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Resize cursor styles */
+.resize-cursor-nwse {
+  cursor: nwse-resize !important;
+}
+
+.resize-cursor-nesw {
+  cursor: nesw-resize !important;
+}
+
+.resize-cursor-ns {
+  cursor: ns-resize !important;
+}
+
+.resize-cursor-ew {
+  cursor: ew-resize !important;
+}
+
+/* Image placeholder for drag operations */
+.image-drag-placeholder {
+  opacity: 0.5;
+  background-color: #f8f9fa;
+  border: 2px dashed #007bff;
+}
+
+/* Prevent text selection during resize */
+.resize-in-progress {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}

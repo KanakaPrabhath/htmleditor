@@ -29,6 +29,11 @@ describe('Library Exports', () => {
       // PageManager is wrapped in React.memo, which returns an object
       expect(['function', 'object']).toContain(typeof HtmlEditor.PageManager);
     });
+
+    it('should export ImageResizeHandlers component', () => {
+      expect(HtmlEditor.ImageResizeHandlers).toBeDefined();
+      expect(typeof HtmlEditor.ImageResizeHandlers).toBe('function');
+    });
   });
 
   describe('Hook Exports', () => {
@@ -155,7 +160,16 @@ describe('Library Exports', () => {
         'getPixelValue',
         'getPointValue',
         'isValidFontSize',
-        'logger'
+        'logger',
+        'DEFAULT_IMAGE_RESIZE_OPTIONS',
+        'RESIZE_HANDLERS',
+        'calculateResizeDimensions',
+        'isResizableImage',
+        'getImageDimensions',
+        'applyImageDimensions',
+        'createResizeOverlay',
+        'updateResizeOverlay',
+        'removeResizeOverlay'
       ];
       
       expectedExports.forEach(exportName => {
@@ -176,6 +190,7 @@ describe('Library Exports', () => {
         'Sidebar',
         'PageView',
         'PageManager',
+        'ImageResizeHandlers',
         'useFormatting',
         'useContinuousReflow',
         'saveImage',
@@ -197,7 +212,16 @@ describe('Library Exports', () => {
         'getPixelValue',
         'getPointValue',
         'isValidFontSize',
-        'logger'
+        'logger',
+        'DEFAULT_IMAGE_RESIZE_OPTIONS',
+        'RESIZE_HANDLERS',
+        'calculateResizeDimensions',
+        'isResizableImage',
+        'getImageDimensions',
+        'applyImageDimensions',
+        'createResizeOverlay',
+        'updateResizeOverlay',
+        'removeResizeOverlay'
       ];
       
       // All actual exports should be in expected list

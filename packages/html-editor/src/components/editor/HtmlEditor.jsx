@@ -8,6 +8,7 @@ import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
 import PageManager from './PageManager';
+import ImageResizeHandlers from './ImageResizeHandlers';
 import './MultiPageEditor.css';
 
 const INITIAL_BOUNDARY_DELAY = 50;
@@ -58,6 +59,7 @@ const HtmlEditor = forwardRef(({
   const editorRef = useRef(null);
 
   const { currentFormat, formatText } = useFormatting();
+  const [imageSelected, setImageSelected] = useState(false);
   const { 
     checkAndUpdateBoundaries, 
     getCurrentPage, 
@@ -410,6 +412,20 @@ const HtmlEditor = forwardRef(({
 
   const totalPages = pageBoundaries.length || 1;
 
+  // Image resize handlers callbacks
+  const handleImageSelect = useCallback((imageElement) => {
+    setImageSelected(true);
+  }, []);
+
+  const handleImageDeselect = useCallback(() => {
+    setImageSelected(false);
+  }, []);
+
+  const handleImageResize = useCallback((imageElement, dimensions) => {
+    // Image resize completed - content will be updated by the ImageResizeHandlers component
+    // We can add any additional handling here if needed
+  }, []);
+
   // Cleanup scroll timeout on unmount
   useEffect(() => {
     return () => {
@@ -423,7 +439,10 @@ const HtmlEditor = forwardRef(({
     <div className="multi-page-editor">
       {showToolbar && (
         <EditorToolbar
-          currentFormat={currentFormat}
+          currentFormat={{
+            ...currentFormat,
+            imageSelected
+          }}
           onFormatText={formatText}
           onAddPageBreak={handleAddPageBreak}
         />
@@ -457,6 +476,14 @@ const HtmlEditor = forwardRef(({
             zoomLevel={zoomLevel}
           />
         </div>
+
+        {/* Image Resize Handlers - manages image selection and resizing */}
+        <ImageResizeHandlers
+          editorRef={editorRef}
+          onImageSelect={handleImageSelect}
+          onImageDeselect={handleImageDeselect}
+          onImageResize={handleImageResize}
+        />
 
         {/* Render PageManager only if showPageManager is true */}
         {showPageManager && (

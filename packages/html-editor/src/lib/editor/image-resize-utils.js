@@ -223,17 +223,15 @@ export function createResizeOverlay(imageElement) {
   // Create overlay container
   const overlay = document.createElement('div');
   overlay.className = 'image-resize-overlay';
-  overlay.style.position = 'absolute';
+  overlay.style.position = 'fixed'; // Changed to fixed for viewport positioning
   overlay.style.zIndex = '1000';
   overlay.style.pointerEvents = 'none';
   
-  // Position overlay over the image
+  // Position overlay over the image using viewport coordinates
   const rect = imageElement.getBoundingClientRect();
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
   
-  overlay.style.top = `${rect.top + scrollTop}px`;
-  overlay.style.left = `${rect.left + scrollLeft}px`;
+  overlay.style.top = `${rect.top}px`;
+  overlay.style.left = `${rect.left}px`;
   overlay.style.width = `${rect.width}px`;
   overlay.style.height = `${rect.height}px`;
   
@@ -364,11 +362,9 @@ export function updateResizeOverlay(overlay, imageElement) {
   if (!overlay || !imageElement) return;
   
   const rect = imageElement.getBoundingClientRect();
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
   
-  overlay.style.top = `${rect.top + scrollTop}px`;
-  overlay.style.left = `${rect.left + scrollLeft}px`;
+  overlay.style.top = `${rect.top}px`;
+  overlay.style.left = `${rect.left}px`;
   overlay.style.width = `${rect.width}px`;
   overlay.style.height = `${rect.height}px`;
   

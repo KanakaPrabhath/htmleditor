@@ -769,10 +769,14 @@ page-break,
 /* Image Resize Styles */
 .image-resize-overlay {
   position: absolute;
-  z-index: 1000;
+  z-index: 999;
   pointer-events: none;
   border: 1px dashed #007bff;
   box-sizing: border-box;
+  /* Ensure overlay is always visible */
+  visibility: visible;
+  /* Fix for positioning issues */
+  transform: translateZ(0);
 }
 
 .resize-handler {

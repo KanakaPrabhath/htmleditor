@@ -388,6 +388,30 @@ const ImageResizeHandlers = ({
     }
   }, []);
 
+  // Add scroll listener to editor viewport
+  useEffect(() => {
+    if (!editorRef.current) return;
+
+    const editor = editorRef.current;
+    const viewport = editor.closest('.editor-viewport');
+    
+    if (viewport) {
+      // Add scroll listener to viewport
+      viewport.addEventListener('scroll', handleScroll);
+      
+      // Also listen to window scroll in case of nested scrolling
+      window.addEventListener('scroll', handleScroll);
+    }
+
+    // Cleanup
+    return () => {
+      if (viewport) {
+        viewport.removeEventListener('scroll', handleScroll);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [editorRef, handleScroll]);
+
   // Add event listeners when editor is available
   useEffect(() => {
     if (!editorRef.current) return;
@@ -432,6 +456,62 @@ const ImageResizeHandlers = ({
       }
     };
   }, [editorRef, handleEditorClick, handleKeyDown, handleScroll, handleResizeMove, handleResizeEnd]);
+
+  // Add a mutation observer to detect when images are added/removed
+  useEffect(() => {
+    if (!editorRef.current) return;
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          // If an image was removed and we had a selection, clear it
+          if (mutation.removedNodes.length > 0) {
+            mutation.removedNodes.forEach(node => {
+              if (node.nodeType === Node.ELEMENT_NODE && isResizableImage(node)) {
+                if (node === resizeImageRef.current) {
+                  clearImageSelection();
+                }
+              }
+            });
+          }
+          
+          // If an image was added, automatically select it for immediate resize overlay
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                // Check if the node itself is an image
+                if (isResizableImage(node)) {
+                  // Auto-select newly inserted images
+                  setTimeout(() => {
+                    handleImageSelection(node);
+                  }, 50);
+                }
+                // Check if the node contains images
+                else {
+                  const images = node.querySelectorAll ? node.querySelectorAll('img') : [];
+                  if (images.length > 0) {
+                    // Auto-select the first newly inserted image
+                    setTimeout(() => {
+                      handleImageSelection(images[0]);
+                    }, 50);
+                  }
+                }
+              }
+            });
+          }
+        }
+      });
+    });
+
+    observer.observe(editorRef.current, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [editorRef, clearImageSelection, handleImageSelection]);
 
   // Helper function to get cursor for handler
   function getCursorForHandler(handler) {

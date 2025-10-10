@@ -798,44 +798,6 @@ page-break,
   transition: all 0.2s ease;
 }
 
-.aspect-ratio-toggle {
-  position: absolute;
-  top: -15px;
-  right: -15px;
-  width: 20px;
-  height: 20px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  cursor: pointer;
-  box-shadow: 0 0 3px rgba(0,0,0,0.3);
-  pointer-events: all;
-  z-index: 1001;
-}
-
-.aspect-ratio-toggle:hover {
-  background-color: #0056b3;
-  transform: scale(1.1);
-  transition: all 0.2s ease;
-}
-
-.aspect-ratio-toggle.locked::after {
-  content: '🔗';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-}
-
 /* Image selection styles */
 .continuous-content img.selected {
   outline: 2px solid #007bff;
@@ -932,11 +894,18 @@ page-break,
   background: transparent;
   color: #333;
   border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 .tooltip-button.aspect-ratio-toggle:hover {
   background-color: #f8f9fa;
   border-color: #adb5bd;
+}
+
+.tooltip-button.aspect-ratio-toggle.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
 }
 
 .tooltip-button.delete-button {

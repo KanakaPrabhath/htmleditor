@@ -257,6 +257,15 @@ const ImageTooltipMenu = ({
         transition: 'opacity 0.15s ease, visibility 0.15s ease'
       }}
     >
+      {/* Aspect Ratio Toggle */}
+      <button
+        className={`tooltip-button aspect-ratio-toggle ${!preserveAspectRatio ? 'active' : ''}`}
+        onClick={handleAspectRatioToggle}
+        title={`Toggle aspect ratio preservation (currently ${preserveAspectRatio ? 'ON' : 'OFF'})`}
+      >
+        {preserveAspectRatio ? '🔓' : '🔗'}
+      </button>
+
       {/* Alignment buttons */}
       <button
         className={`tooltip-button ${currentAlignment === 'left' ? 'active' : ''}`}
@@ -319,29 +328,6 @@ const ImageTooltipMenu = ({
         }}
       >
         <AlignRight size={14} />
-      </button>
-
-      {/* Aspect Ratio Toggle */}
-      <button
-        className={`tooltip-button aspect-ratio-toggle ${preserveAspectRatio ? '' : 'locked'}`}
-        onClick={handleAspectRatioToggle}
-        title={`Toggle aspect ratio preservation (currently ${preserveAspectRatio ? 'ON' : 'OFF'})`}
-        style={{
-          background: 'transparent',
-          color: '#333',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          padding: '4px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minWidth: '28px',
-          height: '28px',
-          fontSize: '14px'
-        }}
-      >
-        {preserveAspectRatio ? '🔓' : '🔗'}
       </button>
 
       {/* Delete button */}

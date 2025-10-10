@@ -157,18 +157,23 @@ export function calculateResizeDimensions({
 export function isResizableImage(element) {
   if (!element) return false;
   
+  console.log('Checking if element is resizable image:', element, 'tagName:', element.tagName);
+  
   // Check if it's an img element
   if (element.tagName === 'IMG') {
+    console.log('Element is an IMG tag, returning true');
     return true;
   }
   
   // Check if it's a div with background image that should be resizable
-  if (element.tagName === 'DIV' && 
-      element.style.backgroundImage && 
+  if (element.tagName === 'DIV' &&
+      element.style.backgroundImage &&
       element.style.backgroundImage !== 'none') {
+    console.log('Element is a DIV with background image, returning true');
     return true;
   }
   
+  console.log('Element is not a resizable image, returning false');
   return false;
 }
 

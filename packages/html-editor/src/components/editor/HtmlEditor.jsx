@@ -9,6 +9,7 @@ import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
 import PageManager from './PageManager';
 import ImageResizeHandlers from './ImageResizeHandlers';
+import ImageTooltipMenu from './ImageTooltipMenu';
 import './MultiPageEditor.css';
 
 const INITIAL_BOUNDARY_DELAY = 50;
@@ -60,9 +61,10 @@ const HtmlEditor = forwardRef(({
 
   const { currentFormat, formatText } = useFormatting();
   const [imageSelected, setImageSelected] = useState(false);
-  const { 
-    checkAndUpdateBoundaries, 
-    getCurrentPage, 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const {
+    checkAndUpdateBoundaries,
+    getCurrentPage,
     scrollToPage,
     updateBoundaries,
     triggerAutoReflow,
@@ -414,11 +416,15 @@ const HtmlEditor = forwardRef(({
 
   // Image resize handlers callbacks
   const handleImageSelect = useCallback((imageElement) => {
+    console.log('handleImageSelect called with:', imageElement);
     setImageSelected(true);
+    setSelectedImage(imageElement);
   }, []);
 
   const handleImageDeselect = useCallback(() => {
+    console.log('handleImageDeselect called');
     setImageSelected(false);
+    setSelectedImage(null);
   }, []);
 
   const handleImageResize = useCallback((imageElement, dimensions) => {
@@ -484,6 +490,26 @@ const HtmlEditor = forwardRef(({
           onImageDeselect={handleImageDeselect}
           onImageResize={handleImageResize}
         />
+
+        {/* Image Tooltip Menu - shows when an image is selected */}
+        {console.log('Rendering check - imageSelected:', imageSelected, 'selectedImage:', selectedImage) || (imageSelected && selectedImage) && (
+          <ImageTooltipMenu
+            imageElement={selectedImage}
+            onAlignChange={(alignment) => {
+              // Handle alignment change if needed
+              console.log('Image alignment changed to:', alignment);
+            }}
+            onAspectRatioToggle={() => {
+              // Handle aspect ratio toggle if needed
+              console.log('Aspect ratio toggled');
+            }}
+            onDelete={() => {
+              // Handle image deletion if needed
+              console.log('Image deleted');
+            }}
+            onClose={handleImageDeselect}
+          />
+        )}
 
         {/* Render PageManager only if showPageManager is true */}
         {showPageManager && (

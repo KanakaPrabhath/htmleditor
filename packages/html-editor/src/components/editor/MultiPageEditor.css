@@ -873,3 +873,78 @@ page-break,
   -moz-user-select: none !important;
   -ms-user-select: none !important;
 }
+
+/* Image Tooltip Menu Styles */
+.image-tooltip-menu {
+  position: fixed;
+  z-index: 10001;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 8px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltip-button {
+  background: transparent;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-width: 32px;
+  height: 28px;
+}
+
+.tooltip-button:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.tooltip-button.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.tooltip-button.aspect-ratio-toggle {
+  background: transparent;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.tooltip-button.aspect-ratio-toggle:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.tooltip-button.delete-button {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.tooltip-button.delete-button:hover {
+  background-color: #dc3545;
+  color: #fff;
+}

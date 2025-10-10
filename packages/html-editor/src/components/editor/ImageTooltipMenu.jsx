@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { AlignLeft, AlignCenter, AlignRight, Link, Trash2 } from 'lucide-react';
 import PropTypes from 'prop-types';
 
 /**
@@ -234,11 +235,11 @@ const ImageTooltipMenu = ({
         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
         padding: '8px',
         display: 'flex',
-        gap: '4px',
+        gap: '2px',
         alignItems: 'center',
         pointerEvents: isVisible ? 'auto' : 'none',
-        minWidth: '100px',
-        minHeight: '30px',
+        minWidth: '140px',
+        minHeight: '32px',
         opacity: isVisible ? 1 : 0,
         visibility: isVisible ? 'visible' : 'hidden',
         transition: 'opacity 0.15s ease, visibility 0.15s ease'
@@ -254,15 +255,16 @@ const ImageTooltipMenu = ({
           color: currentAlignment === 'left' ? '#fff' : '#333',
           border: '1px solid #ccc',
           borderRadius: '4px',
-          padding: '6px 8px',
+          padding: '4px',
           cursor: 'pointer',
-          fontSize: '12px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          minWidth: '28px',
+          height: '28px'
         }}
       >
-        ⬅️
+        <AlignLeft size={14} />
       </button>
       
       <button
@@ -274,15 +276,16 @@ const ImageTooltipMenu = ({
           color: currentAlignment === 'center' ? '#fff' : '#333',
           border: '1px solid #ccc',
           borderRadius: '4px',
-          padding: '6px 8px',
+          padding: '4px',
           cursor: 'pointer',
-          fontSize: '12px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          minWidth: '28px',
+          height: '28px'
         }}
       >
-        ↔️
+        <AlignCenter size={14} />
       </button>
       
       <button
@@ -294,15 +297,16 @@ const ImageTooltipMenu = ({
           color: currentAlignment === 'right' ? '#fff' : '#333',
           border: '1px solid #ccc',
           borderRadius: '4px',
-          padding: '6px 8px',
+          padding: '4px',
           cursor: 'pointer',
-          fontSize: '12px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          minWidth: '28px',
+          height: '28px'
         }}
       >
-        ➡️
+        <AlignRight size={14} />
       </button>
 
       {/* Aspect Ratio Toggle */}
@@ -315,15 +319,16 @@ const ImageTooltipMenu = ({
           color: '#333',
           border: '1px solid #ccc',
           borderRadius: '4px',
-          padding: '6px 8px',
+          padding: '4px',
           cursor: 'pointer',
-          fontSize: '12px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          minWidth: '28px',
+          height: '28px'
         }}
       >
-        🔗
+        <Link size={14} />
       </button>
 
       {/* Delete button */}
@@ -336,15 +341,16 @@ const ImageTooltipMenu = ({
           color: '#dc3545',
           border: '1px solid #dc3545',
           borderRadius: '4px',
-          padding: '6px 8px',
+          padding: '4px',
           cursor: 'pointer',
-          fontSize: '12px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          minWidth: '28px',
+          height: '28px'
         }}
       >
-        🗑️
+        <Trash2 size={14} />
       </button>
     </div>,
     document.body

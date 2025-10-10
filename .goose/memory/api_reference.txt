@@ -1,0 +1,9 @@
+HTML Editor API Reference:
+- Main component: HtmlEditor (requires DocumentProvider)
+- Ref methods: getHTMLContent(), getPlainText(), setContent(html)
+- Context hooks: useDocument, useDocumentState, useDocumentActions
+- Standalone components: EditorToolbar, Sidebar, PageManager, PageView
+- Page size constants: A4, Letter, Legal
+- Image utilities: saveImage, getImage, deleteImage, clearImages, getAllImageKeys
+- Zoom utilities: canZoomIn, canZoomOut
+

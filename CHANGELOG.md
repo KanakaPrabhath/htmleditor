@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2025-10-11
+- **Image Controls**: Added comprehensive image handling with resize, selection, and aspect ratio controls
+- **Image Resize Functionality**: Interactive resize handles for images with visual feedback
+- **Aspect Ratio Toggle**: Option to preserve or free aspect ratio during image resizing
+- **Image Selection UI**: Visual indicators and tooltip menu for selected images
+- **Unicode Support**: Enhanced support for Unicode characters across all text content
+- **Image Upload Integration**: Improved image upload handling in the editor toolbar
+
 ## [1.1.4] - 2025-10-06
 - **Zoom Controls**: Added zoom functionality for better document viewing and navigation
 - **Margin Controls**: Implemented page margin adjustments for improved layout customization

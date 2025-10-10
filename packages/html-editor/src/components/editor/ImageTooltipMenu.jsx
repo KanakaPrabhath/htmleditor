@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { AlignLeft, AlignCenter, AlignRight, Link, Trash2 } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, Trash2, Scaling, ImageUpscale } from 'lucide-react';
 import PropTypes from 'prop-types';
 
 /**
@@ -33,7 +33,6 @@ const ImageTooltipMenu = ({
   const [currentAlignment, setCurrentAlignment] = useState(getCurrentAlignment());
 
   useEffect(() => {
-    console.log('ImageTooltipMenu mounted with imageElement:', imageElement);
     return () => {
       console.log('ImageTooltipMenu unmounted');
     };
@@ -223,9 +222,6 @@ const ImageTooltipMenu = ({
 
   if (!imageElement) return null;
 
-  // Debug log to see if component is being rendered
-  console.log('Rendering ImageTooltipMenu with position:', position, 'isVisible:', isVisible);
-
   if (typeof document === 'undefined') {
     return null;
   }
@@ -263,7 +259,7 @@ const ImageTooltipMenu = ({
         onClick={handleAspectRatioToggle}
         title={`Toggle aspect ratio preservation (currently ${preserveAspectRatio ? 'ON' : 'OFF'})`}
       >
-        {preserveAspectRatio ? '🔓' : '🔗'}
+        {preserveAspectRatio ? <Scaling size={14} /> : <ImageUpscale size={14} />}
       </button>
 
       {/* Alignment buttons */}

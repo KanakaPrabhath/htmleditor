@@ -419,18 +419,16 @@ const HtmlEditor = forwardRef(({
 
   // Image resize handlers callbacks
   const handleImageSelect = useCallback((imageElement) => {
-    console.log('handleImageSelect called with:', imageElement);
     setImageSelected(true);
     setSelectedImage(imageElement);
   }, []);
 
   const handleImageDeselect = useCallback(() => {
-    console.log('handleImageDeselect called');
     setImageSelected(false);
     setSelectedImage(null);
   }, []);
 
-  const handleImageResize = useCallback((_imageElement, _dimensions) => {
+  const handleImageResize = useCallback((_, __) => {
     // Image resize completed - content will be updated by the ImageResizeHandlers component
     // We can add any additional handling here if needed
   }, []);
@@ -500,17 +498,15 @@ const HtmlEditor = forwardRef(({
         />
 
         {/* Image Tooltip Menu - shows when an image is selected */}
-        {console.log('Rendering check - imageSelected:', imageSelected, 'selectedImage:', selectedImage) || (imageSelected && selectedImage) && (
+        {imageSelected && selectedImage && (
           <ImageTooltipMenu
             imageElement={selectedImage}
             initialPreserveAspectRatio={preserveAspectRatio}
-            onAlignChange={(alignment) => {
+            onAlignChange={(_) => {
               // Handle alignment change if needed
-              console.log('Image alignment changed to:', alignment);
             }}
             onAspectRatioToggle={(newPreserveRatio) => {
               setPreserveAspectRatio(newPreserveRatio);
-              console.log('Aspect ratio toggled to:', newPreserveRatio);
             }}
             onDelete={() => {
               // Handle image deletion from IndexedDB and DOM
@@ -524,7 +520,6 @@ const HtmlEditor = forwardRef(({
                 }
                 // Remove from DOM (handled by ImageTooltipMenu)
               }
-              console.log('Image deleted');
             }}
             onClose={handleImageDeselect}
           />

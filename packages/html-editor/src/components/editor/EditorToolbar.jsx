@@ -29,7 +29,9 @@ import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-size
 const EditorToolbar = ({ 
   currentFormat, 
   onFormatText, 
-  onAddPageBreak
+  onAddPageBreak,
+  canUndo = false,
+  canRedo = false
 }) => {
   /**
    * Handle image upload
@@ -71,13 +73,17 @@ const EditorToolbar = ({
     <div className="editor-toolbar">
       <button 
         onClick={() => onFormatText('undo')} 
+        disabled={!canUndo}
         title="Undo"
+        style={{ opacity: canUndo ? 1 : 0.5 }}
       >
         <Undo size={16} />
       </button>
       <button 
         onClick={() => onFormatText('redo')} 
+        disabled={!canRedo}
         title="Redo"
+        style={{ opacity: canRedo ? 1 : 0.5 }}
       >
         <Redo size={16} />
       </button>
@@ -260,11 +266,15 @@ EditorToolbar.propTypes = {
     headingLevel: PropTypes.string
   }).isRequired,
   onFormatText: PropTypes.func.isRequired,
-  onAddPageBreak: PropTypes.func
+  onAddPageBreak: PropTypes.func,
+  canUndo: PropTypes.bool,
+  canRedo: PropTypes.bool
 };
 
 EditorToolbar.defaultProps = {
-  onAddPageBreak: undefined
+  onAddPageBreak: undefined,
+  canUndo: false,
+  canRedo: false
 };
 
 export default EditorToolbar;

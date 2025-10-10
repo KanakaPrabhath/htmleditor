@@ -1,8 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
+import React from 'react';
+import { DocumentProvider } from '../../packages/html-editor/src/context/DocumentContext';
 import { useFormatting } from '@prabhath-tharaka/html-editor';
 
 describe('useFormatting Hook', () => {
+  const wrapper = ({ children }) => React.createElement(DocumentProvider, null, children);
   beforeEach(() => {
     // Mock document.execCommand
     document.execCommand = vi.fn();
@@ -30,7 +33,7 @@ describe('useFormatting Hook', () => {
 
   describe('Initial State', () => {
     it('should initialize with default format state', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       expect(result.current.currentFormat).toBeDefined();
       expect(result.current.formatText).toBeDefined();
@@ -38,7 +41,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should have all format properties initialized', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       const { currentFormat } = result.current;
       
@@ -51,7 +54,7 @@ describe('useFormatting Hook', () => {
 
   describe('Format Text Function', () => {
     it('should call document.execCommand for bold formatting', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('bold');
@@ -61,7 +64,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should call document.execCommand for italic formatting', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('italic');
@@ -71,7 +74,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should call document.execCommand for underline formatting', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('underline');
@@ -81,7 +84,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should call document.execCommand for strikethrough formatting', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('strikethrough');
@@ -91,7 +94,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should handle alignment commands', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('justifyLeft');
@@ -101,7 +104,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should handle list commands', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('insertOrderedList');
@@ -111,7 +114,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should handle font family with value parameter', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('fontName', 'Arial');
@@ -121,7 +124,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should handle formatBlock for headings', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('formatBlock', 'h1');
@@ -132,7 +135,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should handle font size with value parameter', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       act(() => {
         result.current.formatText('fontSize', '16px');
@@ -152,7 +155,7 @@ describe('useFormatting Hook', () => {
         return false;
       });
       
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       // Simulate selection change
       const event = new Event('selectionchange');
@@ -168,7 +171,7 @@ describe('useFormatting Hook', () => {
         return false;
       });
       
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       // Trigger format check
       const event = new Event('selectionchange');
@@ -180,7 +183,7 @@ describe('useFormatting Hook', () => {
 
   describe('Edge Cases', () => {
     it('should handle unknown format commands gracefully', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       expect(() => {
         act(() => {
@@ -190,7 +193,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should handle null or undefined commands', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       expect(() => {
         act(() => {
@@ -206,7 +209,7 @@ describe('useFormatting Hook', () => {
     });
 
     it('should work even when no text is selected', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       // Clear selection
       window.getSelection().removeAllRanges();
@@ -221,7 +224,7 @@ describe('useFormatting Hook', () => {
 
   describe('Integration with ContentEditable', () => {
     it('should work with contenteditable element', () => {
-      const { result } = renderHook(() => useFormatting());
+      const { result } = renderHook(() => useFormatting(), { wrapper });
       
       const editor = document.getElementById('test-editor');
       editor.innerHTML = '<p>Test content</p>';

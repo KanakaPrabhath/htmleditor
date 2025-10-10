@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { AlignLeft, AlignCenter, AlignRight, Trash2, Scaling, ImageUpscale } from 'lucide-react';
 import PropTypes from 'prop-types';
+import { useDocumentActions } from '../../context/DocumentContext';
 
 /**
  * ImageTooltipMenu - Component for image tooltip menu with alignment, aspect ratio, and delete options
@@ -20,6 +21,31 @@ const ImageTooltipMenu = ({
   const [preserveAspectRatio, setPreserveAspectRatio] = useState(initialPreserveAspectRatio);
   const menuRef = useRef(null);
   const scrollContainerRef = useRef(null);
+  const actions = useDocumentActions();
+
+  // Helper function to get current image state for undo operations
+  const getImageState = (element) => {
+    if (!element) return null;
+    const style = window.getComputedStyle(element);
+    return {
+      float: style.float || 'none',
+      margin: element.style.margin || '',
+      display: style.display || 'inline',
+      width: element.style.width || element.width || '',
+      height: element.style.height || element.height || '',
+      aspectRatio: preserveAspectRatio
+    };
+  };
+
+  // Helper function to apply image state
+  const applyImageState = (element, state) => {
+    if (!element || !state) return;
+    element.style.float = state.float;
+    element.style.margin = state.margin;
+    element.style.display = state.display;
+    if (state.width) element.style.width = state.width;
+    if (state.height) element.style.height = state.height;
+  };
 
   // Get current alignment of the image
   const getCurrentAlignment = () => {
@@ -174,36 +200,81 @@ const ImageTooltipMenu = ({
 
   const handleAlignLeft = () => {
     if (imageElement) {
+      const beforeState = getImageState(imageElement);
+      
       imageElement.style.float = 'left';
       imageElement.style.margin = '0 10px 10px 0';
       imageElement.style.display = 'block';
       setCurrentAlignment('left');
+      
+      const afterState = getImageState(imageElement);
+      
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'IMAGE_ALIGN', payload: { element: imageElement, alignment: 'left', state: afterState } },
+        { type: 'IMAGE_ALIGN', payload: { element: imageElement, alignment: getCurrentAlignment(), state: beforeState } }
+      );
+      
       onAlignChange && onAlignChange('left');
     }
   };
 
   const handleAlignCenter = () => {
     if (imageElement) {
+      const beforeState = getImageState(imageElement);
+      
       imageElement.style.float = 'none';
       imageElement.style.margin = '10px auto';
       imageElement.style.display = 'block';
       setCurrentAlignment('center');
+      
+      const afterState = getImageState(imageElement);
+      
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'IMAGE_ALIGN', payload: { element: imageElement, alignment: 'center', state: afterState } },
+        { type: 'IMAGE_ALIGN', payload: { element: imageElement, alignment: getCurrentAlignment(), state: beforeState } }
+      );
+      
       onAlignChange && onAlignChange('center');
     }
   };
 
   const handleAlignRight = () => {
     if (imageElement) {
+      const beforeState = getImageState(imageElement);
+      
       imageElement.style.float = 'right';
       imageElement.style.margin = '0 0 10px 10px';
       imageElement.style.display = 'block';
       setCurrentAlignment('right');
+      
+      const afterState = getImageState(imageElement);
+      
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'IMAGE_ALIGN', payload: { element: imageElement, alignment: 'right', state: afterState } },
+        { type: 'IMAGE_ALIGN', payload: { element: imageElement, alignment: getCurrentAlignment(), state: beforeState } }
+      );
+      
       onAlignChange && onAlignChange('right');
     }
   };
 
   const handleDelete = () => {
     if (imageElement && imageElement.parentNode) {
+      const beforeState = {
+        element: imageElement,
+        parent: imageElement.parentNode,
+        nextSibling: imageElement.nextSibling
+      };
+      
+      // Record operation for undo (re-insert the image)
+      actions.recordOperation(
+        { type: 'IMAGE_DELETE', payload: { element: imageElement } },
+        { type: 'IMAGE_REINSERT', payload: { state: beforeState } }
+      );
+      
       imageElement.parentNode.removeChild(imageElement);
       onDelete && onDelete();
       onClose();
@@ -211,8 +282,15 @@ const ImageTooltipMenu = ({
   };
 
   const handleAspectRatioToggle = () => {
+    const oldPreserveRatio = preserveAspectRatio;
     const newPreserveRatio = !preserveAspectRatio;
     setPreserveAspectRatio(newPreserveRatio);
+    
+    // Record operation for undo
+    actions.recordOperation(
+      { type: 'IMAGE_ASPECT_RATIO', payload: { element: imageElement, preserveAspectRatio: newPreserveRatio } },
+      { type: 'IMAGE_ASPECT_RATIO', payload: { element: imageElement, preserveAspectRatio: oldPreserveRatio } }
+    );
     
     // Call the parent callback if provided
     if (onAspectRatioToggle) {

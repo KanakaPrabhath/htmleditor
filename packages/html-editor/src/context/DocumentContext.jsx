@@ -67,7 +67,12 @@ const buildInitialState = (overrides = {}) => {
     continuousContent: overrides.continuousContent || EMPTY_PARAGRAPH,
     pageBoundaries: overrides.pageBoundaries || createDefaultBoundary(pageSize),
     zoomLevel: overrides.zoomLevel || DEFAULT_ZOOM,
-    pageMargins: overrides.pageMargins || DEFAULT_MARGIN_PRESET
+    pageMargins: overrides.pageMargins || DEFAULT_MARGIN_PRESET,
+    // Undo/Redo state
+    undoStack: [],
+    redoStack: [],
+    canUndo: false,
+    canRedo: false
   };
 };
 
@@ -94,7 +99,12 @@ const ActionTypes = {
   ZOOM_IN: 'ZOOM_IN',
   ZOOM_OUT: 'ZOOM_OUT',
   RESET_ZOOM: 'RESET_ZOOM',
-  UPDATE_PAGE_MARGINS: 'UPDATE_PAGE_MARGINS'
+  UPDATE_PAGE_MARGINS: 'UPDATE_PAGE_MARGINS',
+  // Undo/Redo actions
+  RECORD_OPERATION: 'RECORD_OPERATION',
+  UNDO: 'UNDO',
+  REDO: 'REDO',
+  CLEAR_UNDO_REDO: 'CLEAR_UNDO_REDO'
 };
 
 // Reducer
@@ -504,6 +514,127 @@ const documentReducer = (state, action) => {
       };
     }
 
+    case ActionTypes.RECORD_OPERATION: {
+      const { operation, inverseOperation } = action.payload;
+      
+      return {
+        ...state,
+        undoStack: [...state.undoStack, { operation, inverseOperation }],
+        redoStack: [], // Clear redo stack when new operation is recorded
+        canUndo: true,
+        canRedo: false,
+        updatedAt: now
+      };
+    }
+
+    case ActionTypes.UNDO: {
+      if (state.undoStack.length === 0) {
+        return state;
+      }
+
+      const lastOperation = state.undoStack[state.undoStack.length - 1];
+      const newUndoStack = state.undoStack.slice(0, -1);
+      
+      // Apply the inverse operation
+      let newState = state;
+      if (lastOperation.inverseOperation) {
+        newState = documentReducer(state, lastOperation.inverseOperation);
+      }
+
+      return {
+        ...newState,
+        undoStack: newUndoStack,
+        redoStack: [...state.redoStack, lastOperation],
+        canUndo: newUndoStack.length > 0,
+        canRedo: true,
+        updatedAt: now
+      };
+    }
+
+    case ActionTypes.REDO: {
+      if (state.redoStack.length === 0) {
+        return state;
+      }
+
+      const operationToRedo = state.redoStack[state.redoStack.length - 1];
+      const newRedoStack = state.redoStack.slice(0, -1);
+      
+      // Apply the original operation
+      let newState = state;
+      if (operationToRedo.operation) {
+        newState = documentReducer(state, operationToRedo.operation);
+      }
+
+      return {
+        ...newState,
+        undoStack: [...state.undoStack, operationToRedo],
+        redoStack: newRedoStack,
+        canUndo: true,
+        canRedo: newRedoStack.length > 0,
+        updatedAt: now
+      };
+    }
+
+    case ActionTypes.CLEAR_UNDO_REDO: {
+      return {
+        ...state,
+        undoStack: [],
+        redoStack: [],
+        canUndo: false,
+        canRedo: false,
+        updatedAt: now
+      };
+    }
+
+    // Image operation actions (for undo/redo)
+    case 'IMAGE_ALIGN': {
+      const { element, state: imageState } = action.payload;
+      if (element && imageState) {
+        // Apply the image state
+        element.style.float = imageState.float;
+        element.style.margin = imageState.margin;
+        element.style.display = imageState.display;
+        if (imageState.width) element.style.width = imageState.width;
+        if (imageState.height) element.style.height = imageState.height;
+      }
+      return state;
+    }
+
+    case 'IMAGE_DELETE': {
+      const { element } = action.payload;
+      if (element && element.parentNode) {
+        element.parentNode.removeChild(element);
+      }
+      return state;
+    }
+
+    case 'IMAGE_REINSERT': {
+      const { state: imageState } = action.payload;
+      if (imageState && imageState.parent && imageState.element) {
+        // Re-insert the same element at its original position
+        if (imageState.nextSibling) {
+          imageState.parent.insertBefore(imageState.element, imageState.nextSibling);
+        } else {
+          imageState.parent.appendChild(imageState.element);
+        }
+      }
+      return state;
+    }
+
+    case 'IMAGE_ASPECT_RATIO': {
+      // This is handled by the component state, no document change needed
+      return state;
+    }
+
+    case 'IMAGE_RESIZE': {
+      const { element, state: imageState } = action.payload;
+      if (element && imageState) {
+        if (imageState.width) element.style.width = imageState.width;
+        if (imageState.height) element.style.height = imageState.height;
+      }
+      return state;
+    }
+
     default:
       return state;
   }
@@ -539,7 +670,15 @@ export const DocumentProvider = ({ children, initialState = {} }) => {
     zoomIn: () => dispatch({ type: ActionTypes.ZOOM_IN }),
     zoomOut: () => dispatch({ type: ActionTypes.ZOOM_OUT }),
     resetZoom: () => dispatch({ type: ActionTypes.RESET_ZOOM }),
-    updatePageMargins: (margins) => dispatch({ type: ActionTypes.UPDATE_PAGE_MARGINS, payload: margins })
+    updatePageMargins: (margins) => dispatch({ type: ActionTypes.UPDATE_PAGE_MARGINS, payload: margins }),
+    // Undo/Redo actions
+    recordOperation: (operation, inverseOperation) => dispatch({ 
+      type: ActionTypes.RECORD_OPERATION, 
+      payload: { operation, inverseOperation } 
+    }),
+    undo: () => dispatch({ type: ActionTypes.UNDO }),
+    redo: () => dispatch({ type: ActionTypes.REDO }),
+    clearUndoRedo: () => dispatch({ type: ActionTypes.CLEAR_UNDO_REDO })
   }), []);
 
   const value = useMemo(() => ({

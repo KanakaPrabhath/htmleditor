@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useDocumentActions } from '../../context/DocumentContext';
 import {
   isResizableImage,
   createResizeOverlay,
@@ -26,6 +27,7 @@ const ImageResizeHandlers = ({
   const resizeHandlerRef = useRef(null);
   const resizeOptionsRef = useRef(resizeOptions);
   const isResizingRef = useRef(false);
+  const actions = useDocumentActions();
 
   // Update resize options when they change
   useEffect(() => {
@@ -108,11 +110,14 @@ const ImageResizeHandlers = ({
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
+    // Store the original dimensions for undo
     resizeStartRef.current = {
       x: event.clientX,
       y: event.clientY,
       width: resizeImageRef.current.offsetWidth,
       height: resizeImageRef.current.offsetHeight,
+      originalWidth: resizeImageRef.current.offsetWidth,
+      originalHeight: resizeImageRef.current.offsetHeight,
       offsetX: event.clientX - rect.left - scrollLeft,
       offsetY: event.clientY - rect.top - scrollTop
     };
@@ -175,6 +180,26 @@ const ImageResizeHandlers = ({
     event.preventDefault();
     event.stopPropagation();
 
+    // Record the resize operation for undo before clearing refs
+    if (resizeImageRef.current && resizeStartRef.current) {
+      const beforeState = {
+        width: resizeStartRef.current.originalWidth,
+        height: resizeStartRef.current.originalHeight
+      };
+      const afterState = {
+        width: resizeImageRef.current.offsetWidth,
+        height: resizeImageRef.current.offsetHeight
+      };
+
+      // Only record if dimensions actually changed
+      if (beforeState.width !== afterState.width || beforeState.height !== afterState.height) {
+        actions.recordOperation(
+          { type: 'IMAGE_RESIZE', payload: { element: resizeImageRef.current, state: afterState } },
+          { type: 'IMAGE_RESIZE', payload: { element: resizeImageRef.current, state: beforeState } }
+        );
+      }
+    }
+
     resizeStartRef.current = null;
     resizeHandlerRef.current = null;
     isResizingRef.current = false;
@@ -201,32 +226,32 @@ const ImageResizeHandlers = ({
         });
       }
     }
-  }, [onImageResize]);
+  }, [onImageResize, actions]);
 
   /**
    * Handle click on editor to select images
    */
   const handleEditorClick = useCallback((event) => {
-    console.log('handleEditorClick called with target:', event.target);
+    //console.log('handleEditorClick called with target:', event.target);
     
     // Clear selection if clicking outside an image
     if (resizeOverlayRef.current && !resizeOverlayRef.current.contains(event.target)) {
-      console.log('Clicking outside image, clearing selection');
+      ///console.log('Clicking outside image, clearing selection');
       clearImageSelection();
     }
 
     // Check if clicked on an image
     const target = event.target;
     if (isResizableImage(target)) {
-      console.log('Clicked on a resizable image');
+      //console.log('Clicked on a resizable image');
       // If already selected, don't reselect
       if (target === resizeImageRef.current) {
-        console.log('Image already selected, not reselecting');
+        //console.log('Image already selected, not reselecting');
         return;
       }
       
       // Select the new image
-      console.log('Selecting new image');
+      //console.log('Selecting new image');
       handleImageSelection(target);
     } else {
       console.log('Clicked on non-image element');

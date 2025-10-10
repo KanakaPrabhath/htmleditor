@@ -56,7 +56,7 @@ const HtmlEditor = forwardRef(({
 }, ref) => {
   const documentState = useDocumentState();
   const actions = useDocumentActions();
-  const { pageSize, pageMargins, continuousContent, pageBoundaries, activePage, zoomLevel } = documentState;
+  const { pageSize, pageMargins, continuousContent, pageBoundaries, activePage, zoomLevel, canUndo, canRedo } = documentState;
 
   const containerRef = useRef(null);
   const editorRef = useRef(null);
@@ -452,6 +452,8 @@ const HtmlEditor = forwardRef(({
           }}
           onFormatText={formatText}
           onAddPageBreak={handleAddPageBreak}
+          canUndo={canUndo}
+          canRedo={canRedo}
         />
       )}
 

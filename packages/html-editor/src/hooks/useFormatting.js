@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { DEFAULT_FONT_SIZE } from '../lib/editor/font-sizes';
+import { useDocumentActions } from '../context/DocumentContext';
 import {
   isResizableImage,
   createResizeOverlay,
@@ -53,6 +54,7 @@ const DEFAULT_FORMAT = {
  */
 export const useFormatting = () => {
   const [currentFormat, setCurrentFormat] = useState(DEFAULT_FORMAT);
+  const actions = useDocumentActions();
 
   /**
    * Update alignment state helper
@@ -118,11 +120,22 @@ export const useFormatting = () => {
   }, []);
 
   /**
-   * Format text using document.execCommand
+   * Format text using document.execCommand or custom undo/redo
    * Optimized with better error handling and selection management
    */
   const formatText = useCallback((command, value = null) => {
     try {
+      // Handle undo/redo commands using custom system
+      if (command === 'undo') {
+        actions.undo();
+        return;
+      }
+      
+      if (command === 'redo') {
+        actions.redo();
+        return;
+      }
+
       // Check if document.execCommand is supported
       if (typeof document.execCommand !== 'function') {
         console.warn('[useFormatting] execCommand not supported');
@@ -175,7 +188,7 @@ export const useFormatting = () => {
     } catch (error) {
       console.warn(`[useFormatting] Error executing command "${command}":`, error);
     }
-  }, [handleFontSize, updateAlignment]);
+  }, [handleFontSize, updateAlignment, actions]);
 
   // Image resize state and refs
   const resizeOverlayRef = useRef(null);

@@ -51,8 +51,16 @@ const EditorToolbar = ({
       const imageUrl = await getImage(key);
       
       if (imageUrl) {
-        document.execCommand('insertImage', false, imageUrl);
+        // Insert image with data-key attribute to enable deletion from IndexedDB
+        const imageHtml = `<img src="${imageUrl}" data-key="${key}" alt="Inserted image" />`;
+        document.execCommand('insertHTML', false, imageHtml);
         logger.info('Image inserted', { key });
+      }
+      
+      // Reset the file input to allow uploading the same file again
+      const fileInput = document.getElementById('image-upload');
+      if (fileInput) {
+        fileInput.value = '';
       }
     } catch (error) {
       logger.error('Error uploading image', error);
@@ -155,7 +163,7 @@ const EditorToolbar = ({
         defaultValue={DEFAULT_FONT_SIZE}
         title="Font Size"
       >
-        {COMMON_FONT_SIZES.map(({ value, label, pt }) => (
+        {COMMON_FONT_SIZES.map(({ value, label }) => (
           <option key={value} value={value}>
             {label}
           </option>

@@ -5,6 +5,7 @@ import { useFormatting, useContinuousReflow } from '../../hooks';
 import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
 import { PAGE_SIZES, getPageDimensions } from '../../lib/editor/page-sizes';
 import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
+import { deleteImage } from '../../lib/storage/index-db';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
@@ -429,7 +430,7 @@ const HtmlEditor = forwardRef(({
     setSelectedImage(null);
   }, []);
 
-  const handleImageResize = useCallback((imageElement, dimensions) => {
+  const handleImageResize = useCallback((_imageElement, _dimensions) => {
     // Image resize completed - content will be updated by the ImageResizeHandlers component
     // We can add any additional handling here if needed
   }, []);
@@ -512,7 +513,17 @@ const HtmlEditor = forwardRef(({
               console.log('Aspect ratio toggled to:', newPreserveRatio);
             }}
             onDelete={() => {
-              // Handle image deletion if needed
+              // Handle image deletion from IndexedDB and DOM
+              if (selectedImage) {
+                const imageKey = selectedImage.getAttribute('data-key');
+                if (imageKey) {
+                  // Delete from IndexedDB
+                  deleteImage(imageKey).catch(error => {
+                    console.error('Failed to delete image from IndexedDB:', error);
+                  });
+                }
+                // Remove from DOM (handled by ImageTooltipMenu)
+              }
               console.log('Image deleted');
             }}
             onClose={handleImageDeselect}

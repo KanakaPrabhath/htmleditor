@@ -263,37 +263,6 @@ export function createResizeOverlay(imageElement, options = DEFAULT_IMAGE_RESIZE
     overlay.appendChild(handlerElement);
   });
   
-  // Create aspect ratio toggle button
-  const aspectRatioButton = document.createElement('div');
-  aspectRatioButton.className = 'aspect-ratio-toggle';
-  // Initialize based on default options - if aspect ratio is preserved by default, show locked (🔗)
-  // But according to user's requirement, it should show unlocked (🔓) when image opens
-  const defaultPreserveRatio = options.preserveAspectRatio && options.aspectRatio;
-  if (defaultPreserveRatio) {
-    aspectRatioButton.innerHTML = '🔓';
-    aspectRatioButton.title = 'Toggle aspect ratio preservation (currently ON)';
-  } else {
-    aspectRatioButton.innerHTML = '🔗';
-    aspectRatioButton.title = 'Toggle aspect ratio preservation (currently OFF)';
-  }
-  aspectRatioButton.style.position = 'absolute';
-  aspectRatioButton.style.top = '-15px';
-  aspectRatioButton.style.right = '-15px';
-  aspectRatioButton.style.width = '20px';
-  aspectRatioButton.style.height = '20px';
-  aspectRatioButton.style.backgroundColor = '#007bff';
-  aspectRatioButton.style.color = 'white';
-  aspectRatioButton.style.borderRadius = '50%';
-  aspectRatioButton.style.display = 'flex';
-  aspectRatioButton.style.alignItems = 'center';
-  aspectRatioButton.style.justifyContent = 'center';
-  aspectRatioButton.style.fontSize = '12px';
-  aspectRatioButton.style.cursor = 'pointer';
-  aspectRatioButton.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
-  aspectRatioButton.style.pointerEvents = 'all';
-  
-  overlay.appendChild(aspectRatioButton);
-  
   return overlay;
 }
 

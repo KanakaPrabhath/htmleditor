@@ -11,11 +11,13 @@ const ImageTooltipMenu = ({
   onAlignChange,
   onAspectRatioToggle,
   onDelete,
-  onClose
+  onClose,
+  initialPreserveAspectRatio = true
 }) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState('top'); // 'top' or 'bottom'
+  const [preserveAspectRatio, setPreserveAspectRatio] = useState(initialPreserveAspectRatio);
   const menuRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
@@ -209,6 +211,16 @@ const ImageTooltipMenu = ({
     }
   };
 
+  const handleAspectRatioToggle = () => {
+    const newPreserveRatio = !preserveAspectRatio;
+    setPreserveAspectRatio(newPreserveRatio);
+    
+    // Call the parent callback if provided
+    if (onAspectRatioToggle) {
+      onAspectRatioToggle(newPreserveRatio);
+    }
+  };
+
   if (!imageElement) return null;
 
   // Debug log to see if component is being rendered
@@ -311,9 +323,9 @@ const ImageTooltipMenu = ({
 
       {/* Aspect Ratio Toggle */}
       <button
-        className="tooltip-button aspect-ratio-toggle"
-        onClick={onAspectRatioToggle}
-        title="Toggle Aspect Ratio"
+        className={`tooltip-button aspect-ratio-toggle ${preserveAspectRatio ? '' : 'locked'}`}
+        onClick={handleAspectRatioToggle}
+        title={`Toggle aspect ratio preservation (currently ${preserveAspectRatio ? 'ON' : 'OFF'})`}
         style={{
           background: 'transparent',
           color: '#333',
@@ -325,10 +337,11 @@ const ImageTooltipMenu = ({
           alignItems: 'center',
           justifyContent: 'center',
           minWidth: '28px',
-          height: '28px'
+          height: '28px',
+          fontSize: '14px'
         }}
       >
-        <Link size={14} />
+        {preserveAspectRatio ? '🔓' : '🔗'}
       </button>
 
       {/* Delete button */}
@@ -362,14 +375,16 @@ ImageTooltipMenu.propTypes = {
   onAlignChange: PropTypes.func,
   onAspectRatioToggle: PropTypes.func,
   onDelete: PropTypes.func,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  initialPreserveAspectRatio: PropTypes.bool
 };
 
 ImageTooltipMenu.defaultProps = {
   imageElement: null,
   onAlignChange: undefined,
   onAspectRatioToggle: undefined,
-  onDelete: undefined
+  onDelete: undefined,
+  initialPreserveAspectRatio: true
 };
 
 export default ImageTooltipMenu;

@@ -61,12 +61,6 @@ const ImageResizeHandlers = ({
       handlers.forEach(handler => {
         handler.addEventListener('mousedown', handleResizeStart);
       });
-
-      // Add event listener to aspect ratio toggle
-      const aspectRatioToggle = overlay.querySelector('.aspect-ratio-toggle');
-      if (aspectRatioToggle) {
-        aspectRatioToggle.addEventListener('click', handleAspectRatioToggle);
-      }
       
       // Notify parent
       if (onImageSelect) {
@@ -99,51 +93,6 @@ const ImageResizeHandlers = ({
       onImageDeselect();
     }
   }, [onImageDeselect]);
-
-  /**
-   * Handle aspect ratio toggle
-   */
-  const handleAspectRatioToggle = useCallback((event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    const newPreserveRatio = !resizeOptionsRef.current.preserveAspectRatio;
-    
-    resizeOptionsRef.current = {
-      ...resizeOptionsRef.current,
-      preserveAspectRatio: newPreserveRatio,
-      aspectRatio: newPreserveRatio
-    };
-
-    // Update the aspect ratio toggle button
-    const toggleButton = event.currentTarget;
-    if (newPreserveRatio) {
-      toggleButton.innerHTML = '🔓';
-      toggleButton.title = 'Toggle aspect ratio preservation (currently ON)';
-      toggleButton.classList.remove('locked');
-    } else {
-      toggleButton.innerHTML = '🔗';
-      toggleButton.title = 'Toggle aspect ratio preservation (currently OFF)';
-      toggleButton.classList.add('locked');
-    }
-  }, []);
-
-  /**
-   * Update aspect ratio toggle button state
-   */
-  const updateAspectRatioToggleButton = useCallback((toggleButton, preserveAspectRatio) => {
-    if (toggleButton) {
-      if (preserveAspectRatio) {
-        toggleButton.innerHTML = '🔓';
-        toggleButton.title = 'Toggle aspect ratio preservation (currently ON)';
-        toggleButton.classList.remove('locked');
-      } else {
-        toggleButton.innerHTML = '🔗';
-        toggleButton.title = 'Toggle aspect ratio preservation (currently OFF)';
-        toggleButton.classList.add('locked');
-      }
-    }
-  }, []);
 
   /**
    * Start image resize operation
@@ -373,26 +322,6 @@ const ImageResizeHandlers = ({
         // Trigger input event to update document state
         const inputEvent = new Event('input', { bubbles: true, cancelable: true });
         editorRef.current.dispatchEvent(inputEvent);
-      }
-      
-      // Ctrl/Cmd + Alt + L - Lock/unlock aspect ratio
-      if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'l') {
-        event.preventDefault();
-        const newPreserveRatio = !resizeOptionsRef.current.preserveAspectRatio;
-        
-        resizeOptionsRef.current = {
-          ...resizeOptionsRef.current,
-          preserveAspectRatio: newPreserveRatio,
-          aspectRatio: newPreserveRatio
-        };
-
-        // Update the aspect ratio toggle button if it's currently active
-        if (resizeOverlayRef.current) {
-          const toggleButton = resizeOverlayRef.current.querySelector('.aspect-ratio-toggle');
-          if (toggleButton) {
-            updateAspectRatioToggleButton(toggleButton, newPreserveRatio);
-          }
-        }
       }
     }
   }, [editorRef, clearImageSelection]);

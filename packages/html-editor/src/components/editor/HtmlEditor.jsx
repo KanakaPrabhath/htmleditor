@@ -4,6 +4,7 @@ import { useDocumentState, useDocumentActions } from '../../context/DocumentCont
 import { useFormatting, useContinuousReflow } from '../../hooks';
 import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
 import { PAGE_SIZES, getPageDimensions } from '../../lib/editor/page-sizes';
+import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
@@ -62,6 +63,7 @@ const HtmlEditor = forwardRef(({
   const { currentFormat, formatText } = useFormatting();
   const [imageSelected, setImageSelected] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [preserveAspectRatio, setPreserveAspectRatio] = useState(true);
   const {
     checkAndUpdateBoundaries,
     getCurrentPage,
@@ -489,19 +491,25 @@ const HtmlEditor = forwardRef(({
           onImageSelect={handleImageSelect}
           onImageDeselect={handleImageDeselect}
           onImageResize={handleImageResize}
+          resizeOptions={{
+            ...DEFAULT_IMAGE_RESIZE_OPTIONS,
+            preserveAspectRatio,
+            aspectRatio: preserveAspectRatio
+          }}
         />
 
         {/* Image Tooltip Menu - shows when an image is selected */}
         {console.log('Rendering check - imageSelected:', imageSelected, 'selectedImage:', selectedImage) || (imageSelected && selectedImage) && (
           <ImageTooltipMenu
             imageElement={selectedImage}
+            initialPreserveAspectRatio={preserveAspectRatio}
             onAlignChange={(alignment) => {
               // Handle alignment change if needed
               console.log('Image alignment changed to:', alignment);
             }}
-            onAspectRatioToggle={() => {
-              // Handle aspect ratio toggle if needed
-              console.log('Aspect ratio toggled');
+            onAspectRatioToggle={(newPreserveRatio) => {
+              setPreserveAspectRatio(newPreserveRatio);
+              console.log('Aspect ratio toggled to:', newPreserveRatio);
             }}
             onDelete={() => {
               // Handle image deletion if needed

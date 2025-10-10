@@ -3858,7 +3858,7 @@ const st = ({
           position: "fixed",
           top: `${n.top}px`,
           left: `${n.left}px`,
-          zIndex: 10001,
+          zIndex: 999,
           background: "#fff",
           border: "1px solid #ddd",
           borderRadius: "6px",

@@ -839,7 +839,7 @@ page-break,
 /* Image Tooltip Menu Styles */
 .image-tooltip-menu {
   position: fixed;
-  z-index: 10001;
+  z-index: 999;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;

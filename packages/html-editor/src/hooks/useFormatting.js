@@ -70,6 +70,55 @@ export const useFormatting = () => {
   }, []);
 
   /**
+   * Handle font family with improved reliability
+   */
+  const handleFontName = useCallback((value) => {
+    try {
+      // Save current selection
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) {
+        return false;
+      }
+
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+
+      if (!selectedText) {
+        // No text selected - just update state for next input
+        setCurrentFormat(prev => ({ ...prev, fontFamily: value }));
+        return false;
+      }
+
+      // Try modern approach first - wrap in span with style
+      try {
+        const span = document.createElement('span');
+        span.style.fontFamily = value;
+
+        // Extract contents and wrap
+        const fragment = range.extractContents();
+        span.appendChild(fragment);
+        range.insertNode(span);
+
+        // Restore selection
+        range.selectNodeContents(span);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        setCurrentFormat(prev => ({ ...prev, fontFamily: value }));
+        return true;
+      } catch (error) {
+        // Fallback to execCommand
+        document.execCommand('fontName', false, value);
+        setCurrentFormat(prev => ({ ...prev, fontFamily: value }));
+        return true;
+      }
+    } catch (error) {
+      console.warn('[useFormatting] Font family change failed:', error);
+      return false;
+    }
+  }, []);
+
+  /**
    * Handle font size with improved reliability
    */
   const handleFontSize = useCallback((value) => {
@@ -93,23 +142,23 @@ export const useFormatting = () => {
       try {
         const span = document.createElement('span');
         span.style.fontSize = value;
-        
+
         // Extract contents and wrap
         const fragment = range.extractContents();
         span.appendChild(fragment);
         range.insertNode(span);
-        
+
         // Restore selection
         range.selectNodeContents(span);
         selection.removeAllRanges();
         selection.addRange(range);
-        
+
         setCurrentFormat(prev => ({ ...prev, fontSize: value }));
         return true;
       } catch (error) {
-        // Fallback to execCommand
-        const sizeNumber = FONT_SIZE_MAP[value] || '2';
-        document.execCommand('fontSize', false, sizeNumber);
+        // Fallback to execCommand with mapped size
+        const mappedSize = FONT_SIZE_MAP[value] || '3';
+        document.execCommand('fontSize', false, mappedSize);
         setCurrentFormat(prev => ({ ...prev, fontSize: value }));
         return true;
       }
@@ -148,6 +197,12 @@ export const useFormatting = () => {
         return;
       }
 
+      // Handle fontName separately for better control
+      if (command === 'fontName') {
+        handleFontName(value);
+        return;
+      }
+
       // Execute the command
       const success = document.execCommand(command, false, value);
       
@@ -168,19 +223,25 @@ export const useFormatting = () => {
           break;
         case 'strikethrough':
           setCurrentFormat(prev => ({ ...prev, strikethrough: !prev.strikethrough }));
+          break;
         case 'justifyLeft':
           updateAlignment('left');
           break;
         case 'justifyCenter':
           updateAlignment('center');
+          break;
         case 'justifyRight':
           updateAlignment('right');
+          break;
         case 'justifyFull':
           updateAlignment('justify');
+          break;
         case 'fontName':
           setCurrentFormat(prev => ({ ...prev, fontFamily: value }));
+          break;
         case 'formatBlock':
           setCurrentFormat(prev => ({ ...prev, headingLevel: value }));
+          break;
         default:
           // Commands like insertUnorderedList, createLink, etc. don't need state updates
           break;
@@ -188,7 +249,7 @@ export const useFormatting = () => {
     } catch (error) {
       console.warn(`[useFormatting] Error executing command "${command}":`, error);
     }
-  }, [handleFontSize, updateAlignment, actions]);
+  }, [handleFontSize, handleFontName, updateAlignment, actions]);
 
   // Image resize state and refs
   const resizeOverlayRef = useRef(null);

@@ -154,14 +154,25 @@ const EditorToolbar = ({
       
       <select 
         onChange={(e) => onFormatText('fontName', e.target.value)}
-        defaultValue="Arial"
+        defaultValue="Segoe UI"
         title="Font Family"
       >
-        <option value="Arial">Arial</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Courier New">Courier New</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Verdana">Verdana</option>
+        {/* English Fonts */}
+        <option value="Segoe UI">Segoe UI </option>
+        <option value="Arial">Arial </option>
+        <option value="Times New Roman">Times New Roman </option>
+        <option value="Courier New">Courier New </option>
+        <option value="Georgia">Georgia </option>
+        <option value="Verdana">Verdana </option>
+        
+        {/* Sinhala Fonts */}
+        <option value="Noto Sans Sinhala">Noto Sans Sinhala (සිංහල)</option>
+        <option value="Iskoola Pota">Iskoola Pota (සිංහල)</option>
+        {/* Tamil Fonts */}
+        <option value="Noto Sans Tamil">Noto Sans Tamil (தமிழ்)</option>
+        
+        {/* Unicode Fonts (support multiple scripts) */}
+        <option value="Noto Sans">Noto Sans (Unicode)</option>
       </select>
       
       <select 

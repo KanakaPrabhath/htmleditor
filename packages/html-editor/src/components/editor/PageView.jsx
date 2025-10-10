@@ -186,7 +186,7 @@ const PageView = ({
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
           outline: 'none',
           cursor: 'text',
-          fontFamily: 'Arial, sans-serif',
+          fontFamily: '"Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif',
           fontSize: DEFAULT_FONT_SIZE,
           lineHeight: '1.3',
           color: '#333',

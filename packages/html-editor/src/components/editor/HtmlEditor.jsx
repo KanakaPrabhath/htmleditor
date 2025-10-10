@@ -151,7 +151,17 @@ const HtmlEditor = forwardRef(({
      * @returns {string} Plain text content
      */
     getPlainText: () => {
-      return continuousContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      // Strip HTML tags and normalize whitespace, preserving Unicode characters
+      return continuousContent
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/\s+/g, ' ')
+        .trim();
     },
     /**
      * Set the editor content programmatically
@@ -411,7 +421,8 @@ const HtmlEditor = forwardRef(({
   const wordCount = useMemo(() => {
     if (!continuousContent) return 0;
     const text = continuousContent.replace(/<[^>]*>/g, ' ');
-    const words = text.match(/\b\w+\b/g);
+    // Use Unicode-aware word matching that supports various scripts
+    const words = text.match(/\p{L}+/gu);
     return words ? words.length : 0;
   }, [continuousContent]);
 

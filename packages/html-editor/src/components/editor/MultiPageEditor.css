@@ -204,12 +204,18 @@
   z-index: 1;
   background-color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
   font-size: 16px;
   line-height: 1.6;
   color: #333;
   word-wrap: break-word;
   white-space: pre-wrap;
+  /* Unicode text rendering optimizations */
+  text-rendering: optimizeLegibility;
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "liga" on, "calt" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .continuous-content:focus {
@@ -243,13 +249,19 @@
   overflow-x: hidden;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
   font-size: 16px;
   line-height: 1.6;
   color: #333;
   outline: none;
   cursor: text;
   scroll-behavior: smooth;
+  /* Unicode text rendering optimizations */
+  text-rendering: optimizeLegibility;
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "liga" on, "calt" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Hide scrollbar but keep functionality */

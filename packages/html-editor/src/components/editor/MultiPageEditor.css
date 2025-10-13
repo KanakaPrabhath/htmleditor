@@ -32,15 +32,15 @@
   background-color: transparent;
   color: var(--toolbar-text);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px 10px;
+  padding: 6px 8px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  height: 36px;
+  min-width: 28px;
+  height: 28px;
 }
 
 .editor-toolbar button:hover:not(:disabled),
@@ -76,7 +76,7 @@
 /* Toolbar separator */
 .toolbar-separator {
   width: 1px;
-  height: 24px;
+  height: 20px;
   background-color: rgba(255, 255, 255, 0.2);
   margin: 0 4px;
 }
@@ -95,8 +95,8 @@
 }
 
 .toolbar-button {
-  min-width: 36px;
-  height: 36px;
+  min-width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;

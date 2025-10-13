@@ -6,6 +6,7 @@ import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
 import { PAGE_SIZES, getPageDimensions } from '../../lib/editor/page-sizes';
 import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
 import { deleteImage } from '../../lib/storage/index-db';
+import { normalizeParagraphs } from '../../lib/editor/content-normalize-utils';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
@@ -189,7 +190,16 @@ const HtmlEditor = forwardRef(({
   }, []);
 
   const handleInput = useCallback((event) => {
-    const html = event.currentTarget.innerHTML;
+    let html = event.currentTarget.innerHTML;
+    
+    // Normalize paragraph structure to ensure proper <p> tags
+    html = normalizeParagraphs(html);
+    
+    // Update the DOM with normalized content if it changed
+    if (html !== event.currentTarget.innerHTML) {
+      event.currentTarget.innerHTML = html;
+    }
+    
     actions.updateContinuousContent(html);
     
     // Update page boundaries after content change (already debounced in hook)

@@ -16,11 +16,14 @@ import {
   FileText,
   Undo,
   Redo,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Indent,
+  Outdent
 } from 'lucide-react';
 import { saveImage, getImage } from '../../lib/storage/index-db';
 import { logger } from '../../lib/editor/utils/logger';
 import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
+import { indentSelectedBlocks } from '../../lib/editor/indentation-utils';
 
 /**
  * EditorToolbar - Formatting toolbar for the multi-page editor
@@ -214,6 +217,29 @@ const EditorToolbar = ({
         title="Numbered List"
       >
         <ListOrdered size={16} />
+      </button>
+      
+      <div className="toolbar-separator" />
+      
+      <button 
+        onClick={() => {
+          const success = indentSelectedBlocks(false);
+          if (!success) {
+            // If no blocks selected, insert indentation at cursor
+            document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+          }
+        }} 
+        title="Increase Indent (Tab)"
+      >
+        <Indent size={16} />
+      </button>
+      <button 
+        onClick={() => {
+          indentSelectedBlocks(true);
+        }} 
+        title="Decrease Indent (Shift+Tab)"
+      >
+        <Outdent size={16} />
       </button>
       
       <div className="toolbar-separator" />

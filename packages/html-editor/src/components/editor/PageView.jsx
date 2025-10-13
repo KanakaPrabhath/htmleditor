@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 import { getMarginPixels, DEFAULT_MARGIN_PRESET } from '../../lib/editor/margin-utils';
 import { handlePaste as processPasteEvent } from '../../lib/editor/paste-utils';
+import { handleTabIndentation } from '../../lib/editor/indentation-utils';
 
 /**
  * PageView - MS Word-like continuous contenteditable surface
@@ -70,10 +71,8 @@ const PageView = ({
       }
     }
 
-    // Handle Tab key to insert tab character
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+    // Handle Tab key for indentation (multi-line or single line)
+    if (handleTabIndentation(event)) {
       return false;
     }
 

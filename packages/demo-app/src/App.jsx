@@ -10,6 +10,13 @@ function App() {
   // const htmlContent = editorRef.current.getHTMLContent();
   // const plainText = editorRef.current.getPlainText();
 
+  const handlePrintHTML = () => {
+    if (editorRef.current) {
+      const htmlContent = editorRef.current.getHTMLContent();
+      console.log('HTML Content:', htmlContent);
+    }
+  };
+
   return (
   
       <div id="app-wrapper">
@@ -18,6 +25,9 @@ function App() {
               <HtmlEditor ref={editorRef} />
             </DocumentProvider>
         </div>
+         <button onClick={handlePrintHTML} style={{ padding: '5px 10px', fontSize: '12px', position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)' }}>
+            Print HTML Content to Console
+          </button>
       </div>
   )
 }

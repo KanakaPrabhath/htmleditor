@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 import { getMarginPixels, DEFAULT_MARGIN_PRESET } from '../../lib/editor/margin-utils';
+import { handlePaste as processPasteEvent } from '../../lib/editor/paste-utils';
 
 /**
  * PageView - MS Word-like continuous contenteditable surface
@@ -19,6 +20,7 @@ const PageView = ({
   onKeyDown,
   onClick,
   onScroll,
+  onPaste,
   zoomLevel = 100,
   pageMargins = DEFAULT_MARGIN_PRESET
 }) => {
@@ -154,6 +156,17 @@ const PageView = ({
     }
   };
 
+  // Handle paste events with custom processing
+  const handlePaste = (event) => {
+    // Use the custom paste handler from utils
+    const processedContent = processPasteEvent(event);
+    
+    // Call parent onPaste callback if provided
+    if (onPaste) {
+      onPaste(event, processedContent);
+    }
+  };
+
   return (
     <div 
       className="continuous-page-container"
@@ -200,6 +213,7 @@ const PageView = ({
         onBeforeInput={handleBeforeInput}
         onClick={handleClick}
         onScroll={onScroll}
+        onPaste={handlePaste}
         data-testid="continuous-editor"
       >
         {/* Content is set via innerHTML in parent component */}
@@ -230,6 +244,7 @@ PageView.propTypes = {
   onKeyDown: PropTypes.func,
   onClick: PropTypes.func,
   onScroll: PropTypes.func,
+  onPaste: PropTypes.func,
   zoomLevel: PropTypes.number,
   pageMargins: PropTypes.string
 };
@@ -239,6 +254,7 @@ PageView.defaultProps = {
   onKeyDown: undefined,
   onClick: undefined,
   onScroll: undefined,
+  onPaste: undefined,
   zoomLevel: 100,
   pageMargins: DEFAULT_MARGIN_PRESET
 };

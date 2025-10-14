@@ -1,7 +1,30 @@
 /**
  * Content normalization utilities
- * Handles ensuring proper HTML structure and paragraph formatting
+ * Handles comprehensive HTML content normalization including:
+ * - Paragraphs, headings, lists, tables
+ * - Images with alignment
+ * - Font formatting and sizes
+ * - Indentation
+ * - Page breaks
  */
+
+// Block-level elements that should not be wrapped in paragraphs
+const BLOCK_ELEMENTS = [
+  'P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+  'UL', 'OL', 'LI', 'TABLE', 'TBODY', 'TR', 'TD', 'TH', 'THEAD', 'TFOOT',
+  'BLOCKQUOTE', 'PRE', 'HR', 'FIGURE', 'FIGCAPTION',
+  'PAGE-BREAK'
+];
+
+// Inline formatting elements that should be preserved
+const INLINE_FORMATTING_ELEMENTS = [
+  'SPAN', 'STRONG', 'EM', 'B', 'I', 'U', 'S', 'STRIKE', 'DEL', 'INS',
+  'SUB', 'SUP', 'MARK', 'SMALL', 'CODE', 'KBD', 'SAMP', 'VAR',
+  'A', 'ABBR', 'CITE', 'DFN', 'TIME'
+];
+
+// Self-closing elements
+const VOID_ELEMENTS = ['BR', 'HR', 'IMG', 'INPUT', 'PAGE-BREAK'];
 
 /**
  * Escapes HTML special characters
@@ -23,18 +46,20 @@ function getElementAttributes(element) {
   const attributes = [];
   for (let i = 0; i < element.attributes.length; i++) {
     const attr = element.attributes[i];
+    // Preserve all attributes including style, class, data-*, align, etc.
     attributes.push(` ${attr.name}="${attr.value}"`);
   }
   return attributes.join('');
 }
 
 /**
- * Ensures HTML content has proper paragraph structure
- * Wraps loose text and converts divs to paragraphs
+ * Normalizes HTML content with comprehensive support for all content types
+ * Handles: paragraphs, headings, images, lists, tables, indentation,
+ * image alignment, fonts, font sizes, and page breaks
  * @param {string} htmlContent - The HTML content to normalize
- * @returns {string} HTML content with proper paragraph structure
+ * @returns {string} Normalized HTML content with proper structure
  */
-export function normalizeParagraphs(htmlContent) {
+export function normalizeContent(htmlContent) {
   if (!htmlContent || typeof htmlContent !== 'string') {
     return '<p><br></p>';
   }
@@ -48,10 +73,10 @@ export function normalizeParagraphs(htmlContent) {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = trimmed;
 
-  // Process the content to ensure paragraph structure
-  const normalizedContent = ensureParagraphStructure(tempDiv);
+  // Process the content to ensure proper structure
+  const normalizedContent = normalizeElement(tempDiv);
 
-  return normalizedContent;
+  return normalizedContent || '<p><br></p>';
 }
 
 /**
@@ -79,11 +104,11 @@ function removeNestedParagraphs(headingElement) {
 }
 
 /**
- * Ensures all content in a container has proper paragraph structure
+ * Normalizes an element and its children
  * @param {HTMLElement} container - Container element with content
- * @returns {string} HTML string with proper paragraph structure
+ * @returns {string} HTML string with proper structure
  */
-function ensureParagraphStructure(container) {
+function normalizeElement(container) {
   const fragments = [];
   const childNodes = Array.from(container.childNodes);
 
@@ -98,51 +123,119 @@ function ensureParagraphStructure(container) {
       }
     } else if (node.nodeType === Node.ELEMENT_NODE) {
       const element = node;
+      const tagName = element.tagName;
+      const lowerTagName = tagName.toLowerCase();
+      const attributes = getElementAttributes(element);
 
       // Handle different element types
-      if (element.tagName === 'DIV') {
-        // Convert div content to proper paragraph structure
-        const innerContent = ensureParagraphStructure(element);
+      if (tagName === 'DIV') {
+        // Convert div content to proper structure
+        const innerContent = normalizeElement(element);
         if (innerContent.trim()) {
           fragments.push(innerContent);
         } else {
           fragments.push('<p><br></p>');
         }
-      } else if (element.tagName === 'P') {
-        // Keep p tags as-is (don't process children recursively)
+      } else if (tagName === 'P') {
+        // Preserve paragraphs with all their attributes (style, class, etc.)
         fragments.push(element.outerHTML);
-      } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
-        // Handle heading elements - remove any nested p tags
+      } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(tagName)) {
+        // Handle heading elements - remove any nested p tags, preserve attributes
         const headingContent = removeNestedParagraphs(element);
-        const tagName = element.tagName.toLowerCase();
-        const attributes = getElementAttributes(element);
-        fragments.push(`<${tagName}${attributes}>${headingContent}</${tagName}>`);
-      } else if (element.tagName === 'BR') {
+        fragments.push(`<${lowerTagName}${attributes}>${headingContent}</${lowerTagName}>`);
+      } else if (tagName === 'BR') {
         // Handle line breaks - convert to paragraph break
         fragments.push('<p><br></p>');
-      } else if (['SPAN', 'STRONG', 'EM', 'B', 'I', 'U', 'A'].includes(element.tagName)) {
-        // Keep formatting tags but process their content
-        const innerContent = ensureParagraphStructure(element);
-        const tagName = element.tagName.toLowerCase();
-        const attributes = getElementAttributes(element);
-        fragments.push(`<${tagName}${attributes}>${innerContent}</${tagName}>`);
-      } else if (element.tagName === 'PAGE-BREAK' || element.getAttribute('data-page-break') === 'true') {
-        // Keep page breaks as-is, don't process their content
+      } else if (tagName === 'IMG') {
+        // Preserve images with all attributes (src, alt, style, align, width, height, etc.)
+        fragments.push(element.outerHTML);
+      } else if (['UL', 'OL'].includes(tagName)) {
+        // Preserve lists with proper structure
+        fragments.push(normalizeList(element));
+      } else if (tagName === 'LI') {
+        // Preserve list items with attributes
+        fragments.push(element.outerHTML);
+      } else if (tagName === 'TABLE') {
+        // Preserve tables with all structure and attributes
+        fragments.push(normalizeTable(element));
+      } else if (['TBODY', 'THEAD', 'TFOOT', 'TR', 'TD', 'TH'].includes(tagName)) {
+        // Preserve table elements with attributes
+        fragments.push(element.outerHTML);
+      } else if (tagName === 'BLOCKQUOTE') {
+        // Preserve blockquotes with attributes
+        const innerContent = normalizeElement(element);
+        fragments.push(`<blockquote${attributes}>${innerContent}</blockquote>`);
+      } else if (tagName === 'PRE') {
+        // Preserve preformatted text exactly as-is
+        fragments.push(element.outerHTML);
+      } else if (INLINE_FORMATTING_ELEMENTS.includes(tagName)) {
+        // Preserve inline formatting elements with attributes (including font styles)
+        fragments.push(element.outerHTML);
+      } else if (tagName === 'PAGE-BREAK' || element.getAttribute('data-page-break') === 'true') {
+        // Preserve page breaks as-is
+        fragments.push(element.outerHTML);
+      } else if (tagName === 'HR') {
+        // Preserve horizontal rules
+        fragments.push(element.outerHTML);
+      } else if (tagName === 'FIGURE') {
+        // Preserve figure elements (for images with captions)
         fragments.push(element.outerHTML);
       } else {
-        // For other elements, keep them as-is but process children
-        const innerContent = ensureParagraphStructure(element);
-        const tagName = element.tagName.toLowerCase();
-        const attributes = getElementAttributes(element);
-        fragments.push(`<${tagName}${attributes}>${innerContent}</${tagName}>`);
+        // For any other elements, preserve them with their attributes
+        if (VOID_ELEMENTS.includes(tagName)) {
+          fragments.push(element.outerHTML);
+        } else {
+          const innerContent = normalizeElement(element);
+          fragments.push(`<${lowerTagName}${attributes}>${innerContent}</${lowerTagName}>`);
+        }
       }
     }
   }
 
-  // If no content was processed, ensure we have at least one paragraph
+  // If no content was processed, return empty string (let parent decide default)
   if (fragments.length === 0) {
-    return '<p><br></p>';
+    return '';
   }
 
   return fragments.join('');
+}
+
+/**
+ * Normalizes list elements (UL/OL)
+ * @param {HTMLElement} listElement - The list element to normalize
+ * @returns {string} Normalized list HTML
+ */
+function normalizeList(listElement) {
+  const tagName = listElement.tagName.toLowerCase();
+  const attributes = getElementAttributes(listElement);
+  const items = [];
+
+  Array.from(listElement.children).forEach(child => {
+    if (child.tagName === 'LI') {
+      items.push(child.outerHTML);
+    } else {
+      // Wrap non-LI content in LI
+      const content = normalizeElement(child);
+      if (content.trim()) {
+        items.push(`<li>${content}</li>`);
+      }
+    }
+  });
+
+  if (items.length === 0) {
+    return `<${tagName}${attributes}><li><br></li></${tagName}>`;
+  }
+
+  return `<${tagName}${attributes}>${items.join('')}</${tagName}>`;
+}
+
+/**
+ * Normalizes table elements
+ * @param {HTMLElement} tableElement - The table element to normalize
+ * @returns {string} Normalized table HTML
+ */
+function normalizeTable(tableElement) {
+  // Preserve tables exactly as-is with all their attributes and structure
+  // Tables are complex and should maintain their exact structure
+  return tableElement.outerHTML;
 }

@@ -6,7 +6,7 @@ import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
 import { PAGE_SIZES, getPageDimensions } from '../../lib/editor/page-sizes';
 import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
 import { deleteImage } from '../../lib/storage/index-db';
-import { normalizeParagraphs } from '../../lib/editor/content-normalize-utils';
+import { normalizeContent } from '../../lib/editor/content-normalize-utils';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
@@ -181,7 +181,7 @@ const HtmlEditor = forwardRef(({
      * @param {string} html - HTML content to set
      */
     setContent: (html) => {
-      const normalizedHtml = normalizeParagraphs(html);
+      const normalizedHtml = normalizeContent(html);
 
       // Sync state only when the new content differs to avoid redundant updates
       if (normalizedHtml !== continuousContent) {
@@ -235,7 +235,7 @@ const HtmlEditor = forwardRef(({
     let html = editorRef.current.innerHTML;
     
     // Normalize paragraph structure to ensure proper <p> tags
-    html = normalizeParagraphs(html);
+    html = normalizeContent(html);
     
     // Update the DOM with normalized content if it changed
     if (html !== editorRef.current.innerHTML) {

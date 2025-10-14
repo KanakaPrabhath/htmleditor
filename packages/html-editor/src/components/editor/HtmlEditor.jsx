@@ -181,12 +181,23 @@ const HtmlEditor = forwardRef(({
      * @param {string} html - HTML content to set
      */
     setContent: (html) => {
-      actions.updateContinuousContent(html);
+      const normalizedHtml = normalizeParagraphs(html);
+
+      // Sync state only when the new content differs to avoid redundant updates
+      if (normalizedHtml !== continuousContent) {
+        actions.updateContinuousContent(normalizedHtml);
+      }
+
+      if (editorRef.current && editorRef.current.innerHTML !== normalizedHtml) {
+        editorRef.current.innerHTML = normalizedHtml;
+      }
+
+      lastContentRef.current = normalizedHtml;
+
       if (editorRef.current) {
-        editorRef.current.innerHTML = html;
         setTimeout(() => {
           updateBoundaries();
-        }, 50);
+        }, BOUNDARY_UPDATE_DELAY);
       }
     }
   }), [continuousContent, actions, updateBoundaries, editorRef]);

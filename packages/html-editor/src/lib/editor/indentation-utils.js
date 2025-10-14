@@ -4,6 +4,55 @@
  */
 
 /**
+ * Set of block-level tags we treat as indentation targets.
+ */
+const BLOCK_TAGS = new Set(['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'BLOCKQUOTE', 'PRE', 'TABLE']);
+const LIST_INDENT_STEP = 32; // px per indent level for lists
+
+/**
+ * Adjust inline margin for list indentation, tracking level in data attribute.
+ * @param {Element} listItem
+ * @param {boolean} isOutdent
+ */
+function adjustListIndentation(listItem, isOutdent) {
+  if (!listItem) return;
+
+  if (!listItem.dataset) {
+    listItem.dataset = {};
+  }
+  if (!listItem.style) {
+    listItem.style = {};
+  }
+
+  const currentLevel = parseInt(listItem.dataset.indentLevel || '0', 10);
+  const nextLevel = Math.max(0, isOutdent ? currentLevel - 1 : currentLevel + 1);
+
+  if (nextLevel === 0) {
+    listItem.style.marginLeft = '';
+    delete listItem.dataset.indentLevel;
+  } else {
+    listItem.style.marginLeft = `${nextLevel * LIST_INDENT_STEP}px`;
+    listItem.dataset.indentLevel = String(nextLevel);
+  }
+}
+
+/**
+ * Walks up the DOM tree to find the closest block element ancestor.
+ * @param {Node} node
+ * @returns {Element|null}
+ */
+function findClosestBlockElement(node) {
+  let current = node;
+  while (current) {
+    if (current.nodeType === 1 && current.tagName && BLOCK_TAGS.has(current.tagName.toUpperCase())) {
+      return current;
+    }
+    current = current.parentElement || current.parentNode;
+  }
+  return null;
+}
+
+/**
  * Gets all block elements (paragraphs) that intersect with the current selection
  * @returns {Element[]} Array of block elements in the selection
  */
@@ -46,19 +95,30 @@ function getSelectedBlocks() {
 
       if (range.intersectsNode(img)) {
         // Find the containing block element
-        let container = img.parentElement;
-        while (container && container !== container) {
-          if (['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'BLOCKQUOTE', 'PRE'].includes(container.tagName)) {
-            blocks.add(container);
+        let parent = img.parentElement;
+        while (parent && parent !== container) {
+          if (parent.tagName && BLOCK_TAGS.has(parent.tagName.toUpperCase())) {
+            blocks.add(parent);
             break;
           }
-          container = container.parentElement;
+          parent = parent.parentElement;
         }
       }
     });
   }
 
-  return Array.from(blocks);
+  const uniqueBlocks = Array.from(blocks).filter(block => {
+    let parent = block.parentElement;
+    while (parent) {
+      if (blocks.has(parent)) {
+        return false;
+      }
+      parent = parent.parentElement;
+    }
+    return true;
+  });
+
+  return uniqueBlocks;
 }
 
 /**
@@ -105,31 +165,31 @@ function removeLeadingIndentation(block) {
  * @returns {boolean} True if operation was performed, false otherwise
  */
 export function indentSelectedBlocks(isOutdent = false) {
-  const blocks = getSelectedBlocks();
-  if (blocks.length === 0) return false;
-
   const selection = window.getSelection();
   if (!selection || selection.rangeCount === 0) return false;
 
-  const originalRange = selection.getRangeAt(0);
-  
+  let blocks = getSelectedBlocks();
+  const range = selection.getRangeAt(0);
+
+  if (blocks.length === 0) {
+    const fallbackBlock = findClosestBlockElement(range.startContainer);
+    if (!fallbackBlock) return false;
+    blocks = [fallbackBlock];
+  }
+
   // Save the position of the selection relative to the container
   const firstBlock = blocks[0];
   const lastBlock = blocks[blocks.length - 1];
-  
-  // Store the index of each block in the DOM
-  const blockIndices = blocks.map(block => {
-    let index = 0;
-    let sibling = block.previousSibling;
-    while (sibling) {
-      index++;
-      sibling = sibling.previousSibling;
-    }
-    return { block, index, parent: block.parentElement };
-  });
 
   // Modify the blocks
   blocks.forEach(block => {
+    const tagName = block.tagName ? block.tagName.toUpperCase() : '';
+
+    if (tagName === 'LI') {
+      adjustListIndentation(block, isOutdent);
+      return;
+    }
+
     if (isOutdent) {
       // For outdent, remove leading indentation from text content
       removeLeadingIndentation(block);
@@ -226,9 +286,10 @@ export function handleTabIndentation(event) {
 
   const isOutdent = event.shiftKey;
   const selection = window.getSelection();
+  const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 
   // If there's a selection, try to indent/outdent the selected blocks
-  if (selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
+  if (selection && selection.rangeCount > 0 && range && !range.collapsed) {
     const success = indentSelectedBlocks(isOutdent);
     if (success) return true;
     // Fall through to cursor insertion if no blocks were found

@@ -16,6 +16,7 @@ export const MIN_OVERFLOW_THRESHOLD = 20; // Minimum pixels of overflow before b
  * Get the total height of an element including its margins
  * Optimized to use known CSS margins instead of getComputedStyle
  * Based on MultiPageEditor.css: .continuous-content p { margin: 0 0 16px 0; }
+ * Also handles images within center-aligned paragraphs
  * @param {HTMLElement} element - The element to measure
  * @returns {number} Total height including margins
  */
@@ -26,9 +27,26 @@ const getElementTotalHeight = (element) => {
   
   const rect = element.getBoundingClientRect();
   
-  // Based on our CSS, paragraph elements have 16px bottom margin
-  // .continuous-content p { margin: 0 0 16px 0; }
+  // Check if element contains only an image (center-aligned images)
+  // These images may have float: none and their height needs special handling
   if (element.tagName === 'P') {
+    const images = element.querySelectorAll('img');
+    const textContent = element.textContent.trim();
+    
+    // If paragraph contains only an image (no text content)
+    if (images.length === 1 && !textContent) {
+      const img = images[0];
+      const imgRect = img.getBoundingClientRect();
+      const computedStyle = window.getComputedStyle(element);
+      const textAlign = computedStyle.textAlign;
+      
+      // For center-aligned images, use actual image height plus paragraph margin
+      if (textAlign === 'center' || textAlign === '-webkit-center') {
+        return imgRect.height + 16; // Image height + paragraph bottom margin
+      }
+    }
+    
+    // Regular paragraph with 16px bottom margin
     return rect.height + 16;  // Add known bottom margin
   }
   

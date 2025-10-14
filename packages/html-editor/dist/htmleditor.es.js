@@ -1,6 +1,6 @@
-import Ge, { createContext as xn, useContext as vn, useReducer as An, useMemo as He, useState as ue, useCallback as G, useRef as re, useEffect as ie, forwardRef as st, createElement as Je, useLayoutEffect as _n, useImperativeHandle as Pn } from "react";
+import Ge, { createContext as xn, useContext as vn, useReducer as An, useMemo as He, useState as ue, useCallback as G, useRef as re, useEffect as ie, forwardRef as st, createElement as Je, useLayoutEffect as _n, useImperativeHandle as wn } from "react";
 import { v4 as ct } from "uuid";
-import { createPortal as wn } from "react-dom";
+import { createPortal as Pn } from "react-dom";
 function Rn(e) {
   return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
 }
@@ -15,7 +15,7 @@ var Me = { exports: {} }, ve = {};
  * LICENSE file in the root directory of this source tree.
  */
 var vt;
-function On() {
+function Sn() {
   if (vt) return ve;
   vt = 1;
   var e = Symbol.for("react.transitional.element"), t = Symbol.for("react.fragment");
@@ -47,7 +47,7 @@ var Ae = {};
  * LICENSE file in the root directory of this source tree.
  */
 var At;
-function Sn() {
+function On() {
   return At || (At = 1, process.env.NODE_ENV !== "production" && (function() {
     function e(l) {
       if (l == null) return null;
@@ -55,7 +55,7 @@ function Sn() {
         return l.$$typeof === I ? null : l.displayName || l.name || null;
       if (typeof l == "string") return l;
       switch (l) {
-        case S:
+        case O:
           return "Fragment";
         case A:
           return "Profiler";
@@ -79,14 +79,14 @@ function Sn() {
           case _:
             return (l._context.displayName || "Context") + ".Consumer";
           case c:
-            var P = l.render;
-            return l = l.displayName, l || (l = P.displayName || P.name || "", l = l !== "" ? "ForwardRef(" + l + ")" : "ForwardRef"), l;
+            var w = l.render;
+            return l = l.displayName, l || (l = w.displayName || w.name || "", l = l !== "" ? "ForwardRef(" + l + ")" : "ForwardRef"), l;
           case v:
-            return P = l.displayName || null, P !== null ? P : e(l.type) || "Memo";
+            return w = l.displayName || null, w !== null ? w : e(l.type) || "Memo";
           case C:
-            P = l._payload, l = l._init;
+            w = l._payload, l = l._init;
             try {
-              return e(l(P));
+              return e(l(w));
             } catch {
             }
         }
@@ -98,27 +98,27 @@ function Sn() {
     function o(l) {
       try {
         t(l);
-        var P = !1;
+        var w = !1;
       } catch {
-        P = !0;
+        w = !0;
       }
-      if (P) {
-        P = console;
-        var M = P.error, N = typeof Symbol == "function" && Symbol.toStringTag && l[Symbol.toStringTag] || l.constructor.name || "Object";
+      if (w) {
+        w = console;
+        var M = w.error, N = typeof Symbol == "function" && Symbol.toStringTag && l[Symbol.toStringTag] || l.constructor.name || "Object";
         return M.call(
-          P,
+          w,
           "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
           N
         ), t(l);
       }
     }
     function n(l) {
-      if (l === S) return "<>";
+      if (l === O) return "<>";
       if (typeof l == "object" && l !== null && l.$$typeof === C)
         return "<...>";
       try {
-        var P = e(l);
-        return P ? "<" + P + ">" : "<...>";
+        var w = e(l);
+        return w ? "<" + w + ">" : "<...>";
       } catch {
         return "<...>";
       }
@@ -132,16 +132,16 @@ function Sn() {
     }
     function r(l) {
       if (q.call(l, "key")) {
-        var P = Object.getOwnPropertyDescriptor(l, "key").get;
-        if (P && P.isReactWarning) return !1;
+        var w = Object.getOwnPropertyDescriptor(l, "key").get;
+        if (w && w.isReactWarning) return !1;
       }
       return l.key !== void 0;
     }
-    function s(l, P) {
+    function s(l, w) {
       function M() {
         ne || (ne = !0, console.error(
           "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
-          P
+          w
         ));
       }
       M.isReactWarning = !0, Object.defineProperty(l, "key", {
@@ -155,12 +155,12 @@ function Sn() {
         "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
       )), l = this.props.ref, l !== void 0 ? l : null;
     }
-    function f(l, P, M, N, Z, $) {
+    function f(l, w, M, N, Z, $) {
       var L = M.ref;
       return l = {
-        $$typeof: O,
+        $$typeof: S,
         type: l,
-        key: P,
+        key: w,
         props: M,
         _owner: N
       }, (L !== void 0 ? L : null) !== null ? Object.defineProperty(l, "ref", {
@@ -188,8 +188,8 @@ function Sn() {
         value: $
       }), Object.freeze && (Object.freeze(l.props), Object.freeze(l)), l;
     }
-    function p(l, P, M, N, Z, $) {
-      var L = P.children;
+    function p(l, w, M, N, Z, $) {
+      var L = w.children;
       if (L !== void 0)
         if (N)
           if (H(L)) {
@@ -201,9 +201,9 @@ function Sn() {
               "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
             );
         else m(L);
-      if (q.call(P, "key")) {
+      if (q.call(w, "key")) {
         L = e(l);
-        var W = Object.keys(P).filter(function(V) {
+        var W = Object.keys(w).filter(function(V) {
           return V !== "key";
         });
         N = 0 < W.length ? "{key: someKey, " + W.join(": ..., ") + ": ...}" : "{key: someKey}", b[L + N] || (W = 0 < W.length ? "{" + W.join(": ..., ") + ": ...}" : "{}", console.error(
@@ -219,11 +219,11 @@ React keys must be passed directly to JSX without using spread:
           L
         ), b[L + N] = !0);
       }
-      if (L = null, M !== void 0 && (o(M), L = "" + M), r(P) && (o(P.key), L = "" + P.key), "key" in P) {
+      if (L = null, M !== void 0 && (o(M), L = "" + M), r(w) && (o(w.key), L = "" + w.key), "key" in w) {
         M = {};
-        for (var K in P)
-          K !== "key" && (M[K] = P[K]);
-      } else M = P;
+        for (var K in w)
+          K !== "key" && (M[K] = w[K]);
+      } else M = w;
       return L && s(
         M,
         typeof l == "function" ? l.displayName || l.name || "Unknown" : l
@@ -240,9 +240,9 @@ React keys must be passed directly to JSX without using spread:
       d(l) ? l._store && (l._store.validated = 1) : typeof l == "object" && l !== null && l.$$typeof === C && (l._payload.status === "fulfilled" ? d(l._payload.value) && l._payload.value._store && (l._payload.value._store.validated = 1) : l._store && (l._store.validated = 1));
     }
     function d(l) {
-      return typeof l == "object" && l !== null && l.$$typeof === O;
+      return typeof l == "object" && l !== null && l.$$typeof === S;
     }
-    var R = Ge, O = Symbol.for("react.transitional.element"), T = Symbol.for("react.portal"), S = Symbol.for("react.fragment"), E = Symbol.for("react.strict_mode"), A = Symbol.for("react.profiler"), _ = Symbol.for("react.consumer"), D = Symbol.for("react.context"), c = Symbol.for("react.forward_ref"), y = Symbol.for("react.suspense"), g = Symbol.for("react.suspense_list"), v = Symbol.for("react.memo"), C = Symbol.for("react.lazy"), z = Symbol.for("react.activity"), I = Symbol.for("react.client.reference"), B = R.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, q = Object.prototype.hasOwnProperty, H = Array.isArray, oe = console.createTask ? console.createTask : function() {
+    var R = Ge, S = Symbol.for("react.transitional.element"), T = Symbol.for("react.portal"), O = Symbol.for("react.fragment"), E = Symbol.for("react.strict_mode"), A = Symbol.for("react.profiler"), _ = Symbol.for("react.consumer"), D = Symbol.for("react.context"), c = Symbol.for("react.forward_ref"), y = Symbol.for("react.suspense"), g = Symbol.for("react.suspense_list"), v = Symbol.for("react.memo"), C = Symbol.for("react.lazy"), z = Symbol.for("react.activity"), I = Symbol.for("react.client.reference"), B = R.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, q = Object.prototype.hasOwnProperty, H = Array.isArray, oe = console.createTask ? console.createTask : function() {
       return null;
     };
     R = {
@@ -254,21 +254,21 @@ React keys must be passed directly to JSX without using spread:
       R,
       a
     )(), Q = oe(n(a)), b = {};
-    Ae.Fragment = S, Ae.jsx = function(l, P, M) {
+    Ae.Fragment = O, Ae.jsx = function(l, w, M) {
       var N = 1e4 > B.recentlyCreatedOwnerStacks++;
       return p(
         l,
-        P,
+        w,
         M,
         !1,
         N ? Error("react-stack-top-frame") : Y,
         N ? oe(n(l)) : Q
       );
-    }, Ae.jsxs = function(l, P, M) {
+    }, Ae.jsxs = function(l, w, M) {
       var N = 1e4 > B.recentlyCreatedOwnerStacks++;
       return p(
         l,
-        P,
+        w,
         M,
         !0,
         N ? Error("react-stack-top-frame") : Y,
@@ -279,10 +279,10 @@ React keys must be passed directly to JSX without using spread:
 }
 var _t;
 function kn() {
-  return _t || (_t = 1, process.env.NODE_ENV === "production" ? Me.exports = On() : Me.exports = Sn()), Me.exports;
+  return _t || (_t = 1, process.env.NODE_ENV === "production" ? Me.exports = Sn() : Me.exports = On()), Me.exports;
 }
 var u = kn();
-const Qe = 100, et = 50, tt = 200, Pt = 5, nt = (e) => e < tt, rt = (e) => e > et, Cn = 96, Ne = (e) => Math.round(e * Cn), ze = {
+const Qe = 100, et = 50, tt = 200, wt = 5, nt = (e) => e < tt, rt = (e) => e > et, Cn = 96, Ne = (e) => Math.round(e * Cn), ze = {
   NORMAL: {
     name: "Normal",
     label: 'Normal (1")',
@@ -377,27 +377,27 @@ const Qe = 100, et = 50, tt = 200, Pt = 5, nt = (e) => e < tt, rt = (e) => e > e
     width: t.width,
     height: t.height
   };
-}, ca = (e) => Object.keys(le).includes(e), la = () => Object.keys(le), we = Ft, Ee = "<p><br></p>", Ln = "continuous", _e = (e, t = we) => ({
+}, ca = (e) => Object.keys(le).includes(e), la = () => Object.keys(le), Pe = Ft, Ee = "<p><br></p>", Ln = "continuous", _e = (e, t = Pe) => ({
   id: ct(),
   index: e,
   size: t,
   content: Ee,
   images: [],
   isBreakPoint: !1
-}), je = (e) => typeof e != "string" || e.trim() === "" ? Ee : e, Wt = (e, t = we) => (e.length > 0 ? e : [_e(0, t)]).map((n, i) => ({
+}), je = (e) => typeof e != "string" || e.trim() === "" ? Ee : e, Wt = (e, t = Pe) => (e.length > 0 ? e : [_e(0, t)]).map((n, i) => ({
   id: n.id || ct(),
   index: i,
   size: n.size || t,
   content: je(n.content),
   images: n.images || [],
   isBreakPoint: !!n.isBreakPoint
-})), jn = (e = we) => [{
+})), jn = (e = Pe) => [{
   id: "page-0",
   pageNumber: 1,
   top: 0,
   height: lt(e).height
 }], ot = (e = {}) => {
-  const t = (/* @__PURE__ */ new Date()).toISOString(), o = e.pageSize || we, n = Wt(e.pages || [_e(0, o)], o);
+  const t = (/* @__PURE__ */ new Date()).toISOString(), o = e.pageSize || Pe, n = Wt(e.pages || [_e(0, o)], o);
   return {
     id: ct(),
     title: e.title || "Untitled Document",
@@ -451,7 +451,7 @@ const Qe = 100, et = 50, tt = 200, Pt = 5, nt = (e) => e < tt, rt = (e) => e > e
   const o = (/* @__PURE__ */ new Date()).toISOString();
   switch (t.type) {
     case U.INITIALIZE_DOCUMENT: {
-      const { initialContent: n = Ee, pageSize: i = we } = t.payload || {}, a = { ..._e(0, i), content: je(n) };
+      const { initialContent: n = Ee, pageSize: i = Pe } = t.payload || {}, a = { ..._e(0, i), content: je(n) };
       return ot({
         title: e.title,
         pageSize: i,
@@ -665,7 +665,7 @@ const Qe = 100, et = 50, tt = 200, Pt = 5, nt = (e) => e < tt, rt = (e) => e > e
     case U.ZOOM_IN: {
       if (!nt(e.zoomLevel))
         return e;
-      const n = e.zoomLevel + Pt;
+      const n = e.zoomLevel + wt;
       return {
         ...e,
         zoomLevel: n,
@@ -675,7 +675,7 @@ const Qe = 100, et = 50, tt = 200, Pt = 5, nt = (e) => e < tt, rt = (e) => e > e
     case U.ZOOM_OUT: {
       if (!rt(e.zoomLevel))
         return e;
-      const n = e.zoomLevel - Pt;
+      const n = e.zoomLevel - wt;
       return {
         ...e,
         zoomLevel: n,
@@ -826,11 +826,11 @@ var Ie = { exports: {} }, Le = { exports: {} }, ee = {};
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var wt;
+var Pt;
 function Dn() {
-  if (wt) return ee;
-  wt = 1;
-  var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, o = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, i = e ? Symbol.for("react.strict_mode") : 60108, a = e ? Symbol.for("react.profiler") : 60114, r = e ? Symbol.for("react.provider") : 60109, s = e ? Symbol.for("react.context") : 60110, h = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, p = e ? Symbol.for("react.forward_ref") : 60112, m = e ? Symbol.for("react.suspense") : 60113, d = e ? Symbol.for("react.suspense_list") : 60120, R = e ? Symbol.for("react.memo") : 60115, O = e ? Symbol.for("react.lazy") : 60116, T = e ? Symbol.for("react.block") : 60121, S = e ? Symbol.for("react.fundamental") : 60117, E = e ? Symbol.for("react.responder") : 60118, A = e ? Symbol.for("react.scope") : 60119;
+  if (Pt) return ee;
+  Pt = 1;
+  var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, o = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, i = e ? Symbol.for("react.strict_mode") : 60108, a = e ? Symbol.for("react.profiler") : 60114, r = e ? Symbol.for("react.provider") : 60109, s = e ? Symbol.for("react.context") : 60110, h = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, p = e ? Symbol.for("react.forward_ref") : 60112, m = e ? Symbol.for("react.suspense") : 60113, d = e ? Symbol.for("react.suspense_list") : 60120, R = e ? Symbol.for("react.memo") : 60115, S = e ? Symbol.for("react.lazy") : 60116, T = e ? Symbol.for("react.block") : 60121, O = e ? Symbol.for("react.fundamental") : 60117, E = e ? Symbol.for("react.responder") : 60118, A = e ? Symbol.for("react.scope") : 60119;
   function _(c) {
     if (typeof c == "object" && c !== null) {
       var y = c.$$typeof;
@@ -848,7 +848,7 @@ function Dn() {
               switch (c = c && c.$$typeof, c) {
                 case s:
                 case p:
-                case O:
+                case S:
                 case R:
                 case r:
                   return c;
@@ -864,7 +864,7 @@ function Dn() {
   function D(c) {
     return _(c) === f;
   }
-  return ee.AsyncMode = h, ee.ConcurrentMode = f, ee.ContextConsumer = s, ee.ContextProvider = r, ee.Element = t, ee.ForwardRef = p, ee.Fragment = n, ee.Lazy = O, ee.Memo = R, ee.Portal = o, ee.Profiler = a, ee.StrictMode = i, ee.Suspense = m, ee.isAsyncMode = function(c) {
+  return ee.AsyncMode = h, ee.ConcurrentMode = f, ee.ContextConsumer = s, ee.ContextProvider = r, ee.Element = t, ee.ForwardRef = p, ee.Fragment = n, ee.Lazy = S, ee.Memo = R, ee.Portal = o, ee.Profiler = a, ee.StrictMode = i, ee.Suspense = m, ee.isAsyncMode = function(c) {
     return D(c) || _(c) === h;
   }, ee.isConcurrentMode = D, ee.isContextConsumer = function(c) {
     return _(c) === s;
@@ -877,7 +877,7 @@ function Dn() {
   }, ee.isFragment = function(c) {
     return _(c) === n;
   }, ee.isLazy = function(c) {
-    return _(c) === O;
+    return _(c) === S;
   }, ee.isMemo = function(c) {
     return _(c) === R;
   }, ee.isPortal = function(c) {
@@ -889,7 +889,7 @@ function Dn() {
   }, ee.isSuspense = function(c) {
     return _(c) === m;
   }, ee.isValidElementType = function(c) {
-    return typeof c == "string" || typeof c == "function" || c === n || c === f || c === a || c === i || c === m || c === d || typeof c == "object" && c !== null && (c.$$typeof === O || c.$$typeof === R || c.$$typeof === r || c.$$typeof === s || c.$$typeof === p || c.$$typeof === S || c.$$typeof === E || c.$$typeof === A || c.$$typeof === T);
+    return typeof c == "string" || typeof c == "function" || c === n || c === f || c === a || c === i || c === m || c === d || typeof c == "object" && c !== null && (c.$$typeof === S || c.$$typeof === R || c.$$typeof === r || c.$$typeof === s || c.$$typeof === p || c.$$typeof === O || c.$$typeof === E || c.$$typeof === A || c.$$typeof === T);
   }, ee.typeOf = _, ee;
 }
 var te = {};
@@ -904,10 +904,10 @@ var te = {};
 var Rt;
 function Hn() {
   return Rt || (Rt = 1, process.env.NODE_ENV !== "production" && (function() {
-    var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, o = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, i = e ? Symbol.for("react.strict_mode") : 60108, a = e ? Symbol.for("react.profiler") : 60114, r = e ? Symbol.for("react.provider") : 60109, s = e ? Symbol.for("react.context") : 60110, h = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, p = e ? Symbol.for("react.forward_ref") : 60112, m = e ? Symbol.for("react.suspense") : 60113, d = e ? Symbol.for("react.suspense_list") : 60120, R = e ? Symbol.for("react.memo") : 60115, O = e ? Symbol.for("react.lazy") : 60116, T = e ? Symbol.for("react.block") : 60121, S = e ? Symbol.for("react.fundamental") : 60117, E = e ? Symbol.for("react.responder") : 60118, A = e ? Symbol.for("react.scope") : 60119;
+    var e = typeof Symbol == "function" && Symbol.for, t = e ? Symbol.for("react.element") : 60103, o = e ? Symbol.for("react.portal") : 60106, n = e ? Symbol.for("react.fragment") : 60107, i = e ? Symbol.for("react.strict_mode") : 60108, a = e ? Symbol.for("react.profiler") : 60114, r = e ? Symbol.for("react.provider") : 60109, s = e ? Symbol.for("react.context") : 60110, h = e ? Symbol.for("react.async_mode") : 60111, f = e ? Symbol.for("react.concurrent_mode") : 60111, p = e ? Symbol.for("react.forward_ref") : 60112, m = e ? Symbol.for("react.suspense") : 60113, d = e ? Symbol.for("react.suspense_list") : 60120, R = e ? Symbol.for("react.memo") : 60115, S = e ? Symbol.for("react.lazy") : 60116, T = e ? Symbol.for("react.block") : 60121, O = e ? Symbol.for("react.fundamental") : 60117, E = e ? Symbol.for("react.responder") : 60118, A = e ? Symbol.for("react.scope") : 60119;
     function _(k) {
       return typeof k == "string" || typeof k == "function" || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-      k === n || k === f || k === a || k === i || k === m || k === d || typeof k == "object" && k !== null && (k.$$typeof === O || k.$$typeof === R || k.$$typeof === r || k.$$typeof === s || k.$$typeof === p || k.$$typeof === S || k.$$typeof === E || k.$$typeof === A || k.$$typeof === T);
+      k === n || k === f || k === a || k === i || k === m || k === d || typeof k == "object" && k !== null && (k.$$typeof === S || k.$$typeof === R || k.$$typeof === r || k.$$typeof === s || k.$$typeof === p || k.$$typeof === O || k.$$typeof === E || k.$$typeof === A || k.$$typeof === T);
     }
     function D(k) {
       if (typeof k == "object" && k !== null) {
@@ -928,7 +928,7 @@ function Hn() {
                 switch (xe) {
                   case s:
                   case p:
-                  case O:
+                  case S:
                   case R:
                   case r:
                     return xe;
@@ -941,7 +941,7 @@ function Hn() {
         }
       }
     }
-    var c = h, y = f, g = s, v = r, C = t, z = p, I = n, B = O, q = R, H = o, oe = a, ne = i, F = m, Y = !1;
+    var c = h, y = f, g = s, v = r, C = t, z = p, I = n, B = S, q = R, H = o, oe = a, ne = i, F = m, Y = !1;
     function Q(k) {
       return Y || (Y = !0, console.warn("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.")), b(k) || D(k) === h;
     }
@@ -951,7 +951,7 @@ function Hn() {
     function l(k) {
       return D(k) === s;
     }
-    function P(k) {
+    function w(k) {
       return D(k) === r;
     }
     function M(k) {
@@ -964,7 +964,7 @@ function Hn() {
       return D(k) === n;
     }
     function $(k) {
-      return D(k) === O;
+      return D(k) === S;
     }
     function L(k) {
       return D(k) === R;
@@ -981,22 +981,22 @@ function Hn() {
     function ae(k) {
       return D(k) === m;
     }
-    te.AsyncMode = c, te.ConcurrentMode = y, te.ContextConsumer = g, te.ContextProvider = v, te.Element = C, te.ForwardRef = z, te.Fragment = I, te.Lazy = B, te.Memo = q, te.Portal = H, te.Profiler = oe, te.StrictMode = ne, te.Suspense = F, te.isAsyncMode = Q, te.isConcurrentMode = b, te.isContextConsumer = l, te.isContextProvider = P, te.isElement = M, te.isForwardRef = N, te.isFragment = Z, te.isLazy = $, te.isMemo = L, te.isPortal = W, te.isProfiler = K, te.isStrictMode = V, te.isSuspense = ae, te.isValidElementType = _, te.typeOf = D;
+    te.AsyncMode = c, te.ConcurrentMode = y, te.ContextConsumer = g, te.ContextProvider = v, te.Element = C, te.ForwardRef = z, te.Fragment = I, te.Lazy = B, te.Memo = q, te.Portal = H, te.Profiler = oe, te.StrictMode = ne, te.Suspense = F, te.isAsyncMode = Q, te.isConcurrentMode = b, te.isContextConsumer = l, te.isContextProvider = w, te.isElement = M, te.isForwardRef = N, te.isFragment = Z, te.isLazy = $, te.isMemo = L, te.isPortal = W, te.isProfiler = K, te.isStrictMode = V, te.isSuspense = ae, te.isValidElementType = _, te.typeOf = D;
   })()), te;
 }
-var Ot;
+var St;
 function Vt() {
-  return Ot || (Ot = 1, process.env.NODE_ENV === "production" ? Le.exports = Dn() : Le.exports = Hn()), Le.exports;
+  return St || (St = 1, process.env.NODE_ENV === "production" ? Le.exports = Dn() : Le.exports = Hn()), Le.exports;
 }
 /*
 object-assign
 (c) Sindre Sorhus
 @license MIT
 */
-var We, St;
+var We, Ot;
 function zn() {
-  if (St) return We;
-  St = 1;
+  if (Ot) return We;
+  Ot = 1;
   var e = Object.getOwnPropertySymbols, t = Object.prototype.hasOwnProperty, o = Object.prototype.propertyIsEnumerable;
   function n(a) {
     if (a == null)
@@ -1080,8 +1080,8 @@ function Bn() {
               throw d.name = "Invariant Violation", d;
             }
             m = a[p](r, p, h, s, null, t);
-          } catch (O) {
-            m = O;
+          } catch (S) {
+            m = S;
           }
           if (m && !(m instanceof Error) && e(
             (h || "React class") + ": type specification of " + s + " `" + p + "` is invalid; the type checker function must return `null` or an `Error` but returned a " + typeof m + ". You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument)."
@@ -1144,16 +1144,16 @@ function $n() {
       shape: B,
       exact: q
     };
-    function O(b, l) {
+    function S(b, l) {
       return b === l ? b !== 0 || 1 / b === 1 / l : b !== b && l !== l;
     }
     function T(b, l) {
       this.message = b, this.data = l && typeof l == "object" ? l : {}, this.stack = "";
     }
     T.prototype = Error.prototype;
-    function S(b) {
+    function O(b) {
       if (process.env.NODE_ENV !== "production")
-        var l = {}, P = 0;
+        var l = {}, w = 0;
       function M(Z, $, L, W, K, V, ae) {
         if (W = W || d, V = V || L, ae !== o) {
           if (h) {
@@ -1164,9 +1164,9 @@ function $n() {
           } else if (process.env.NODE_ENV !== "production" && typeof console < "u") {
             var ce = W + ":" + L;
             !l[ce] && // Avoid spamming the console because they are often not actionable except for lib authors
-            P < 3 && (a(
+            w < 3 && (a(
               "You are manually calling a React.PropTypes validation function for the `" + V + "` prop on `" + W + "`. This is deprecated and will throw in the standalone `prop-types` package. You may be seeing this warning due to a third-party PropTypes library. See https://fb.me/react-warning-dont-call-proptypes for details."
-            ), l[ce] = !0, P++);
+            ), l[ce] = !0, w++);
           }
         }
         return $[L] == null ? Z ? $[L] === null ? new T("The " + K + " `" + V + "` is marked as required " + ("in `" + W + "`, but its value is `null`.")) : new T("The " + K + " `" + V + "` is marked as required in " + ("`" + W + "`, but its value is `undefined`.")) : null : b($, L, W, K, V);
@@ -1175,8 +1175,8 @@ function $n() {
       return N.isRequired = M.bind(null, !0), N;
     }
     function E(b) {
-      function l(P, M, N, Z, $, L) {
-        var W = P[M], K = ne(W);
+      function l(w, M, N, Z, $, L) {
+        var W = w[M], K = ne(W);
         if (K !== b) {
           var V = F(W);
           return new T(
@@ -1186,16 +1186,16 @@ function $n() {
         }
         return null;
       }
-      return S(l);
+      return O(l);
     }
     function A() {
-      return S(r);
+      return O(r);
     }
     function _(b) {
-      function l(P, M, N, Z, $) {
+      function l(w, M, N, Z, $) {
         if (typeof b != "function")
           return new T("Property `" + $ + "` of component `" + N + "` has invalid PropType notation inside arrayOf.");
-        var L = P[M];
+        var L = w[M];
         if (!Array.isArray(L)) {
           var W = ne(L);
           return new T("Invalid " + Z + " `" + $ + "` of type " + ("`" + W + "` supplied to `" + N + "`, expected an array."));
@@ -1207,48 +1207,48 @@ function $n() {
         }
         return null;
       }
-      return S(l);
+      return O(l);
     }
     function D() {
-      function b(l, P, M, N, Z) {
-        var $ = l[P];
+      function b(l, w, M, N, Z) {
+        var $ = l[w];
         if (!s($)) {
           var L = ne($);
           return new T("Invalid " + N + " `" + Z + "` of type " + ("`" + L + "` supplied to `" + M + "`, expected a single ReactElement."));
         }
         return null;
       }
-      return S(b);
+      return O(b);
     }
     function c() {
-      function b(l, P, M, N, Z) {
-        var $ = l[P];
+      function b(l, w, M, N, Z) {
+        var $ = l[w];
         if (!e.isValidElementType($)) {
           var L = ne($);
           return new T("Invalid " + N + " `" + Z + "` of type " + ("`" + L + "` supplied to `" + M + "`, expected a single ReactElement type."));
         }
         return null;
       }
-      return S(b);
+      return O(b);
     }
     function y(b) {
-      function l(P, M, N, Z, $) {
-        if (!(P[M] instanceof b)) {
-          var L = b.name || d, W = Q(P[M]);
+      function l(w, M, N, Z, $) {
+        if (!(w[M] instanceof b)) {
+          var L = b.name || d, W = Q(w[M]);
           return new T("Invalid " + Z + " `" + $ + "` of type " + ("`" + W + "` supplied to `" + N + "`, expected ") + ("instance of `" + L + "`."));
         }
         return null;
       }
-      return S(l);
+      return O(l);
     }
     function g(b) {
       if (!Array.isArray(b))
         return process.env.NODE_ENV !== "production" && (arguments.length > 1 ? a(
           "Invalid arguments supplied to oneOf, expected an array, got " + arguments.length + " arguments. A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z])."
         ) : a("Invalid argument supplied to oneOf, expected an array.")), r;
-      function l(P, M, N, Z, $) {
-        for (var L = P[M], W = 0; W < b.length; W++)
-          if (O(L, b[W]))
+      function l(w, M, N, Z, $) {
+        for (var L = w[M], W = 0; W < b.length; W++)
+          if (S(L, b[W]))
             return null;
         var K = JSON.stringify(b, function(ae, k) {
           var ce = F(k);
@@ -1256,13 +1256,13 @@ function $n() {
         });
         return new T("Invalid " + Z + " `" + $ + "` of value `" + String(L) + "` " + ("supplied to `" + N + "`, expected one of " + K + "."));
       }
-      return S(l);
+      return O(l);
     }
     function v(b) {
-      function l(P, M, N, Z, $) {
+      function l(w, M, N, Z, $) {
         if (typeof b != "function")
           return new T("Property `" + $ + "` of component `" + N + "` has invalid PropType notation inside objectOf.");
-        var L = P[M], W = ne(L);
+        var L = w[M], W = ne(L);
         if (W !== "object")
           return new T("Invalid " + Z + " `" + $ + "` of type " + ("`" + W + "` supplied to `" + N + "`, expected an object."));
         for (var K in L)
@@ -1273,16 +1273,16 @@ function $n() {
           }
         return null;
       }
-      return S(l);
+      return O(l);
     }
     function C(b) {
       if (!Array.isArray(b))
         return process.env.NODE_ENV !== "production" && a("Invalid argument supplied to oneOfType, expected an instance of array."), r;
       for (var l = 0; l < b.length; l++) {
-        var P = b[l];
-        if (typeof P != "function")
+        var w = b[l];
+        if (typeof w != "function")
           return a(
-            "Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + Y(P) + " at index " + l + "."
+            "Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + Y(w) + " at index " + l + "."
           ), r;
       }
       function M(N, Z, $, L, W) {
@@ -1295,22 +1295,22 @@ function $n() {
         var ce = K.length > 0 ? ", expected one of type [" + K.join(", ") + "]" : "";
         return new T("Invalid " + L + " `" + W + "` supplied to " + ("`" + $ + "`" + ce + "."));
       }
-      return S(M);
+      return O(M);
     }
     function z() {
-      function b(l, P, M, N, Z) {
-        return H(l[P]) ? null : new T("Invalid " + N + " `" + Z + "` supplied to " + ("`" + M + "`, expected a ReactNode."));
+      function b(l, w, M, N, Z) {
+        return H(l[w]) ? null : new T("Invalid " + N + " `" + Z + "` supplied to " + ("`" + M + "`, expected a ReactNode."));
       }
-      return S(b);
+      return O(b);
     }
-    function I(b, l, P, M, N) {
+    function I(b, l, w, M, N) {
       return new T(
-        (b || "React class") + ": " + l + " type `" + P + "." + M + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + N + "`."
+        (b || "React class") + ": " + l + " type `" + w + "." + M + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + N + "`."
       );
     }
     function B(b) {
-      function l(P, M, N, Z, $) {
-        var L = P[M], W = ne(L);
+      function l(w, M, N, Z, $) {
+        var L = w[M], W = ne(L);
         if (W !== "object")
           return new T("Invalid " + Z + " `" + $ + "` of type `" + W + "` " + ("supplied to `" + N + "`, expected `object`."));
         for (var K in b) {
@@ -1323,21 +1323,21 @@ function $n() {
         }
         return null;
       }
-      return S(l);
+      return O(l);
     }
     function q(b) {
-      function l(P, M, N, Z, $) {
-        var L = P[M], W = ne(L);
+      function l(w, M, N, Z, $) {
+        var L = w[M], W = ne(L);
         if (W !== "object")
           return new T("Invalid " + Z + " `" + $ + "` of type `" + W + "` " + ("supplied to `" + N + "`, expected `object`."));
-        var K = t({}, P[M], b);
+        var K = t({}, w[M], b);
         for (var V in K) {
           var ae = b[V];
           if (n(b, V) && typeof ae != "function")
             return I(N, Z, $, V, F(ae));
           if (!ae)
             return new T(
-              "Invalid " + Z + " `" + $ + "` key `" + V + "` supplied to `" + N + "`.\nBad object: " + JSON.stringify(P[M], null, "  ") + `
+              "Invalid " + Z + " `" + $ + "` key `" + V + "` supplied to `" + N + "`.\nBad object: " + JSON.stringify(w[M], null, "  ") + `
 Valid keys: ` + JSON.stringify(Object.keys(b), null, "  ")
             );
           var k = ae(L, V, N, Z, $ + "." + V, o);
@@ -1346,7 +1346,7 @@ Valid keys: ` + JSON.stringify(Object.keys(b), null, "  ")
         }
         return null;
       }
-      return S(l);
+      return O(l);
     }
     function H(b) {
       switch (typeof b) {
@@ -1363,13 +1363,13 @@ Valid keys: ` + JSON.stringify(Object.keys(b), null, "  ")
             return !0;
           var l = m(b);
           if (l) {
-            var P = l.call(b), M;
+            var w = l.call(b), M;
             if (l !== b.entries) {
-              for (; !(M = P.next()).done; )
+              for (; !(M = w.next()).done; )
                 if (!H(M.value))
                   return !1;
             } else
-              for (; !(M = P.next()).done; ) {
+              for (; !(M = w.next()).done; ) {
                 var N = M.value;
                 if (N && !H(N[1]))
                   return !1;
@@ -1551,7 +1551,7 @@ const x = /* @__PURE__ */ Rn(Fn), Xt = {
   preserveAspectRatio: !0,
   defaultWidth: 300,
   defaultHeight: 200
-}, w = {
+}, P = {
   TOP_LEFT: "top-left",
   TOP_RIGHT: "top-right",
   BOTTOM_LEFT: "bottom-left",
@@ -1574,28 +1574,28 @@ function ga({
   const h = n - t, f = i - o;
   let p = a, m = r;
   switch (e) {
-    case w.TOP_LEFT:
+    case P.TOP_LEFT:
       p = Math.max(s.minWidth, a - h), m = Math.max(s.minHeight, r - f);
       break;
-    case w.TOP_RIGHT:
+    case P.TOP_RIGHT:
       p = Math.max(s.minWidth, a + h), m = Math.max(s.minHeight, r - f);
       break;
-    case w.BOTTOM_LEFT:
+    case P.BOTTOM_LEFT:
       p = Math.max(s.minWidth, a - h), m = Math.max(s.minHeight, r + f);
       break;
-    case w.BOTTOM_RIGHT:
+    case P.BOTTOM_RIGHT:
       p = Math.max(s.minWidth, a + h), m = Math.max(s.minHeight, r + f);
       break;
-    case w.TOP:
+    case P.TOP:
       m = Math.max(s.minHeight, r - f);
       break;
-    case w.BOTTOM:
+    case P.BOTTOM:
       m = Math.max(s.minHeight, r + f);
       break;
-    case w.LEFT:
+    case P.LEFT:
       p = Math.max(s.minWidth, a - h);
       break;
-    case w.RIGHT:
+    case P.RIGHT:
       p = Math.max(s.minWidth, a + h);
       break;
     default:
@@ -1604,11 +1604,11 @@ function ga({
   if (s.preserveAspectRatio && s.aspectRatio) {
     const d = a / r;
     [
-      w.TOP_LEFT,
-      w.TOP_RIGHT,
-      w.BOTTOM_LEFT,
-      w.BOTTOM_RIGHT
-    ].includes(e) ? p / d > m ? m = Math.max(s.minHeight, p / d) : p = Math.max(s.minWidth, m * d) : [w.TOP, w.BOTTOM].includes(e) ? p = m * d : [w.LEFT, w.RIGHT].includes(e) && (m = p / d);
+      P.TOP_LEFT,
+      P.TOP_RIGHT,
+      P.BOTTOM_LEFT,
+      P.BOTTOM_RIGHT
+    ].includes(e) ? p / d > m ? m = Math.max(s.minHeight, p / d) : p = Math.max(s.minWidth, m * d) : [P.TOP, P.BOTTOM].includes(e) ? p = m * d : [P.LEFT, P.RIGHT].includes(e) && (m = p / d);
   }
   return s.maxWidth && p > s.maxWidth && (p = s.maxWidth, s.preserveAspectRatio && s.aspectRatio && (m = p / (a / r))), s.maxHeight && m > s.maxHeight && (m = s.maxHeight, s.preserveAspectRatio && s.aspectRatio && (p = m * (a / r))), p = Math.max(s.minWidth, p), m = Math.max(s.minHeight, m), {
     width: Math.round(p),
@@ -1632,24 +1632,24 @@ function Jt(e, t = ge) {
   const o = document.createElement("div");
   o.className = "image-resize-overlay", o.style.position = "fixed", o.style.zIndex = "1000", o.style.pointerEvents = "none";
   const n = e.getBoundingClientRect();
-  return o.style.top = `${n.top}px`, o.style.left = `${n.left}px`, o.style.width = `${n.width}px`, o.style.height = `${n.height}px`, Object.values(w).forEach((a) => {
+  return o.style.top = `${n.top}px`, o.style.left = `${n.left}px`, o.style.width = `${n.width}px`, o.style.height = `${n.height}px`, Object.values(P).forEach((a) => {
     const r = document.createElement("div");
     r.className = `resize-handler resize-handler-${a}`, r.dataset.handler = a, r.style.position = "absolute", r.style.width = "10px", r.style.height = "10px", r.style.backgroundColor = "#007bff", r.style.border = "2px solid white", r.style.borderRadius = "50%", r.style.boxShadow = "0 0 3px rgba(0,0,0,0.3)", r.style.cursor = Yn(a), r.style.pointerEvents = "all", Qt(r, a, n.width, n.height), o.appendChild(r);
   }), o;
 }
 function Yn(e) {
   switch (e) {
-    case w.TOP_LEFT:
-    case w.BOTTOM_RIGHT:
+    case P.TOP_LEFT:
+    case P.BOTTOM_RIGHT:
       return "nwse-resize";
-    case w.TOP_RIGHT:
-    case w.BOTTOM_LEFT:
+    case P.TOP_RIGHT:
+    case P.BOTTOM_LEFT:
       return "nesw-resize";
-    case w.TOP:
-    case w.BOTTOM:
+    case P.TOP:
+    case P.BOTTOM:
       return "ns-resize";
-    case w.LEFT:
-    case w.RIGHT:
+    case P.LEFT:
+    case P.RIGHT:
       return "ew-resize";
     default:
       return "default";
@@ -1657,28 +1657,28 @@ function Yn(e) {
 }
 function Qt(e, t, o, n) {
   switch (t) {
-    case w.TOP_LEFT:
+    case P.TOP_LEFT:
       e.style.top = "-5px", e.style.left = "-5px";
       break;
-    case w.TOP_RIGHT:
+    case P.TOP_RIGHT:
       e.style.top = "-5px", e.style.right = "-5px";
       break;
-    case w.BOTTOM_LEFT:
+    case P.BOTTOM_LEFT:
       e.style.bottom = "-5px", e.style.left = "-5px";
       break;
-    case w.BOTTOM_RIGHT:
+    case P.BOTTOM_RIGHT:
       e.style.bottom = "-5px", e.style.right = "-5px";
       break;
-    case w.TOP:
+    case P.TOP:
       e.style.top = "-5px", e.style.left = `${o / 2 + -5}px`;
       break;
-    case w.BOTTOM:
+    case P.BOTTOM:
       e.style.bottom = "-5px", e.style.left = `${o / 2 + -5}px`;
       break;
-    case w.LEFT:
+    case P.LEFT:
       e.style.top = `${n / 2 + -5}px`, e.style.left = "-5px";
       break;
-    case w.RIGHT:
+    case P.RIGHT:
       e.style.top = `${n / 2 + -5}px`, e.style.right = "-5px";
       break;
   }
@@ -1881,7 +1881,7 @@ const Vn = {
       ...E,
       imageSelected: !1
     }));
-  }, []), O = G(() => {
+  }, []), S = G(() => {
     const E = !d.current.preserveAspectRatio;
     d.current = {
       ...d.current,
@@ -1959,7 +1959,7 @@ const Vn = {
     } catch (E) {
       console.warn("[useFormatting] Error updating format from selection:", E);
     }
-  }, []), S = G(() => {
+  }, []), O = G(() => {
     R(), t(jt);
   }, [R]);
   return ie(() => () => {
@@ -1967,10 +1967,10 @@ const Vn = {
   }, []), {
     currentFormat: e,
     formatText: s,
-    resetFormat: S,
+    resetFormat: O,
     updateCurrentFormatFromSelection: T,
     // Image resize functionality - now delegated to ImageResizeHandlers
-    toggleAspectRatio: O
+    toggleAspectRatio: S
   };
 };
 function $e(e) {
@@ -2021,17 +2021,17 @@ function Jn() {
 }
 function Qn(e) {
   switch (e) {
-    case w.TOP_LEFT:
-    case w.BOTTOM_RIGHT:
+    case P.TOP_LEFT:
+    case P.BOTTOM_RIGHT:
       return "nwse-resize";
-    case w.TOP_RIGHT:
-    case w.BOTTOM_LEFT:
+    case P.TOP_RIGHT:
+    case P.BOTTOM_LEFT:
       return "nesw-resize";
     case RESIZE_HANDLRES.TOP:
-    case w.BOTTOM:
+    case P.BOTTOM:
       return "ns-resize";
-    case w.LEFT:
-    case w.RIGHT:
+    case P.LEFT:
+    case P.RIGHT:
       return "ew-resize";
     default:
       return "default";
@@ -2050,28 +2050,28 @@ function er({
   const h = n - t, f = i - o;
   let p = a, m = r;
   switch (e) {
-    case w.TOP_LEFT:
+    case P.TOP_LEFT:
       p = Math.max(s.minWidth, a - h), m = Math.max(s.minHeight, r - f);
       break;
-    case w.TOP_RIGHT:
+    case P.TOP_RIGHT:
       p = Math.max(s.minWidth, a + h), m = Math.max(s.minHeight, r - f);
       break;
-    case w.BOTTOM_LEFT:
+    case P.BOTTOM_LEFT:
       p = Math.max(s.minWidth, a - h), m = Math.max(s.minHeight, r + f);
       break;
-    case w.BOTTOM_RIGHT:
+    case P.BOTTOM_RIGHT:
       p = Math.max(s.minWidth, a + h), m = Math.max(s.minHeight, r + f);
       break;
-    case w.TOP:
+    case P.TOP:
       m = Math.max(s.minHeight, r - f);
       break;
-    case w.BOTTOM:
+    case P.BOTTOM:
       m = Math.max(s.minHeight, r + f);
       break;
-    case w.LEFT:
+    case P.LEFT:
       p = Math.max(s.minWidth, a - h);
       break;
-    case w.RIGHT:
+    case P.RIGHT:
       p = Math.max(s.minWidth, a + h);
       break;
     default:
@@ -2080,11 +2080,11 @@ function er({
   if (s.preserveAspectRatio && s.aspectRatio) {
     const d = a / r;
     [
-      w.TOP_LEFT,
-      w.TOP_RIGHT,
-      w.BOTTOM_LEFT,
-      w.BOTTOM_RIGHT
-    ].includes(e) ? p / d > m ? m = Math.max(s.minHeight, p / d) : p = Math.max(s.minWidth, m * d) : [w.TOP, w.BOTTOM].includes(e) ? p = m * d : [w.LEFT, w.RIGHT].includes(e) && (m = p / d);
+      P.TOP_LEFT,
+      P.TOP_RIGHT,
+      P.BOTTOM_LEFT,
+      P.BOTTOM_RIGHT
+    ].includes(e) ? p / d > m ? m = Math.max(s.minHeight, p / d) : p = Math.max(s.minWidth, m * d) : [P.TOP, P.BOTTOM].includes(e) ? p = m * d : [P.LEFT, P.RIGHT].includes(e) && (m = p / d);
   }
   return s.maxWidth && p > s.maxWidth && (p = s.maxWidth, s.preserveAspectRatio && s.aspectRatio && (m = p / (a / r))), s.maxHeight && m > s.maxHeight && (m = s.maxHeight, s.preserveAspectRatio && s.aspectRatio && (p = m * (a / r))), p = Math.max(s.minWidth, p), m = Math.max(s.minHeight, m), {
     width: Math.round(p),
@@ -2148,7 +2148,16 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
   if (!e || !e.getBoundingClientRect)
     return 0;
   const t = e.getBoundingClientRect();
-  return e.tagName === "P" ? t.height + 16 : e.tagName === "H1" || e.tagName === "H2" || e.tagName === "H3" || e.tagName === "H4" || e.tagName === "H5" || e.tagName === "H6" ? t.height + 20 : e.tagName === "UL" || e.tagName === "OL" ? t.height + 16 : t.height;
+  if (e.tagName === "P") {
+    const o = e.querySelectorAll("img"), n = e.textContent.trim();
+    if (o.length === 1 && !n) {
+      const a = o[0].getBoundingClientRect(), s = window.getComputedStyle(e).textAlign;
+      if (s === "center" || s === "-webkit-center")
+        return a.height + 16;
+    }
+    return t.height + 16;
+  }
+  return e.tagName === "H1" || e.tagName === "H2" || e.tagName === "H3" || e.tagName === "H4" || e.tagName === "H5" || e.tagName === "H6" ? t.height + 20 : e.tagName === "UL" || e.tagName === "OL" ? t.height + 16 : t.height;
 }, ar = (e, t) => {
   if (!e)
     return !1;
@@ -2168,12 +2177,12 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
       const R = f[d];
       if (R.tagName === "PAGE-BREAK" || R.getAttribute("data-page-break") === "true")
         continue;
-      const O = or(R);
-      if (p + O > h) {
+      const S = or(R);
+      if (p + S > h) {
         m = R;
         break;
       }
-      p += O;
+      p += S;
     }
     if (m) {
       const d = document.createElement("page-break");
@@ -2189,8 +2198,8 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
       d.setAttribute("data-page-break", "true"), d.setAttribute("contenteditable", "false"), d.setAttribute("data-page-number", String(t)), e.appendChild(d);
       const R = document.createElement("p");
       if (R.innerHTML = "<br>", e.appendChild(R), a) {
-        const O = e.innerHTML;
-        a(O);
+        const S = e.innerHTML;
+        a(S);
       }
       return r && setTimeout(() => {
         r();
@@ -2211,40 +2220,40 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
     const f = window.getSelection();
     let p = !1, m = [], d = null;
     if (t === 0) {
-      const O = h[0];
-      if (!O)
+      const S = h[0];
+      if (!S)
         return console.warn("[removePageAndContent] No page break found for first page"), !1;
       let T = e.firstChild;
-      for (; T && T !== O; )
+      for (; T && T !== S; )
         m.push(T), T = T.nextSibling;
-      d = O;
+      d = S;
     } else {
-      const O = h[t - 1];
-      if (!O)
+      const S = h[t - 1];
+      if (!S)
         return console.warn("[removePageAndContent] Page break not found"), !1;
       const T = h[t];
-      let S = O.nextSibling;
-      for (; S && S !== T; )
-        m.push(S), S = S.nextSibling;
-      d = O;
+      let O = S.nextSibling;
+      for (; O && O !== T; )
+        m.push(O), O = O.nextSibling;
+      d = S;
     }
     if (f && f.rangeCount > 0) {
       const T = f.getRangeAt(0).startContainer;
-      for (const S of m)
-        if (S.contains(T) || S === T) {
+      for (const O of m)
+        if (O.contains(T) || O === T) {
           p = !0;
           break;
         }
     }
-    if (d && d.parentNode && d.remove(), m.forEach((O) => {
-      O.parentNode && O.remove();
-    }), e.querySelectorAll(Te).forEach((O, T) => {
-      O.setAttribute("data-page-number", String(T + 2));
+    if (d && d.parentNode && d.remove(), m.forEach((S) => {
+      S.parentNode && S.remove();
+    }), e.querySelectorAll(Te).forEach((S, T) => {
+      S.setAttribute("data-page-number", String(T + 2));
     }), p && a && setTimeout(() => {
       a(0);
     }, 50), n) {
-      const O = e.innerHTML;
-      n(O);
+      const S = e.innerHTML;
+      n(S);
     }
     return i && setTimeout(() => {
       i(), r && setTimeout(() => {
@@ -2258,7 +2267,16 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
   if (!e || !e.getBoundingClientRect)
     return 0;
   const t = e.getBoundingClientRect();
-  return e.tagName === "P" ? t.height + 16 : e.tagName === "H1" || e.tagName === "H2" || e.tagName === "H3" || e.tagName === "H4" || e.tagName === "H5" || e.tagName === "H6" ? t.height + 20 : e.tagName === "UL" || e.tagName === "OL" ? t.height + 16 : t.height;
+  if (e.tagName === "P") {
+    const o = e.querySelectorAll("img"), n = e.textContent.trim();
+    if (o.length === 1 && !n) {
+      const a = o[0].getBoundingClientRect(), s = window.getComputedStyle(e).textAlign;
+      if (s === "center" || s === "-webkit-center")
+        return a.height + 16;
+    }
+    return t.height + 16;
+  }
+  return e.tagName === "H1" || e.tagName === "H2" || e.tagName === "H3" || e.tagName === "H4" || e.tagName === "H5" || e.tagName === "H6" ? t.height + 20 : e.tagName === "UL" || e.tagName === "OL" ? t.height + 16 : t.height;
 }, dr = (e, t) => {
   if (!e || e.length === 0)
     return null;
@@ -2291,8 +2309,8 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
     const h = tn(t, o, n);
     let f = Dt(e), p = !1, m = 0;
     for (let d = 0; d < f.length && m < Ht; d++) {
-      const R = f[d], O = dr(R, h);
-      if (O && O.overflowIndex > 0) {
+      const R = f[d], S = dr(R, h);
+      if (S && S.overflowIndex > 0) {
         let T = 0;
         for (let _ = 0; _ < R.length; _++) {
           const D = R[_];
@@ -2301,7 +2319,7 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
         if (T - h < ur)
           continue;
         const E = d + 2;
-        ar(O.overflowElement, E) && (p = !0, m++, f = Dt(e));
+        ar(S.overflowElement, E) && (p = !0, m++, f = Dt(e));
       }
     }
     if (p) {
@@ -2405,7 +2423,7 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
       i.updateContinuousContent,
       d
     );
-  }, [t, i, d]), O = G(() => {
+  }, [t, i, d]), S = G(() => {
     if (!t?.current)
       return;
     const c = s.current || "A4", y = h.current || 100, g = f.current || "NARROW";
@@ -2417,11 +2435,11 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
       i.updateContinuousContent,
       d,
       p,
-      O
+      S
     );
   }, [t, i, d]), T = G((c) => {
-    pr(O, r, c);
-  }, [O]), S = G((c = {}) => {
+    pr(S, r, c);
+  }, [S]), O = G((c = {}) => {
     const y = typeof c.delay == "number" ? c.delay : yr;
     mr(d, a, c, y);
   }, [d]), E = G((c) => !c?.current || !t?.current ? 0 : rr(c.current, t.current), [t]), A = G((c) => {
@@ -2439,16 +2457,16 @@ const Te = 'page-break, [data-page-break="true"]', en = (e) => le[e] || le.A4, n
     i.updateContinuousContent,
     d,
     A,
-    O
-  ) : !1, [t, m, i, d, A, O]);
+    S
+  ) : !1, [t, m, i, d, A, S]);
   return {
     calculatePageBoundaries: m,
-    checkAndUpdateBoundaries: S,
+    checkAndUpdateBoundaries: O,
     updateBoundaries: d,
     getCurrentPage: E,
     scrollToPage: _,
     positionCursorAtPage: A,
-    checkAndReflow: O,
+    checkAndReflow: S,
     triggerAutoReflow: T,
     removePageAndContent: D,
     insertPageBreakAtBoundary: R,
@@ -2462,7 +2480,7 @@ function xr() {
     return (e === "x" ? t : t & 3 | 8).toString(16);
   });
 }
-function Oe() {
+function Se() {
   return new Promise((e, t) => {
     const o = indexedDB.open(br, Tr);
     o.onerror = () => {
@@ -2493,16 +2511,16 @@ function vr(e) {
         return;
       }
       try {
-        const f = await Oe(), p = `editor-image-${xr()}`, d = f.transaction([de], "readwrite").objectStore(de), R = {
+        const f = await Se(), p = `editor-image-${xr()}`, d = f.transaction([de], "readwrite").objectStore(de), R = {
           key: p,
           dataUrl: r,
           size: h,
           type: e.type,
           timestamp: Date.now()
-        }, O = d.add(R);
-        O.onsuccess = () => {
+        }, S = d.add(R);
+        S.onsuccess = () => {
           f.close(), t(p);
-        }, O.onerror = () => {
+        }, S.onerror = () => {
           f.close(), o(new Error("Failed to save image to IndexedDB"));
         };
       } catch (f) {
@@ -2515,7 +2533,7 @@ function vr(e) {
 }
 async function Ar(e) {
   try {
-    const t = await Oe();
+    const t = await Se();
     return new Promise((o, n) => {
       const r = t.transaction([de], "readonly").objectStore(de).get(e);
       r.onsuccess = () => {
@@ -2532,7 +2550,7 @@ async function Ar(e) {
 }
 async function _r(e) {
   try {
-    const t = await Oe();
+    const t = await Se();
     return new Promise((o, n) => {
       const r = t.transaction([de], "readwrite").objectStore(de).delete(e);
       r.onsuccess = () => {
@@ -2547,7 +2565,7 @@ async function _r(e) {
 }
 async function ya() {
   try {
-    const e = await Oe();
+    const e = await Se();
     return new Promise((t, o) => {
       const a = e.transaction([de], "readwrite").objectStore(de).clear();
       a.onsuccess = () => {
@@ -2562,7 +2580,7 @@ async function ya() {
 }
 async function Ea() {
   try {
-    const e = await Oe();
+    const e = await Se();
     return new Promise((t, o) => {
       const a = e.transaction([de], "readonly").objectStore(de).getAllKeys();
       a.onsuccess = () => {
@@ -2575,7 +2593,7 @@ async function Ea() {
     return console.error("Error getting image keys:", e), [];
   }
 }
-const Pr = [
+const wr = [
   "SPAN",
   "STRONG",
   "EM",
@@ -2599,7 +2617,7 @@ const Pr = [
   "CITE",
   "DFN",
   "TIME"
-], wr = ["BR", "HR", "IMG", "INPUT", "PAGE-BREAK"];
+], Pr = ["BR", "HR", "IMG", "INPUT", "PAGE-BREAK"];
 function Rr(e) {
   const t = document.createElement("div");
   return t.textContent = e, t.innerHTML;
@@ -2619,9 +2637,9 @@ function De(e) {
   if (!t)
     return "<p><br></p>";
   const o = document.createElement("div");
-  return o.innerHTML = t, Pe(o) || "<p><br></p>";
+  return o.innerHTML = t, we(o) || "<p><br></p>";
 }
-function Or(e) {
+function Sr(e) {
   const t = e.cloneNode(!0);
   return t.querySelectorAll(":scope > p").forEach((n) => {
     for (; n.firstChild; )
@@ -2629,7 +2647,7 @@ function Or(e) {
     n.remove();
   }), t.innerHTML;
 }
-function Pe(e) {
+function we(e) {
   const t = [], o = Array.from(e.childNodes);
   for (let n = 0; n < o.length; n++) {
     const i = o[n];
@@ -2639,19 +2657,19 @@ function Pe(e) {
     } else if (i.nodeType === Node.ELEMENT_NODE) {
       const a = i, r = a.tagName, s = r.toLowerCase(), h = on(a);
       if (r === "DIV") {
-        const f = Pe(a);
+        const f = we(a);
         f.trim() ? t.push(f) : t.push("<p><br></p>");
       } else if (r === "P")
         t.push(a.outerHTML);
       else if (["H1", "H2", "H3", "H4", "H5", "H6"].includes(r)) {
-        const f = Or(a);
+        const f = Sr(a);
         t.push(`<${s}${h}>${f}</${s}>`);
       } else if (r === "BR")
         t.push("<p><br></p>");
       else if (r === "IMG")
         t.push(a.outerHTML);
       else if (["UL", "OL"].includes(r))
-        t.push(Sr(a));
+        t.push(Or(a));
       else if (r === "LI")
         t.push(a.outerHTML);
       else if (r === "TABLE")
@@ -2659,11 +2677,11 @@ function Pe(e) {
       else if (["TBODY", "THEAD", "TFOOT", "TR", "TD", "TH"].includes(r))
         t.push(a.outerHTML);
       else if (r === "BLOCKQUOTE") {
-        const f = Pe(a);
+        const f = we(a);
         t.push(`<blockquote${h}>${f}</blockquote>`);
       } else if (r === "PRE")
         t.push(a.outerHTML);
-      else if (Pr.includes(r))
+      else if (wr.includes(r))
         t.push(a.outerHTML);
       else if (r === "PAGE-BREAK" || a.getAttribute("data-page-break") === "true")
         t.push(a.outerHTML);
@@ -2671,23 +2689,23 @@ function Pe(e) {
         t.push(a.outerHTML);
       else if (r === "FIGURE")
         t.push(a.outerHTML);
-      else if (wr.includes(r))
+      else if (Pr.includes(r))
         t.push(a.outerHTML);
       else {
-        const f = Pe(a);
+        const f = we(a);
         t.push(`<${s}${h}>${f}</${s}>`);
       }
     }
   }
   return t.length === 0 ? "" : t.join("");
 }
-function Sr(e) {
+function Or(e) {
   const t = e.tagName.toLowerCase(), o = on(e), n = [];
   return Array.from(e.children).forEach((i) => {
     if (i.tagName === "LI")
       n.push(i.outerHTML);
     else {
-      const a = Pe(i);
+      const a = we(i);
       a.trim() && n.push(`<li>${a}</li>`);
     }
   }), n.length === 0 ? `<${t}${o}><li><br></li></${t}>` : `<${t}${o}>${n.join("")}</${t}>`;
@@ -3049,12 +3067,12 @@ const Ao = [
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Po = [
+const wo = [
   ["path", { d: "M12 3v18", key: "108xh3" }],
   ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
   ["path", { d: "M3 9h18", key: "1pudct" }],
   ["path", { d: "M3 15h18", key: "5xshup" }]
-], wo = X("table", Po);
+], Po = X("table", wo);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
@@ -3072,22 +3090,22 @@ const Ro = [
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const Oo = [
+const So = [
   ["path", { d: "M21 5H3", key: "1fi0y6" }],
   ["path", { d: "M21 12H9", key: "dn1m92" }],
   ["path", { d: "M21 19H7", key: "4cu937" }]
-], ln = X("text-align-end", Oo);
+], ln = X("text-align-end", So);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const So = [
+const Oo = [
   ["path", { d: "M3 5h18", key: "1u36vt" }],
   ["path", { d: "M3 12h18", key: "1i2n21" }],
   ["path", { d: "M3 19h18", key: "awlh7x" }]
-], ko = X("text-align-justify", So);
+], ko = X("text-align-justify", Oo);
 /**
  * @license lucide-react v0.544.0 - ISC
  *
@@ -3186,7 +3204,7 @@ const Uo = [
       return;
     }
     let T = 0;
-    const S = [];
+    const O = [];
     r.forEach((E, A) => {
       if (E.content) {
         const _ = document.createElement("div");
@@ -3194,7 +3212,7 @@ const Uo = [
         const c = (_.textContent || _.innerText || "").trim().split(/\s+/).filter((g) => g.length > 0);
         T += c.length, _.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((g, v) => {
           const C = parseInt(g.tagName.charAt(1)), z = g.textContent.trim();
-          z && S.push({
+          z && O.push({
             id: `heading-${A}-${v}`,
             level: C,
             text: z,
@@ -3202,9 +3220,9 @@ const Uo = [
           });
         });
       }
-    }), m(T), R(S);
+    }), m(T), R(O);
   }, [r, n, i, h]);
-  const O = i !== void 0 ? i : r.length;
+  const S = i !== void 0 ? i : r.length;
   return /* @__PURE__ */ u.jsxs(
     "aside",
     {
@@ -3237,7 +3255,7 @@ const Uo = [
                 /* @__PURE__ */ u.jsx(Gr, { size: 14 }),
                 /* @__PURE__ */ u.jsx("span", { children: "Pages:" })
               ] }),
-              /* @__PURE__ */ u.jsx("span", { className: "stat-value", children: O })
+              /* @__PURE__ */ u.jsx("span", { className: "stat-value", children: S })
             ] }),
             /* @__PURE__ */ u.jsxs("div", { className: "stat-item", "data-testid": "word-count", children: [
               /* @__PURE__ */ u.jsxs("div", { className: "stat-label", children: [
@@ -3260,14 +3278,14 @@ const Uo = [
               "Document Outline"
             ] }),
             /* @__PURE__ */ u.jsx("div", { className: "document-outline", "data-testid": "outline", children: d.map((T) => {
-              const S = T.level === 1 ? Yr : T.level === 2 ? Kr : Jr;
+              const O = T.level === 1 ? Yr : T.level === 2 ? Kr : Jr;
               return /* @__PURE__ */ u.jsxs(
                 "div",
                 {
                   className: `outline-item outline-level-${T.level}`,
                   style: { marginLeft: `${(T.level - 1) * 12}px` },
                   children: [
-                    /* @__PURE__ */ u.jsx(S, { size: 12, className: "outline-icon" }),
+                    /* @__PURE__ */ u.jsx(O, { size: 12, className: "outline-icon" }),
                     /* @__PURE__ */ u.jsx("span", { className: "outline-text", children: T.text }),
                     /* @__PURE__ */ u.jsxs("span", { className: "outline-page", children: [
                       "p.",
@@ -3441,9 +3459,9 @@ function it(e = !1) {
         NodeFilter.SHOW_TEXT,
         null
       );
-      let R = null, O = d.nextNode();
-      for (; O; )
-        R = O, O = d.nextNode();
+      let R = null, S = d.nextNode();
+      for (; S; )
+        R = S, S = d.nextNode();
       return R;
     }, f = s(i);
     f ? r.setStart(f, 0) : r.setStart(i, 0);
@@ -3690,7 +3708,7 @@ const dt = ({
       {
         onClick: () => t("insertHTML", '<table border="1"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>'),
         title: "Insert Table",
-        children: /* @__PURE__ */ u.jsx(wo, { size: 16 })
+        children: /* @__PURE__ */ u.jsx(Po, { size: 16 })
       }
     ),
     o && /* @__PURE__ */ u.jsx(
@@ -3785,25 +3803,25 @@ const ft = ({
   zoomLevel: m = 100,
   pageMargins: d = pe
 }) => {
-  const R = Gt(d), O = m / 100, T = (c, y) => {
+  const R = Gt(d), S = m / 100, T = (c, y) => {
     if (!c) return !1;
     const g = c.getBoundingClientRect(), v = y - g.top;
     return v < R.top || v > g.height - R.bottom;
-  }, S = (c) => c ? c.nodeType === Node.ELEMENT_NODE ? c.tagName === "PAGE-BREAK" || c.getAttribute("data-page-break") === "true" : c.parentElement && S(c.parentElement) : !1, E = (c) => {
+  }, O = (c) => c ? c.nodeType === Node.ELEMENT_NODE ? c.tagName === "PAGE-BREAK" || c.getAttribute("data-page-break") === "true" : c.parentElement && O(c.parentElement) : !1, E = (c) => {
     const y = window.getSelection();
     if (!y || y.rangeCount === 0) return;
     const g = y.getRangeAt(0), { startContainer: v, endContainer: C } = g;
-    if ((S(v) || S(C)) && (c.key.length === 1 || c.key === "Enter" || c.key === " "))
+    if ((O(v) || O(C)) && (c.key.length === 1 || c.key === "Enter" || c.key === " "))
       return c.preventDefault(), !1;
     if (Ko(c))
       return r && r(), !1;
-    if ((c.key === "Backspace" || c.key === "Delete") && (S(v) || S(C)))
+    if ((c.key === "Backspace" || c.key === "Delete") && (O(v) || O(C)))
       return c.preventDefault(), !1;
     s && s(c);
   }, A = (c) => {
     if (!i.current) return;
     const y = c.target;
-    if (S(y)) {
+    if (O(y)) {
       c.preventDefault();
       return;
     }
@@ -3830,7 +3848,7 @@ const ft = ({
     const y = window.getSelection();
     if (!y || y.rangeCount === 0) return;
     const g = y.getRangeAt(0), { startContainer: v } = g;
-    if (S(v))
+    if (O(v))
       return c.preventDefault(), !1;
   }, D = (c) => {
     const y = Jo(c);
@@ -3847,7 +3865,7 @@ const ft = ({
         margin: "40px auto",
         backgroundColor: "transparent",
         minHeight: "100vh",
-        transform: `scale(${O})`,
+        transform: `scale(${S})`,
         transformOrigin: "top center",
         transition: "transform 0.2s ease-out"
       },
@@ -3942,9 +3960,9 @@ const pt = ({
   onPageMarginsChange: m,
   onZoomIn: d,
   onZoomOut: R,
-  onZoomReset: O
+  onZoomReset: S
 } = {}) => {
-  const T = Math.max(e?.length || 0, 1), S = (c) => {
+  const T = Math.max(e?.length || 0, 1), O = (c) => {
     s && s(c);
   }, E = () => {
     h && h();
@@ -4034,7 +4052,7 @@ const pt = ({
         {
           type: "button",
           className: "zoom-reset-compact",
-          onClick: O,
+          onClick: S,
           "aria-label": "Reset zoom",
           title: "Reset zoom to 100% (Ctrl + 0)",
           children: "Reset"
@@ -4047,7 +4065,7 @@ const pt = ({
         {
           type: "button",
           className: `page-button ${y === t ? "active" : ""}`,
-          onClick: () => S(y),
+          onClick: () => O(y),
           "aria-label": `Go to page ${y + 1}`,
           "aria-current": y === t ? "page" : void 0,
           children: [
@@ -4146,11 +4164,11 @@ const ta = Ge.memo(pt), gt = ({
     a.current && (be(a.current), a.current = null), g.classList.add("selected");
     const v = Jt(g, f.current);
     v && (a.current = v, r.current = g, document.body.appendChild(v), v.querySelectorAll(".resize-handler").forEach((z) => {
-      z.addEventListener("mousedown", O);
+      z.addEventListener("mousedown", S);
     }), o && (console.log("Image selected, calling onImageSelect callback"), o(g)));
   }, [o]), R = G(() => {
     r.current && (r.current.classList.remove("selected"), r.current = null), a.current && (be(a.current), a.current = null), s.current = null, h.current = null, p.current = !1, n && n();
-  }, [n]), O = G((g) => {
+  }, [n]), S = G((g) => {
     if (g.preventDefault(), g.stopPropagation(), !r.current) return;
     const v = g.currentTarget.dataset.handler, C = r.current.getBoundingClientRect(), z = window.pageYOffset || document.documentElement.scrollTop, I = window.pageXOffset || document.documentElement.scrollLeft;
     s.current = {
@@ -4162,7 +4180,7 @@ const ta = Ge.memo(pt), gt = ({
       originalHeight: r.current.offsetHeight,
       offsetX: g.clientX - C.left - I,
       offsetY: g.clientY - C.top - z
-    }, h.current = v, p.current = !0, document.body.classList.add("resize-in-progress"), document.body.style.cursor = D(v), document.addEventListener("mousemove", T), document.addEventListener("mouseup", S);
+    }, h.current = v, p.current = !0, document.body.classList.add("resize-in-progress"), document.body.style.cursor = D(v), document.addEventListener("mousemove", T), document.addEventListener("mouseup", O);
   }, []), T = G((g) => {
     if (!p.current || !r.current || !s.current || !h.current) return;
     g.preventDefault(), g.stopPropagation();
@@ -4177,7 +4195,7 @@ const ta = Ge.memo(pt), gt = ({
       options: f.current
     });
     y(r.current, oe), a.current && Be(a.current, r.current);
-  }, []), S = G((g) => {
+  }, []), O = G((g) => {
     if (p.current) {
       if (g.preventDefault(), g.stopPropagation(), r.current && s.current) {
         const v = {
@@ -4192,7 +4210,7 @@ const ta = Ge.memo(pt), gt = ({
           { type: "IMAGE_RESIZE", payload: { element: r.current, state: v } }
         );
       }
-      if (s.current = null, h.current = null, p.current = !1, document.removeEventListener("mousemove", T), document.removeEventListener("mouseup", S), document.body.classList.remove("resize-in-progress"), document.body.style.cursor = "", r.current) {
+      if (s.current = null, h.current = null, p.current = !1, document.removeEventListener("mousemove", T), document.removeEventListener("mouseup", O), document.body.classList.remove("resize-in-progress"), document.body.style.cursor = "", r.current) {
         const v = new Event("input", { bubbles: !0, cancelable: !0 });
         r.current.dispatchEvent(v), t && t(r.current, {
           width: r.current.offsetWidth,
@@ -4269,9 +4287,9 @@ const ta = Ge.memo(pt), gt = ({
     g.addEventListener("click", E), g.addEventListener("keydown", A);
     const v = g.closest(".editor-viewport");
     return v && v.addEventListener("scroll", _), window.addEventListener("resize", _), () => {
-      g.removeEventListener("click", E), g.removeEventListener("keydown", A), v && v.removeEventListener("scroll", _), window.removeEventListener("resize", _), p.current && (document.removeEventListener("mousemove", T), document.removeEventListener("mouseup", S), document.body.classList.remove("resize-in-progress"), document.body.style.cursor = ""), a.current && be(a.current);
+      g.removeEventListener("click", E), g.removeEventListener("keydown", A), v && v.removeEventListener("scroll", _), window.removeEventListener("resize", _), p.current && (document.removeEventListener("mousemove", T), document.removeEventListener("mouseup", O), document.body.classList.remove("resize-in-progress"), document.body.style.cursor = ""), a.current && be(a.current);
     };
-  }, [e, E, A, _, T, S]), ie(() => {
+  }, [e, E, A, _, T, O]), ie(() => {
     if (!e.current) return;
     const g = new MutationObserver((v) => {
       v.forEach((C) => {
@@ -4301,17 +4319,17 @@ const ta = Ge.memo(pt), gt = ({
   }, [e, R, d]);
   function D(g) {
     switch (g) {
-      case w.TOP_LEFT:
-      case w.BOTTOM_RIGHT:
+      case P.TOP_LEFT:
+      case P.BOTTOM_RIGHT:
         return "nwse-resize";
-      case w.TOP_RIGHT:
-      case w.BOTTOM_LEFT:
+      case P.TOP_RIGHT:
+      case P.BOTTOM_LEFT:
         return "nesw-resize";
-      case w.TOP:
-      case w.BOTTOM:
+      case P.TOP:
+      case P.BOTTOM:
         return "ns-resize";
-      case w.LEFT:
-      case w.RIGHT:
+      case P.LEFT:
+      case P.RIGHT:
         return "ew-resize";
       default:
         return "default";
@@ -4330,28 +4348,28 @@ const ta = Ge.memo(pt), gt = ({
     const oe = z - v, ne = I - C;
     let F = B, Y = q;
     switch (g) {
-      case w.TOP_LEFT:
+      case P.TOP_LEFT:
         F = Math.max(H.minWidth, B - oe), Y = Math.max(H.minHeight, q - ne);
         break;
-      case w.TOP_RIGHT:
+      case P.TOP_RIGHT:
         F = Math.max(H.minWidth, B + oe), Y = Math.max(H.minHeight, q - ne);
         break;
-      case w.BOTTOM_LEFT:
+      case P.BOTTOM_LEFT:
         F = Math.max(H.minWidth, B - oe), Y = Math.max(H.minHeight, q + ne);
         break;
-      case w.BOTTOM_RIGHT:
+      case P.BOTTOM_RIGHT:
         F = Math.max(H.minWidth, B + oe), Y = Math.max(H.minHeight, q + ne);
         break;
-      case w.TOP:
+      case P.TOP:
         Y = Math.max(H.minHeight, q - ne);
         break;
-      case w.BOTTOM:
+      case P.BOTTOM:
         Y = Math.max(H.minHeight, q + ne);
         break;
-      case w.LEFT:
+      case P.LEFT:
         F = Math.max(H.minWidth, B - oe);
         break;
-      case w.RIGHT:
+      case P.RIGHT:
         F = Math.max(H.minWidth, B + oe);
         break;
       default:
@@ -4360,11 +4378,11 @@ const ta = Ge.memo(pt), gt = ({
     if (H.preserveAspectRatio && H.aspectRatio) {
       const Q = B / q;
       [
-        w.TOP_LEFT,
-        w.TOP_RIGHT,
-        w.BOTTOM_LEFT,
-        w.BOTTOM_RIGHT
-      ].includes(g) ? F / Q > Y ? Y = Math.max(H.minHeight, F / Q) : F = Math.max(H.minWidth, Y * Q) : [w.TOP, w.BOTTOM].includes(g) ? F = Y * Q : [w.LEFT, w.RIGHT].includes(g) && (Y = F / Q);
+        P.TOP_LEFT,
+        P.TOP_RIGHT,
+        P.BOTTOM_LEFT,
+        P.BOTTOM_RIGHT
+      ].includes(g) ? F / Q > Y ? Y = Math.max(H.minHeight, F / Q) : F = Math.max(H.minWidth, Y * Q) : [P.TOP, P.BOTTOM].includes(g) ? F = Y * Q : [P.LEFT, P.RIGHT].includes(g) && (Y = F / Q);
     }
     return H.maxWidth && F > H.maxWidth && (F = H.maxWidth, H.preserveAspectRatio && H.aspectRatio && (Y = F / (B / q))), H.maxHeight && Y > H.maxHeight && (Y = H.maxHeight, H.preserveAspectRatio && H.aspectRatio && (F = Y * (B / q))), F = Math.max(H.minWidth, F), Y = Math.max(H.minHeight, Y), {
       width: Math.round(F),
@@ -4408,7 +4426,7 @@ const ht = ({
   onClose: i,
   initialPreserveAspectRatio: a = !0
 }) => {
-  const [r, s] = ue({ top: 0, left: 0 }), [h, f] = ue(!1), [p, m] = ue("top"), [d, R] = ue(a), O = re(null), T = re(null), S = Re(), E = (I) => {
+  const [r, s] = ue({ top: 0, left: 0 }), [h, f] = ue(!1), [p, m] = ue("top"), [d, R] = ue(a), S = re(null), T = re(null), O = Re(), E = (I) => {
     if (!I)
       return;
     (typeof window < "u" && typeof window.requestAnimationFrame == "function" ? window.requestAnimationFrame : (q) => setTimeout(q, 16))(() => {
@@ -4439,9 +4457,9 @@ const ht = ({
       I && (T.current = I);
     }
   }, [e]), _n(() => {
-    if (!e || !O.current) return;
+    if (!e || !S.current) return;
     const I = () => {
-      const q = e.getBoundingClientRect(), H = O.current.getBoundingClientRect();
+      const q = e.getBoundingClientRect(), H = S.current.getBoundingClientRect();
       T.current;
       const oe = window.visualViewport ? window.visualViewport : {
         width: window.innerWidth,
@@ -4455,10 +4473,10 @@ const ht = ({
         F = "top", Y = 10;
       Q = q.left + q.width / 2 - H.width / 2;
       const b = window.innerWidth, l = window.innerHeight;
-      let P = Q, M = Y;
-      Q < 10 ? P = 10 : Q + H.width > b - 10 && (P = b - H.width - 10), Y < 10 ? M = 10 : Y + H.height > l - 10 && (M = l - H.height - 10), s({
+      let w = Q, M = Y;
+      Q < 10 ? w = 10 : Q + H.width > b - 10 && (w = b - H.width - 10), Y < 10 ? M = 10 : Y + H.height > l - 10 && (M = l - H.height - 10), s({
         top: M,
-        left: P
+        left: w
       }), m(F), f(!0);
     };
     I();
@@ -4470,7 +4488,7 @@ const ht = ({
     };
   }, [e]), ie(() => {
     const I = (B) => {
-      O.current && !O.current.contains(B.target) && B.target !== e && i();
+      S.current && !S.current.contains(B.target) && B.target !== e && i();
     };
     return document.addEventListener("mousedown", I), () => {
       document.removeEventListener("mousedown", I);
@@ -4481,7 +4499,7 @@ const ht = ({
       const I = A(e);
       e.style.float = "left", e.style.margin = "0 10px 10px 0", e.style.display = "block", c("left"), E(e);
       const B = A(e);
-      S.recordOperation(
+      O.recordOperation(
         { type: "IMAGE_ALIGN", payload: { element: e, alignment: "left", state: B } },
         { type: "IMAGE_ALIGN", payload: { element: e, alignment: _(), state: I } }
       ), t && t("left");
@@ -4491,7 +4509,7 @@ const ht = ({
       const I = A(e);
       e.style.float = "none", e.style.margin = "10px auto", e.style.display = "block", c("center"), E(e);
       const B = A(e);
-      S.recordOperation(
+      O.recordOperation(
         { type: "IMAGE_ALIGN", payload: { element: e, alignment: "center", state: B } },
         { type: "IMAGE_ALIGN", payload: { element: e, alignment: _(), state: I } }
       ), t && t("center");
@@ -4501,7 +4519,7 @@ const ht = ({
       const I = A(e);
       e.style.float = "right", e.style.margin = "0 0 10px 10px", e.style.display = "block", c("right"), E(e);
       const B = A(e);
-      S.recordOperation(
+      O.recordOperation(
         { type: "IMAGE_ALIGN", payload: { element: e, alignment: "right", state: B } },
         { type: "IMAGE_ALIGN", payload: { element: e, alignment: _(), state: I } }
       ), t && t("right");
@@ -4513,23 +4531,23 @@ const ht = ({
         parent: e.parentNode,
         nextSibling: e.nextSibling
       };
-      S.recordOperation(
+      O.recordOperation(
         { type: "IMAGE_DELETE", payload: { element: e } },
         { type: "IMAGE_REINSERT", payload: { state: I } }
       ), e.parentNode.removeChild(e), n && n(), i();
     }
   }, z = () => {
     const I = d, B = !d;
-    R(B), S.recordOperation(
+    R(B), O.recordOperation(
       { type: "IMAGE_ASPECT_RATIO", payload: { element: e, preserveAspectRatio: B } },
       { type: "IMAGE_ASPECT_RATIO", payload: { element: e, preserveAspectRatio: I } }
     ), o && o(B);
   };
-  return !e || typeof document > "u" ? null : wn(
+  return !e || typeof document > "u" ? null : Pn(
     /* @__PURE__ */ u.jsxs(
       "div",
       {
-        ref: O,
+        ref: S,
         className: "image-tooltip-menu",
         "data-menu-position": p,
         "aria-hidden": !h,
@@ -4684,15 +4702,15 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
   showToolbar: h = !0,
   showPageManager: f = !0
 }, p) => {
-  const m = Yt(), d = Re(), { pageSize: R, pageMargins: O, continuousContent: T, pageBoundaries: S, activePage: E, zoomLevel: A, canUndo: _, canRedo: D } = m, c = re(null), y = re(null), { currentFormat: g, formatText: v, updateCurrentFormatFromSelection: C } = Kn(), [z, I] = ue(!1), [B, q] = ue(null), [H, oe] = ue(!0), {
+  const m = Yt(), d = Re(), { pageSize: R, pageMargins: S, continuousContent: T, pageBoundaries: O, activePage: E, zoomLevel: A, canUndo: _, canRedo: D } = m, c = re(null), y = re(null), { currentFormat: g, formatText: v, updateCurrentFormatFromSelection: C } = Kn(), [z, I] = ue(!1), [B, q] = ue(null), [H, oe] = ue(!0), {
     checkAndUpdateBoundaries: ne,
     getCurrentPage: F,
     scrollToPage: Y,
     updateBoundaries: Q,
     triggerAutoReflow: b,
     removePageAndContent: l,
-    insertPageBreakAtBoundary: P
-  } = Er(R, y, A, O), M = He(() => lt(R), [R]), [N, Z] = ue(!1), $ = re(null), L = re(!1), W = re(!1), K = re(!1), V = re(T);
+    insertPageBreakAtBoundary: w
+  } = Er(R, y, A, S), M = He(() => lt(R), [R]), [N, Z] = ue(!1), $ = re(null), L = re(!1), W = re(!1), K = re(!1), V = re(T);
   ie(() => {
     if (y.current) {
       if (!K.current) {
@@ -4708,7 +4726,7 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
           const J = setTimeout(() => {
             if (Q(), L.current) {
               L.current = !1;
-              const se = Math.max(0, S.length - 1);
+              const se = Math.max(0, O.length - 1);
               d.setActivePage(se), setTimeout(() => {
                 Y(se, c);
               }, $t);
@@ -4719,9 +4737,9 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
         V.current = T;
       }
     }
-  }, [T, Q, S.length, d, Y]), ie(() => {
+  }, [T, Q, O.length, d, Y]), ie(() => {
     r && K.current && r(T);
-  }, [T, r]), Pn(p, () => ({
+  }, [T, r]), wn(p, () => ({
     /**
      * Get the current HTML content from the editor
      * Returns the actual DOM content to ensure latest changes (like indentation) are captured
@@ -4798,21 +4816,21 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
   }, [d, Q, i]), me = G((j) => {
     d.updatePageMargins(j), Q({ pageMargins: j }), a && a(j);
   }, [d, Q, a]), xe = G((j) => {
-    j < 0 || j >= S.length || (W.current = !0, d.setActivePage(j), Y(j, c), setTimeout(() => {
+    j < 0 || j >= O.length || (W.current = !0, d.setActivePage(j), Y(j, c), setTimeout(() => {
       W.current = !1;
     }, oa), t && t(j));
-  }, [d, Y, t, S.length]), yt = G(() => {
-    const j = S.length + 1;
-    P(j) && (L.current = !0, setTimeout(() => {
+  }, [d, Y, t, O.length]), yt = G(() => {
+    const j = O.length + 1;
+    w(j) && (L.current = !0, setTimeout(() => {
       if (L.current) {
         L.current = !1;
-        const se = Math.max(0, S.length - 1);
+        const se = Math.max(0, O.length - 1);
         d.setActivePage(se), setTimeout(() => {
           Y(se, c);
         }, $t);
       }
     }, 100)), o && o();
-  }, [S.length, P, d, Y, o]), hn = G(() => {
+  }, [O.length, w, d, Y, o]), hn = G(() => {
     const j = window.getSelection();
     if (j && j.rangeCount > 0) {
       if (!y?.current) return;
@@ -4824,12 +4842,12 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
       }, 150);
     }
   }, [Q, F, d, c]), Et = G((j) => {
-    if (S.length <= 1) {
+    if (O.length <= 1) {
       console.warn("Cannot delete the only page");
       return;
     }
     l(j) && (d.setActivePage(0), n && n(j));
-  }, [S.length, l, d, n]), Se = G(() => {
+  }, [O.length, l, d, n]), Oe = G(() => {
     d.zoomIn();
   }, [d]), ke = G(() => {
     d.zoomOut();
@@ -4849,7 +4867,7 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
           switch (J.key) {
             case "+":
             case "=":
-              Se();
+              Oe();
               break;
             case "-":
             case "_":
@@ -4870,7 +4888,7 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
     return window.addEventListener("keydown", j), () => {
       window.removeEventListener("keydown", j);
     };
-  }, [Se, ke, Ce, bt, Tt]);
+  }, [Oe, ke, Ce, bt, Tt]);
   const mn = G(() => {
     !c.current || !y.current || W.current || ($.current && clearTimeout($.current), $.current = setTimeout(() => {
       if (W.current) {
@@ -4884,7 +4902,7 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
     if (!T) return 0;
     const J = T.replace(/<[^>]*>/g, " ").match(new RegExp("\\p{L}+", "gu"));
     return J ? J.length : 0;
-  }, [T]), En = S.length || 1, bn = G((j) => {
+  }, [T]), En = O.length || 1, bn = G((j) => {
     I(!0), q(j);
   }, []), xt = G(() => {
     I(!1), q(null);
@@ -4929,8 +4947,8 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
               content: T,
               dimensions: M,
               pageSize: R,
-              pageMargins: O,
-              pageBoundaries: S,
+              pageMargins: S,
+              pageBoundaries: O,
               editorRef: y,
               onInput: k,
               onContentChange: ae,
@@ -4984,16 +5002,16 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
         zoomLevel: A,
         canZoomIn: nt(A),
         canZoomOut: rt(A),
-        onZoomIn: Se,
+        onZoomIn: Oe,
         onZoomOut: ke,
         onZoomReset: Ce
       }) : /* @__PURE__ */ u.jsx(
         ta,
         {
-          pageBoundaries: S,
+          pageBoundaries: O,
           activePage: E,
           pageSize: R,
-          pageMargins: O,
+          pageMargins: S,
           zoomLevel: A,
           canZoomIn: nt(A),
           canZoomOut: rt(A),
@@ -5002,7 +5020,7 @@ const na = 50, Xe = 50, $t = 50, ra = 100, oa = 500, Ut = "UPDATE_CONTINUOUS_CON
           onDeletePage: Et,
           onPageSizeChange: ce,
           onPageMarginsChange: me,
-          onZoomIn: Se,
+          onZoomIn: Oe,
           onZoomOut: ke,
           onZoomReset: Ce
         }
@@ -5141,7 +5159,7 @@ export {
   le as PAGE_SIZES,
   ta as PageManager,
   ft as PageView,
-  w as RESIZE_HANDLERS,
+  P as RESIZE_HANDLERS,
   Fo as Sidebar,
   ma as applyImageDimensions,
   ga as calculateResizeDimensions,

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { AlignLeft, AlignCenter, AlignRight, Trash2, Scaling, ImageUpscale } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
+import { updateResizeOverlay } from '../../lib/editor/image-resize-utils';
 
 /**
  * ImageTooltipMenu - Component for image tooltip menu with alignment, aspect ratio, and delete options
@@ -22,6 +23,23 @@ const ImageTooltipMenu = ({
   const menuRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const actions = useDocumentActions();
+
+  const syncResizeOverlayPosition = (element) => {
+    if (!element) {
+      return;
+    }
+
+    const raf = typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function'
+      ? window.requestAnimationFrame
+      : (callback) => setTimeout(callback, 16);
+
+    raf(() => {
+      const overlay = document.querySelector('.image-resize-overlay');
+      if (overlay) {
+        updateResizeOverlay(overlay, element);
+      }
+    });
+  };
 
   // Helper function to get current image state for undo operations
   const getImageState = (element) => {
@@ -206,6 +224,7 @@ const ImageTooltipMenu = ({
       imageElement.style.margin = '0 10px 10px 0';
       imageElement.style.display = 'block';
       setCurrentAlignment('left');
+      syncResizeOverlayPosition(imageElement);
       
       const afterState = getImageState(imageElement);
       
@@ -227,6 +246,7 @@ const ImageTooltipMenu = ({
       imageElement.style.margin = '10px auto';
       imageElement.style.display = 'block';
       setCurrentAlignment('center');
+      syncResizeOverlayPosition(imageElement);
       
       const afterState = getImageState(imageElement);
       
@@ -248,6 +268,7 @@ const ImageTooltipMenu = ({
       imageElement.style.margin = '0 0 10px 10px';
       imageElement.style.display = 'block';
       setCurrentAlignment('right');
+      syncResizeOverlayPosition(imageElement);
       
       const afterState = getImageState(imageElement);
       

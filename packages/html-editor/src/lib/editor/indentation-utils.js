@@ -10,30 +10,39 @@ const BLOCK_TAGS = new Set(['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI'
 const LIST_INDENT_STEP = 32; // px per indent level for lists
 
 /**
+ * Adjusts inline margin for block element indentation, tracking level in data attribute.
+ * @param {Element} block
+ * @param {boolean} isOutdent
+ */
+function adjustBlockIndentation(block, isOutdent) {
+  if (!block) return;
+
+  if (!block.dataset) {
+    block.dataset = {};
+  }
+  if (!block.style) {
+    block.style = {};
+  }
+
+  const currentLevel = parseInt(block.dataset.indentLevel || '0', 10);
+  const nextLevel = Math.max(0, isOutdent ? currentLevel - 1 : currentLevel + 1);
+
+  if (nextLevel === 0) {
+    block.style.marginLeft = '';
+    delete block.dataset.indentLevel;
+  } else {
+    block.style.marginLeft = `${nextLevel * LIST_INDENT_STEP}px`;
+    block.dataset.indentLevel = String(nextLevel);
+  }
+}
+
+/**
  * Adjust inline margin for list indentation, tracking level in data attribute.
  * @param {Element} listItem
  * @param {boolean} isOutdent
  */
 function adjustListIndentation(listItem, isOutdent) {
-  if (!listItem) return;
-
-  if (!listItem.dataset) {
-    listItem.dataset = {};
-  }
-  if (!listItem.style) {
-    listItem.style = {};
-  }
-
-  const currentLevel = parseInt(listItem.dataset.indentLevel || '0', 10);
-  const nextLevel = Math.max(0, isOutdent ? currentLevel - 1 : currentLevel + 1);
-
-  if (nextLevel === 0) {
-    listItem.style.marginLeft = '';
-    delete listItem.dataset.indentLevel;
-  } else {
-    listItem.style.marginLeft = `${nextLevel * LIST_INDENT_STEP}px`;
-    listItem.dataset.indentLevel = String(nextLevel);
-  }
+  adjustBlockIndentation(listItem, isOutdent);
 }
 
 /**
@@ -122,11 +131,26 @@ function getSelectedBlocks() {
 }
 
 /**
- * Removes leading indentation (&nbsp;&nbsp;&nbsp;&nbsp;) from a block element
- * Handles cases where indentation might be inside formatted text
+ * Removes leading indentation (&nbsp;&nbsp;&nbsp;&nbsp;) from a block element or reduces margin-left
+ * Handles cases where indentation might be inside formatted text or stored as margin-left
  * @param {Element} block - The block element to outdent
  */
 function removeLeadingIndentation(block) {
+  // First check if block has margin-left indentation (new approach)
+  if (block.style && block.style.marginLeft && block.style.marginLeft !== '') {
+    const currentLevel = parseInt(block.dataset.indentLevel || '0', 10);
+    const nextLevel = Math.max(0, currentLevel - 1);
+    if (nextLevel === 0) {
+      block.style.marginLeft = '';
+      delete block.dataset.indentLevel;
+    } else {
+      block.style.marginLeft = `${nextLevel * LIST_INDENT_STEP}px`;
+      block.dataset.indentLevel = String(nextLevel);
+    }
+    return;
+  }
+
+  // Fallback to old &nbsp; approach for backward compatibility
   // First try to remove from innerHTML if it's at the start (for backward compatibility and tests)
   if (block.innerHTML.startsWith('&nbsp;&nbsp;&nbsp;&nbsp;')) {
     block.innerHTML = block.innerHTML.replace(/^(&nbsp;){4}/, '');
@@ -190,12 +214,13 @@ export function indentSelectedBlocks(isOutdent = false) {
       return;
     }
 
+    // For all other block elements, use margin-left approach
     if (isOutdent) {
-      // For outdent, remove leading indentation from text content
+      // For outdent, remove leading indentation from text content or reduce margin
       removeLeadingIndentation(block);
     } else {
-      // For indent, add indentation at the beginning
-      block.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;' + block.innerHTML;
+      // For indent, add indentation using margin-left
+      adjustBlockIndentation(block, false);
     }
   });
 

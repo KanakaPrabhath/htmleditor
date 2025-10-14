@@ -123,8 +123,8 @@ describe('indentation-utils', () => {
 
     it('should handle Tab with selection (indent blocks)', () => {
       // Mock expanded selection
-      const mockBlock1 = { innerHTML: 'Content 1', firstChild: { nodeType: 3 }, tagName: 'P' };
-      const mockBlock2 = { innerHTML: 'Content 2', firstChild: { nodeType: 3 }, tagName: 'P' };
+      const mockBlock1 = { innerHTML: 'Content 1', firstChild: { nodeType: 3 }, tagName: 'P', dataset: {}, style: {} };
+      const mockBlock2 = { innerHTML: 'Content 2', firstChild: { nodeType: 3 }, tagName: 'P', dataset: {}, style: {} };
 
       const mockRange = {
         collapsed: false,
@@ -160,14 +160,16 @@ describe('indentation-utils', () => {
       expect(event.preventDefault).toHaveBeenCalled();
       expect(mockDocument.execCommand).not.toHaveBeenCalled(); // Should not use execCommand for block indentation
       expect(result).toBe(true);
-      expect(mockBlock1.innerHTML).toBe('&nbsp;&nbsp;&nbsp;&nbsp;Content 1');
-      expect(mockBlock2.innerHTML).toBe('&nbsp;&nbsp;&nbsp;&nbsp;Content 2');
+      expect(mockBlock1.style.marginLeft).toBe('32px');
+      expect(mockBlock2.style.marginLeft).toBe('32px');
+      expect(mockBlock1.dataset.indentLevel).toBe('1');
+      expect(mockBlock2.dataset.indentLevel).toBe('1');
     });
 
     it('should handle Shift+Tab with selection (outdent blocks)', () => {
       // Mock expanded selection with pre-indented content
-      const mockBlock1 = { innerHTML: '&nbsp;&nbsp;&nbsp;&nbsp;Content 1', firstChild: { nodeType: 3 }, tagName: 'P' };
-      const mockBlock2 = { innerHTML: '&nbsp;&nbsp;&nbsp;&nbsp;Content 2', firstChild: { nodeType: 3 }, tagName: 'P' };
+      const mockBlock1 = { innerHTML: 'Content 1', firstChild: { nodeType: 3 }, tagName: 'P', dataset: { indentLevel: '1' }, style: { marginLeft: '32px' } };
+      const mockBlock2 = { innerHTML: 'Content 2', firstChild: { nodeType: 3 }, tagName: 'P', dataset: { indentLevel: '1' }, style: { marginLeft: '32px' } };
 
       const mockRange = {
         collapsed: false,
@@ -203,8 +205,10 @@ describe('indentation-utils', () => {
       expect(event.preventDefault).toHaveBeenCalled();
       expect(mockDocument.execCommand).not.toHaveBeenCalled();
       expect(result).toBe(true);
-      expect(mockBlock1.innerHTML).toBe('Content 1');
-      expect(mockBlock2.innerHTML).toBe('Content 2');
+      expect(mockBlock1.style.marginLeft).toBe('');
+      expect(mockBlock2.style.marginLeft).toBe('');
+      expect(mockBlock1.dataset.indentLevel).toBeUndefined();
+      expect(mockBlock2.dataset.indentLevel).toBeUndefined();
     });
 
     it('should handle Tab with no intersecting blocks', () => {

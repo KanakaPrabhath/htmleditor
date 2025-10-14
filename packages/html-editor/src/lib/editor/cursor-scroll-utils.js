@@ -101,8 +101,6 @@ export const scrollToPage = (container, editor, pageNumber, positionCursorCallba
       // Calculate scroll position: current scroll + element position relative to container
       const scrollTop = container.scrollTop + (elementRect.top - containerRect.top);
       
-      console.log('[scrollToPage] Scrolling to page', pageNumber, 'scrollTop:', scrollTop);
-      
       // Scroll to the page
       container.scrollTo({
         top: scrollTop,

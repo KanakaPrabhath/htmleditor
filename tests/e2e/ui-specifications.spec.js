@@ -406,6 +406,7 @@ test.describe('UI Specifications - User Scenarios', () => {
       
       // Editor should still be functional
       await page.keyboard.press('ArrowRight');
+      await editor.click();
       await page.keyboard.type(' Still works');
       
       const content = await editor.innerHTML();

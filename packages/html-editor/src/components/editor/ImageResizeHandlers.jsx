@@ -66,7 +66,6 @@ const ImageResizeHandlers = ({
       
       // Notify parent
       if (onImageSelect) {
-        console.log('Image selected, calling onImageSelect callback');
         onImageSelect(imageElement);
       }
     }
@@ -232,29 +231,22 @@ const ImageResizeHandlers = ({
    * Handle click on editor to select images
    */
   const handleEditorClick = useCallback((event) => {
-    //console.log('handleEditorClick called with target:', event.target);
     
     // Clear selection if clicking outside an image
     if (resizeOverlayRef.current && !resizeOverlayRef.current.contains(event.target)) {
-      ///console.log('Clicking outside image, clearing selection');
       clearImageSelection();
     }
 
     // Check if clicked on an image
     const target = event.target;
     if (isResizableImage(target)) {
-      //console.log('Clicked on a resizable image');
       // If already selected, don't reselect
       if (target === resizeImageRef.current) {
-        //console.log('Image already selected, not reselecting');
         return;
       }
       
       // Select the new image
-      //console.log('Selecting new image');
       handleImageSelection(target);
-    } else {
-      console.log('Clicked on non-image element');
     }
   }, [handleImageSelection, clearImageSelection]);
 

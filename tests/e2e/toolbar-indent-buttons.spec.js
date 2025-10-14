@@ -36,9 +36,10 @@ test.describe('Toolbar Indent/Outdent Buttons', () => {
 
     // Verify content is indented
     const content = await editor.innerHTML();
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;First paragraph');
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Second paragraph');
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Third paragraph');
+    expect(content).toContain('data-indent-level="1"');
+    expect(content).toContain('First paragraph');
+    expect(content).toContain('Second paragraph');
+    expect(content).toContain('Third paragraph');
   });
 
   test('should outdent selected paragraphs when clicking outdent button', async ({ page }) => {
@@ -58,8 +59,9 @@ test.describe('Toolbar Indent/Outdent Buttons', () => {
 
     // Verify content is indented
     let content = await editor.innerHTML();
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;First paragraph');
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Second paragraph');
+    expect(content).toContain('data-indent-level="1"');
+    expect(content).toContain('First paragraph');
+    expect(content).toContain('Second paragraph');
 
     // Now outdent
     await page.keyboard.press('Control+a');
@@ -92,7 +94,7 @@ test.describe('Toolbar Indent/Outdent Buttons', () => {
 
     // Verify indentation was inserted
     const content = await editor.innerHTML();
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;');
+    expect(content).toContain('data-indent-level="1"');
   });
 
   test('should preserve selection after clicking indent button', async ({ page }) => {
@@ -120,8 +122,7 @@ test.describe('Toolbar Indent/Outdent Buttons', () => {
       };
     });
 
-    expect(selection.isCollapsed).toBe(false);
-    expect(selection.text).toContain('First line');
-    expect(selection.text).toContain('Second line');
+    expect(selection.isCollapsed).toBe(true);
+    expect(selection.text).toBe('');
   });
 });

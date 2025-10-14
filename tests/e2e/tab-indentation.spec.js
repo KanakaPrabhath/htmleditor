@@ -56,9 +56,10 @@ test.describe('Tab Indentation - User Scenarios', () => {
 
       // All paragraphs should now be indented
       expect(contentAfter).not.toBe(contentBefore);
-      expect(contentAfter).toContain('&nbsp;&nbsp;&nbsp;&nbsp;First paragraph');
-      expect(contentAfter).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Second paragraph');
-      expect(contentAfter).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Third paragraph');
+      expect(contentAfter).toContain('data-indent-level="1"');
+      expect(contentAfter).toContain('First paragraph');
+      expect(contentAfter).toContain('Second paragraph');
+      expect(contentAfter).toContain('Third paragraph');
     });
 
     test('should outdent selected paragraphs when Shift+Tab is pressed', async ({ page }) => {

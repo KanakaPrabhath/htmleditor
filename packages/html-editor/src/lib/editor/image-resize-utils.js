@@ -159,7 +159,6 @@ export function isResizableImage(element) {
   
   // Check if it's an img element
   if (element.tagName === 'IMG') {
-    console.log('Element is an IMG tag, returning true');
     return true;
   }
   

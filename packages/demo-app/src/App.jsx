@@ -37,7 +37,6 @@ function App() {
   const handlePrintHTML = () => {
     if (editorRef.current) {
       const htmlContent = editorRef.current.getHTMLContent();
-      console.log('HTML Content:', htmlContent);
     }
   };
 

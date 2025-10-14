@@ -78,7 +78,6 @@ const ImageTooltipMenu = ({
 
   useEffect(() => {
     return () => {
-      console.log('ImageTooltipMenu unmounted');
     };
   }, [imageElement]);
 

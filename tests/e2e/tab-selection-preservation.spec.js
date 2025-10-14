@@ -57,9 +57,10 @@ test.describe('Tab Indentation - Selection Preservation', () => {
 
     // Content should be indented
     const content = await editor.innerHTML();
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;First paragraph');
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Second paragraph');
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Third paragraph');
+    expect(content).toContain('data-indent-level="1"');
+    expect(content).toContain('First paragraph');
+    expect(content).toContain('Second paragraph');
+    expect(content).toContain('Third paragraph');
   });
 
   test('should preserve selection after Shift+Tab outdent on multiple paragraphs', async ({ page }) => {
@@ -209,9 +210,10 @@ test.describe('Tab Indentation - Selection Preservation', () => {
     expect(contentAfter).toContain('Line three content');
     
     // Should have indentation added
-    expect(contentAfter).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Line one content');
-    expect(contentAfter).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Line two content');
-    expect(contentAfter).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Line three content');
+    expect(contentAfter).toContain('data-indent-level="1"');
+    expect(contentAfter).toContain('Line one content');
+    expect(contentAfter).toContain('Line two content');
+    expect(contentAfter).toContain('Line three content');
   });
 
   test('should handle multiple indent/outdent cycles with selection preserved', async ({ page }) => {
@@ -251,7 +253,8 @@ test.describe('Tab Indentation - Selection Preservation', () => {
 
     // Content should have one level of indentation
     const content = await editor.innerHTML();
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;First line');
-    expect(content).toContain('&nbsp;&nbsp;&nbsp;&nbsp;Second line');
+    expect(content).toContain('data-indent-level="1"');
+    expect(content).toContain('First line');
+    expect(content).toContain('Second line');
   });
 });

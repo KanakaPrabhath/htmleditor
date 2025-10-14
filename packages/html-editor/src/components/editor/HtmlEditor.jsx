@@ -22,6 +22,9 @@ const SCROLL_DEBOUNCE = 100;
 const FOCUS_DELAY = 200;
 const NAVIGATION_LOCK_TIMEOUT = 500;
 
+// Action type for content updates (matching DocumentContext)
+const UPDATE_CONTINUOUS_CONTENT = 'UPDATE_CONTINUOUS_CONTENT';
+
 /**
  * HtmlEditor - Main WYSIWYG HTML Editor Component
  * 
@@ -228,6 +231,25 @@ const HtmlEditor = forwardRef(({
       editorRef.current.innerHTML = html;
     }
     
+    // Record the content change for undo/redo
+    const previousContent = continuousContent;
+    if (previousContent !== html) {
+      // Create the operation to update content
+      const updateOperation = {
+        type: UPDATE_CONTINUOUS_CONTENT,
+        payload: html
+      };
+      
+      // Create the inverse operation to restore previous content
+      const inverseOperation = {
+        type: UPDATE_CONTINUOUS_CONTENT,
+        payload: previousContent
+      };
+      
+      // Record the operation
+      actions.recordOperation(updateOperation, inverseOperation);
+    }
+    
     actions.updateContinuousContent(html);
     
     // Update page boundaries after content change (already debounced in hook)
@@ -241,9 +263,9 @@ const HtmlEditor = forwardRef(({
     if (currentPage !== activePage) {
       actions.setActivePage(currentPage);
     }
-  }, [actions, checkAndUpdateBoundaries, getCurrentPage, activePage, triggerAutoReflow, containerRef, editorRef]);
+  }, [actions, checkAndUpdateBoundaries, getCurrentPage, activePage, triggerAutoReflow, containerRef, editorRef, continuousContent]);
 
-  const handleInput = useCallback((event) => {
+  const handleInput = useCallback((_event) => {
     updateContent();
   }, [updateContent]);
 
@@ -386,17 +408,25 @@ const HtmlEditor = forwardRef(({
     actions.resetZoom();
   }, [actions]);
 
-  // Keyboard shortcuts for zoom
+  const handleUndo = useCallback(() => {
+    actions.undo();
+  }, [actions]);
+
+  const handleRedo = useCallback(() => {
+    actions.redo();
+  }, [actions]);
+
+  // Keyboard shortcuts for zoom, undo, redo
   useEffect(() => {
     const handleKeyDown = (event) => {
       // Check if Ctrl key (or Cmd on Mac) is pressed
       if (event.ctrlKey || event.metaKey) {
-        // Prevent default browser zoom behavior for our shortcuts
-        if (['+', '=', '-', '_', '0'].includes(event.key)) {
+        // Prevent default browser behavior for our shortcuts
+        if (['+', '=', '-', '_', '0', 'z', 'y'].includes(event.key)) {
           event.preventDefault();
         }
         
-        // Only handle zoom shortcuts when editor or its container has focus
+        // Only handle shortcuts when editor or its container has focus
         // or when no specific input elements are focused
         const isEditorFocused = document.activeElement === editorRef.current;
         const isContainerFocused = document.activeElement === containerRef.current;
@@ -417,6 +447,14 @@ const HtmlEditor = forwardRef(({
             case '0':
               handleZoomReset();
               break;
+            case 'z':
+              if (!event.shiftKey) {
+                handleUndo();
+              }
+              break;
+            case 'y':
+              handleRedo();
+              break;
             default:
               break;
           }
@@ -428,7 +466,7 @@ const HtmlEditor = forwardRef(({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleZoomIn, handleZoomOut, handleZoomReset]);
+  }, [handleZoomIn, handleZoomOut, handleZoomReset, handleUndo, handleRedo]);
 
   const handleScroll = useCallback(() => {
     // Early exit if refs not ready or navigating

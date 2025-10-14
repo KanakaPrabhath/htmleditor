@@ -168,6 +168,94 @@ export const useFormatting = () => {
   }, []);
 
   /**
+   * Handle text alignment by applying styles directly to paragraph elements
+   * instead of wrapping content in divs with text-align
+   */
+  const handleTextAlignment = useCallback((command) => {
+    try {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) {
+        return false;
+      }
+
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+
+      // Map command to CSS text-align value
+      const alignMap = {
+        justifyLeft: 'left',
+        justifyCenter: 'center',
+        justifyRight: 'right',
+        justifyFull: 'justify'
+      };
+
+      const textAlign = alignMap[command];
+      if (!textAlign) {
+        return false;
+      }
+
+      if (!selectedText) {
+        // No text selected - apply to current paragraph or create new one
+        const startContainer = range.startContainer;
+        const element = startContainer.nodeType === Node.TEXT_NODE
+          ? startContainer.parentElement
+          : startContainer;
+
+        const blockElement = findNearestBlockElement(element) || createParagraphAtCursor();
+        if (blockElement) {
+          blockElement.style.textAlign = textAlign;
+          // Update format state
+          updateAlignmentState(textAlign);
+        }
+        return true;
+      }
+
+      // Text is selected - find all block elements in the selection and apply alignment
+      const blockElements = findBlockElementsInRange(range);
+      
+      if (blockElements.length === 0) {
+        // No block elements found, wrap selection in a paragraph with alignment
+        const p = document.createElement('p');
+        p.style.textAlign = textAlign;
+        
+        const fragment = range.extractContents();
+        p.appendChild(fragment);
+        range.insertNode(p);
+        
+        // Restore selection
+        range.selectNodeContents(p);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else {
+        // Apply alignment to all block elements in the selection
+        blockElements.forEach(block => {
+          block.style.textAlign = textAlign;
+        });
+      }
+
+      // Update format state
+      updateAlignmentState(textAlign);
+      return true;
+    } catch (error) {
+      console.warn('[useFormatting] Text alignment failed:', error);
+      return false;
+    }
+  }, []);
+
+  /**
+   * Update alignment state based on text-align value
+   */
+  const updateAlignmentState = useCallback((textAlign) => {
+    setCurrentFormat(prev => ({
+      ...prev,
+      alignLeft: textAlign === 'left',
+      alignCenter: textAlign === 'center',
+      alignRight: textAlign === 'right',
+      alignJustify: textAlign === 'justify'
+    }));
+  }, []);
+
+  /**
    * Format text using document.execCommand or custom undo/redo
    * Optimized with better error handling and selection management
    */
@@ -199,6 +287,12 @@ export const useFormatting = () => {
       // Handle fontName separately for better control
       if (command === 'fontName') {
         handleFontName(value);
+        return;
+      }
+
+      // Handle alignment commands specially to apply to paragraph elements instead of wrapping in divs
+      if (['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'].includes(command)) {
+        handleTextAlignment(command);
         return;
       }
 
@@ -404,6 +498,7 @@ export const useFormatting = () => {
       let fontSize = DEFAULT_FONT_SIZE;
       let fontFamily = 'Arial';
       let headingLevel = 'p';
+      let textAlign = 'left'; // Default alignment
 
       if (selectedText) {
         // Try to get font size from computed style of selected element
@@ -433,20 +528,27 @@ export const useFormatting = () => {
             if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(tagName)) {
               headingLevel = tagName;
             }
+            
+            // Get text alignment from the block element's style
+            const blockComputedStyle = window.getComputedStyle(blockElement);
+            const computedTextAlign = blockComputedStyle.textAlign;
+            if (['left', 'center', 'right', 'justify'].includes(computedTextAlign)) {
+              textAlign = computedTextAlign;
+            }
           }
         }
       }
 
-      // Fallback to execCommand for other formatting
+      // Fallback to execCommand for other formatting (bold, italic, etc.)
       const formatState = {
         bold: document.queryCommandState('bold'),
         italic: document.queryCommandState('italic'),
         underline: document.queryCommandState('underline'),
         strikethrough: document.queryCommandState('strikethrough'),
-        alignLeft: document.queryCommandState('justifyLeft'),
-        alignCenter: document.queryCommandState('justifyCenter'),
-        alignRight: document.queryCommandState('justifyRight'),
-        alignJustify: document.queryCommandState('justifyFull'),
+        alignLeft: textAlign === 'left',
+        alignCenter: textAlign === 'center',
+        alignRight: textAlign === 'right',
+        alignJustify: textAlign === 'justify',
         fontFamily: fontFamily,
         fontSize: fontSize,
         headingLevel: headingLevel
@@ -513,6 +615,82 @@ function findNearestBlockElement(element) {
   }
   
   return null;
+}
+
+/**
+ * Helper function to find all block elements within a range
+ */
+function findBlockElementsInRange(range) {
+  const blockElements = [];
+  const startContainer = range.startContainer;
+  const endContainer = range.endContainer;
+  
+  // If range is within a single block element
+  const startBlock = findNearestBlockElement(
+    startContainer.nodeType === Node.TEXT_NODE ? startContainer.parentElement : startContainer
+  );
+  const endBlock = findNearestBlockElement(
+    endContainer.nodeType === Node.TEXT_NODE ? endContainer.parentElement : endContainer
+  );
+  
+  if (startBlock === endBlock && startBlock) {
+    return [startBlock];
+  }
+  
+  // Find all block elements in the range
+  const walker = document.createTreeWalker(
+    range.commonAncestorContainer,
+    NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode: (node) => {
+        const tagName = node.tagName?.toLowerCase();
+        return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(tagName) 
+          ? NodeFilter.FILTER_ACCEPT 
+          : NodeFilter.FILTER_SKIP;
+      }
+    }
+  );
+  
+  let current = walker.nextNode();
+  while (current) {
+    // Check if this block element intersects with the range
+    if (range.intersectsNode(current)) {
+      blockElements.push(current);
+    }
+    current = walker.nextNode();
+  }
+  
+  return blockElements;
+}
+
+/**
+ * Helper function to create a paragraph element at cursor position
+ */
+function createParagraphAtCursor() {
+  try {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+      return null;
+    }
+
+    const range = selection.getRangeAt(0);
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+    
+    // Insert the paragraph
+    range.insertNode(p);
+    
+    // Move cursor into the paragraph
+    range.selectNodeContents(p);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    return p;
+  } catch (error) {
+    console.warn('[useFormatting] Failed to create paragraph at cursor:', error);
+    return null;
+  }
 }
 
 /**

@@ -96,11 +96,42 @@ describe('useFormatting Hook', () => {
     it('should handle alignment commands', () => {
       const { result } = renderHook(() => useFormatting(), { wrapper });
       
+      // Create a paragraph element in the editor for alignment testing
+      const editor = document.getElementById('test-editor');
+      const p = document.createElement('p');
+      p.textContent = 'Test content';
+      editor.appendChild(p);
+      
+      // Select the paragraph content
+      const range = document.createRange();
+      range.selectNodeContents(p);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      
       act(() => {
         result.current.formatText('justifyLeft');
       });
       
-      expect(document.execCommand).toHaveBeenCalledWith('justifyLeft', false, null);
+      // Alignment commands now use custom handling instead of execCommand
+      // The paragraph should have text-align style applied
+      expect(p.style.textAlign).toBe('left');
+      
+      // Test other alignments
+      act(() => {
+        result.current.formatText('justifyCenter');
+      });
+      expect(p.style.textAlign).toBe('center');
+      
+      act(() => {
+        result.current.formatText('justifyRight');
+      });
+      expect(p.style.textAlign).toBe('right');
+      
+      act(() => {
+        result.current.formatText('justifyFull');
+      });
+      expect(p.style.textAlign).toBe('justify');
     });
 
     it('should handle list commands', () => {

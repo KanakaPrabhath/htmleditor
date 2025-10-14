@@ -32,6 +32,7 @@ const UPDATE_CONTINUOUS_CONTENT = 'UPDATE_CONTINUOUS_CONTENT';
  * - getHTMLContent() - Returns the current HTML content as a string
  * - getPlainText() - Returns the plain text content (HTML stripped)
  * - setContent(html) - Sets the editor content programmatically
+ * - insertContent(html) - Inserts content at the current cursor position without replacing existing content
  * 
  * @param {Object} props
  * @param {React.ReactNode} props.pageManagerComponent - Optional custom PageManager component from parent app
@@ -198,6 +199,38 @@ const HtmlEditor = forwardRef(({
         setTimeout(() => {
           updateBoundaries();
         }, BOUNDARY_UPDATE_DELAY);
+      }
+    },
+    
+    /**
+     * Insert content at the current cursor position without replacing existing content
+     * @param {string} html - HTML content to insert
+     */
+    insertContent: (html) => {
+      if (!editorRef.current || !html) return;
+
+      const normalizedHtml = normalizeContent(html);
+      const selection = window.getSelection();
+
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+
+        // Check if the range is within the editor
+        if (editorRef.current.contains(range.commonAncestorContainer)) {
+          // Use execCommand to insert HTML at cursor position
+          document.execCommand('insertHTML', false, normalizedHtml);
+
+          // Update content state with the new content
+          const updatedContent = editorRef.current.innerHTML;
+          actions.updateContinuousContent(updatedContent);
+          lastContentRef.current = updatedContent;
+
+          // Update boundaries and trigger reflow
+          setTimeout(() => {
+            updateBoundaries();
+            triggerAutoReflow(200);
+          }, BOUNDARY_UPDATE_DELAY);
+        }
       }
     }
   }), [continuousContent, actions, updateBoundaries, editorRef]);

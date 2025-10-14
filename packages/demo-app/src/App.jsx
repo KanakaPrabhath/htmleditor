@@ -47,6 +47,18 @@ function App() {
     }
   };
 
+  const handleInsertSampleContent = () => {
+    if (editorRef.current) {
+      // Insert a smaller sample content at cursor position
+      const insertContent = `
+        <h3>Inserted Content</h3>
+        <p>This content was inserted at the cursor position using the <code>insertContent</code> method.</p>
+        <p>You can continue typing after this inserted content.</p>
+      `.trim();
+      editorRef.current.insertContent(insertContent);
+    }
+  };
+
   return (
       <div id="app-wrapper">
         <div id="editor-container">
@@ -60,6 +72,9 @@ function App() {
            </button>
            <button onClick={handleResetDocument} style={{ padding: '5px 10px', fontSize: '12px' }}>
              Load Sample Content
+           </button>
+           <button onClick={handleInsertSampleContent} style={{ padding: '5px 10px', fontSize: '12px' }}>
+             Insert Sample Content
            </button>
          </div>
       </div>

@@ -73,6 +73,11 @@ function App() {
     editorRef.current.insertContent('<p><strong>New content inserted!</strong></p>');
   };
 
+  const handleSetContent = () => {
+    const sampleContent = '<h1>Sample Document</h1><p>This is sample content.</p>';
+    editorRef.current.setContent(sampleContent);
+  };
+
   return (
     <div>
       <DocumentProvider>
@@ -80,6 +85,7 @@ function App() {
       </DocumentProvider>
       <button onClick={handleSave}>Save Content</button>
       <button onClick={handleInsertContent}>Insert Content</button>
+      <button onClick={handleSetContent}>Set Sample Content</button>
     </div>
   );
 }

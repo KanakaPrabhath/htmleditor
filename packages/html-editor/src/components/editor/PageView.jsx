@@ -23,6 +23,7 @@ const PageView = ({
   onClick,
   onScroll,
   onPaste,
+  onRemovePageBreak,
   zoomLevel = 100,
   pageMargins = DEFAULT_MARGIN_PRESET
 }) => {
@@ -100,9 +101,33 @@ const PageView = ({
 
     const clickedElement = event.target;
     
-    // Prevent clicking on page-break elements
+    // Check if click is on a page-break element
     if (isPageBreakElement(clickedElement)) {
       event.preventDefault();
+      
+      // Check if click is in the remove button area (top-right corner)
+      const rect = clickedElement.getBoundingClientRect();
+      const relativeX = event.clientX - rect.left;
+      const relativeY = event.clientY - rect.top;
+      
+      // Remove button is positioned at right: 20px, top: -12px
+      // Button is 20px wide and 20px tall
+      const removeButtonLeft = rect.width - 40; // 20px from right
+      const removeButtonTop = -12;
+      const removeButtonRight = rect.width - 20;
+      const removeButtonBottom = 8; // -12px + 20px
+      
+      // Check if click is within the remove button area
+      if (relativeX >= removeButtonLeft && 
+          relativeX <= removeButtonRight && 
+          relativeY >= removeButtonTop && 
+          relativeY <= removeButtonBottom) {
+        // Click is on remove button
+        if (onRemovePageBreak) {
+          onRemovePageBreak(clickedElement);
+        }
+      }
+      
       return;
     }
 
@@ -250,6 +275,7 @@ PageView.propTypes = {
   onClick: PropTypes.func,
   onScroll: PropTypes.func,
   onPaste: PropTypes.func,
+  onRemovePageBreak: PropTypes.func,
   zoomLevel: PropTypes.number,
   pageMargins: PropTypes.string
 };
@@ -261,6 +287,7 @@ PageView.defaultProps = {
   onClick: undefined,
   onScroll: undefined,
   onPaste: undefined,
+  onRemovePageBreak: undefined,
   zoomLevel: 100,
   pageMargins: DEFAULT_MARGIN_PRESET
 };

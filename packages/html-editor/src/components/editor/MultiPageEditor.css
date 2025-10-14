@@ -835,6 +835,7 @@ page-break,
   cursor: default !important;
   user-select: none !important;
   background: transparent !important;
+  pointer-events: all !important; /* Allow pointer events for remove button */
 }
 
 page-break::before,
@@ -855,12 +856,48 @@ page-break::before,
   pointer-events: none;
 }
 
+/* Remove button for page breaks - appears on hover */
+page-break::after,
+[data-page-break="true"]::after {
+  content: '×';
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: #dc3545;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: all;
+  line-height: 1;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+page-break:hover::after,
+[data-page-break="true"]:hover::after {
+  opacity: 1;
+}
+
+page-break::after:hover,
+[data-page-break="true"]::after:hover {
+  transform: scale(1.1);
+  background: #c82333;
+}
+
 /* Prevent page breaks from being editable */
 page-break,
 [data-page-break="true"] {
   -webkit-user-modify: read-only !important;
   -moz-user-modify: read-only !important;
-  pointer-events: none !important;
 }
 
 /* Hide page break in print */

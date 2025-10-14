@@ -7,7 +7,8 @@ import {
 } from '../lib/editor/page-boundary-utils.js';
 import { 
   insertPageBreakAtBoundary, 
-  removePageAndContent 
+  removePageAndContent,
+  removePageBreak
 } from '../lib/editor/page-break-utils.js';
 import { 
   checkAndReflow, 
@@ -207,6 +208,25 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100, pageMa
     );
   }, [editorRef, calculatePageBoundariesCallback, actions, updateBoundaries, positionCursorAtPageCallback, checkAndReflowCallback]);
 
+  /**
+   * Remove a single page break element
+   * This removes just the page break, allowing content to reflow naturally
+   * @param {HTMLElement} pageBreakElement - The page break element to remove
+   */
+  const removePageBreakCallback = useCallback((pageBreakElement) => {
+    if (!editorRef?.current) {
+      return false;
+    }
+
+    return removePageBreak(
+      pageBreakElement,
+      editorRef.current,
+      actions.updateContinuousContent,
+      updateBoundaries,
+      checkAndReflowCallback
+    );
+  }, [editorRef, actions, updateBoundaries, checkAndReflowCallback]);
+
   return {
     calculatePageBoundaries: calculatePageBoundariesCallback,
     checkAndUpdateBoundaries: checkAndUpdateBoundariesCallback,
@@ -217,6 +237,7 @@ export const useContinuousReflow = (pageSize, editorRef, zoomLevel = 100, pageMa
     checkAndReflow: checkAndReflowCallback,
     triggerAutoReflow: triggerAutoReflowCallback,
     removePageAndContent: removePageAndContentCallback,
+    removePageBreak: removePageBreakCallback,
     insertPageBreakAtBoundary: insertPageBreakAtBoundaryCallback,
     boundaryTimeoutRef,
     reflowTimeoutRef

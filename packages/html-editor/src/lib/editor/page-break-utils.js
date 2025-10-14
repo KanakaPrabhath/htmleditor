@@ -380,3 +380,58 @@ export const renumberPageBreaks = (editor) => {
     console.error('[renumberPageBreaks] Failed to renumber page breaks:', error);
   }
 };
+
+/**
+ * Remove a single page break element
+ * This removes just the page break, allowing content to reflow naturally
+ * @param {HTMLElement} pageBreakElement - The page break element to remove
+ * @param {HTMLElement} editor - The editor element
+ * @param {Function} updateContentCallback - Callback to update content in context
+ * @param {Function} updateBoundariesCallback - Callback to update boundaries
+ * @param {Function} checkReflowCallback - Callback to trigger reflow
+ * @returns {boolean} Success status
+ */
+export const removePageBreak = (
+  pageBreakElement,
+  editor,
+  updateContentCallback,
+  updateBoundariesCallback,
+  checkReflowCallback
+) => {
+  if (!pageBreakElement || !editor) {
+    return false;
+  }
+
+  try {
+    // Remove the page break element
+    pageBreakElement.remove();
+
+    // Renumber remaining page breaks
+    renumberPageBreaks(editor);
+
+    // Update content in Context
+    if (updateContentCallback) {
+      const updatedHTML = editor.innerHTML;
+      updateContentCallback(updatedHTML);
+    }
+
+    // Update boundaries after deletion
+    if (updateBoundariesCallback) {
+      setTimeout(() => {
+        updateBoundariesCallback();
+        
+        // Trigger auto reflow to re-add page breaks in correct positions
+        if (checkReflowCallback) {
+          setTimeout(() => {
+            checkReflowCallback();
+          }, 100);
+        }
+      }, 50);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('[removePageBreak] Failed to remove page break:', error);
+    return false;
+  }
+};

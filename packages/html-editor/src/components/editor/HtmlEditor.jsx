@@ -77,6 +77,7 @@ const HtmlEditor = forwardRef(({
     updateBoundaries,
     triggerAutoReflow,
     removePageAndContent,
+    removePageBreak,
     insertPageBreakAtBoundary
   } = useContinuousReflow(pageSize, editorRef, zoomLevel, pageMargins);
 
@@ -201,7 +202,7 @@ const HtmlEditor = forwardRef(({
         }, BOUNDARY_UPDATE_DELAY);
       }
     },
-    
+
     /**
      * Insert content at the current cursor position without replacing existing content
      * @param {string} html - HTML content to insert
@@ -418,6 +419,22 @@ const HtmlEditor = forwardRef(({
     }
   }, [updateBoundaries, getCurrentPage, actions, containerRef]);
 
+  const handleRemovePageBreak = useCallback((pageBreakElement) => {
+    if (!pageBreakElement) return;
+    
+    // Use the removePageBreak function from the hook
+    // This will remove the page break and trigger reflow to re-add breaks in correct positions
+    const success = removePageBreak(pageBreakElement);
+    
+    if (success) {
+      // Update active page based on current scroll position
+      setTimeout(() => {
+        const currentPage = getCurrentPage(containerRef);
+        actions.setActivePage(currentPage);
+      }, 200);
+    }
+  }, [removePageBreak, getCurrentPage, actions, containerRef]);
+
   const handleDeletePage = useCallback((pageIndex) => {
     if (pageBoundaries.length <= 1) {
       console.warn('Cannot delete the only page');
@@ -618,6 +635,7 @@ const HtmlEditor = forwardRef(({
             onInput={handleInput}
             onContentChange={updateContent}
             onClick={() => editorRef.current?.focus()}
+            onRemovePageBreak={handleRemovePageBreak}
             zoomLevel={zoomLevel}
           />
         </div>

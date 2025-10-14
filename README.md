@@ -20,6 +20,8 @@ A React-based WYSIWYG HTML editor with automatic page reflow, rich text formatti
 - **Performance Optimized**: Efficient reflow algorithms and debounced operations
 - **TypeScript Ready**: Full type definitions included
 - **Responsive Design**: Works across desktop and mobile devices
+- **Advanced Content Support**: Comprehensive HTML content normalization for tables, lists, images, headings, and complex structures
+- **Page Break Management**: Visual page break removal with automatic content reflow
 
 ## 📦 Installation
 
@@ -66,12 +68,18 @@ function App() {
     console.log('Text:', plainText);
   };
 
+  const handleInsertContent = () => {
+    // Insert content at cursor position without replacing existing content
+    editorRef.current.insertContent('<p><strong>New content inserted!</strong></p>');
+  };
+
   return (
     <div>
       <DocumentProvider>
         <HtmlEditor ref={editorRef} />
       </DocumentProvider>
       <button onClick={handleSave}>Save Content</button>
+      <button onClick={handleInsertContent}>Insert Content</button>
     </div>
   );
 }
@@ -117,6 +125,7 @@ The main editor component with ref access to content methods.
 - `getHTMLContent(): string` - Returns current HTML content
 - `getPlainText(): string` - Returns plain text content
 - `setContent(html: string): void` - Set editor content programmatically
+- `insertContent(html: string): void` - Insert content at cursor position without replacing existing content
 
 ### DocumentProvider
 
@@ -201,6 +210,10 @@ function TemplateLoader() {
     editorRef.current.setContent(template);
   };
 
+  const insertSignature = () => {
+    editorRef.current.insertContent('<p><em>-- Document Signature</em></p>');
+  };
+
   return (
     <div>
       <DocumentProvider>
@@ -208,6 +221,9 @@ function TemplateLoader() {
       </DocumentProvider>
       <button onClick={() => loadTemplate('<h1>Template</h1><p>Content</p>')}>
         Load Template
+      </button>
+      <button onClick={insertSignature}>
+        Insert Signature
       </button>
     </div>
   );

@@ -3,7 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to Semantic Versioning (https://semver.org/spec/v2.0.0.html).
+
+## [1.1.6] - 2025-10-14
+- **Content Normalization Refactor**: Comprehensive refactoring of content normalization utilities to support all HTML content types including tables, lists, images, headings, blockquotes, and inline formatting
+- **Page Break Removal Feature**: Added visual remove button (×) to page breaks that appears on hover, allowing users to delete individual page breaks with automatic content reflow
+- **Enhanced Content Support**: The `normalizeContent` function now handles all HTML elements properly, preserving attributes, styles, and structure
+- **Automatic Reflow**: When page breaks are removed, content automatically reorganizes with new page breaks inserted at optimal positions
+- **Improved Content Processing**: Better handling of complex HTML structures including nested elements, tables, and multimedia content
 
 ## [1.1.5] - 2025-10-11
 - **Image Controls**: Added comprehensive image handling with resize, selection, and aspect ratio controls

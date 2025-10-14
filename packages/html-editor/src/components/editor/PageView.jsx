@@ -18,6 +18,7 @@ const PageView = ({
   pageBoundaries = [],
   editorRef,
   onInput,
+  onContentChange,
   onKeyDown,
   onClick,
   onScroll,
@@ -73,6 +74,10 @@ const PageView = ({
 
     // Handle Tab key for indentation (multi-line or single line)
     if (handleTabIndentation(event)) {
+      // Update content after indentation
+      if (onContentChange) {
+        onContentChange();
+      }
       return false;
     }
 
@@ -240,6 +245,7 @@ PageView.propTypes = {
     current: PropTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object)
   }).isRequired,
   onInput: PropTypes.func.isRequired,
+  onContentChange: PropTypes.func,
   onKeyDown: PropTypes.func,
   onClick: PropTypes.func,
   onScroll: PropTypes.func,
@@ -250,6 +256,7 @@ PageView.propTypes = {
 
 PageView.defaultProps = {
   pageBoundaries: [],
+  onContentChange: undefined,
   onKeyDown: undefined,
   onClick: undefined,
   onScroll: undefined,

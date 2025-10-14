@@ -142,9 +142,15 @@ const HtmlEditor = forwardRef(({
   useImperativeHandle(ref, () => ({
     /**
      * Get the current HTML content from the editor
+     * Returns the actual DOM content to ensure latest changes (like indentation) are captured
      * @returns {string} The HTML content with page breaks
      */
     getHTMLContent: () => {
+      // Return current DOM content if available (ensures we get the latest changes)
+      if (editorRef.current) {
+        return editorRef.current.innerHTML;
+      }
+      // Fallback to state if DOM not available
       return continuousContent;
     },
     /**
@@ -152,8 +158,11 @@ const HtmlEditor = forwardRef(({
      * @returns {string} Plain text content
      */
     getPlainText: () => {
+      // Get the most current content from DOM or state
+      const htmlContent = editorRef.current ? editorRef.current.innerHTML : continuousContent;
+      
       // Strip HTML tags and normalize whitespace, preserving Unicode characters
-      return continuousContent
+      return htmlContent
         .replace(/<[^>]*>/g, ' ')
         .replace(/&nbsp;/g, ' ')
         .replace(/&amp;/g, '&')
@@ -177,7 +186,7 @@ const HtmlEditor = forwardRef(({
         }, 50);
       }
     }
-  }), [continuousContent, actions, updateBoundaries]);
+  }), [continuousContent, actions, updateBoundaries, editorRef]);
 
   // Focus editor on mount
   useEffect(() => {
@@ -189,15 +198,18 @@ const HtmlEditor = forwardRef(({
     return () => clearTimeout(timer);
   }, []);
 
-  const handleInput = useCallback((event) => {
-    let html = event.currentTarget.innerHTML;
+  // Extract content update logic for reuse
+  const updateContent = useCallback(() => {
+    if (!editorRef.current) return;
+    
+    let html = editorRef.current.innerHTML;
     
     // Normalize paragraph structure to ensure proper <p> tags
     html = normalizeParagraphs(html);
     
     // Update the DOM with normalized content if it changed
-    if (html !== event.currentTarget.innerHTML) {
-      event.currentTarget.innerHTML = html;
+    if (html !== editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = html;
     }
     
     actions.updateContinuousContent(html);
@@ -213,7 +225,11 @@ const HtmlEditor = forwardRef(({
     if (currentPage !== activePage) {
       actions.setActivePage(currentPage);
     }
-  }, [checkAndUpdateBoundaries, actions, getCurrentPage, activePage, triggerAutoReflow, containerRef]);
+  }, [actions, checkAndUpdateBoundaries, getCurrentPage, activePage, triggerAutoReflow, containerRef, editorRef]);
+
+  const handleInput = useCallback((event) => {
+    updateContent();
+  }, [updateContent]);
 
   const handlePageSizeChange = useCallback((newSize) => {
     actions.updatePageSize(newSize);
@@ -502,6 +518,7 @@ const HtmlEditor = forwardRef(({
             pageBoundaries={pageBoundaries}
             editorRef={editorRef}
             onInput={handleInput}
+            onContentChange={updateContent}
             onClick={() => editorRef.current?.focus()}
             zoomLevel={zoomLevel}
           />

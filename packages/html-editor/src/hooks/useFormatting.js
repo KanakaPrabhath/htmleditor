@@ -29,6 +29,18 @@ const FONT_SIZE_MAP = {
   '96px': '7'    // 72 pt
 };
 
+// Reverse mapping from legacy font size to pixel value
+const REVERSE_FONT_SIZE_MAP = {
+  '1': '10px',   // 7.5 pt
+  '2': '12px',   // 9 pt (representative value)
+  '3': '16px',   // 12 pt (Word default, most common)
+  '4': '21px',   // 16 pt (representative value)
+  '5': '27px',   // 20 pt (representative value)
+  '6': '32px',   // 24 pt (representative value)
+  '7': '64px',   // 48 pt (representative value)
+  '8': '96px'    // 72 pt
+};
+
 const DEFAULT_FORMAT = {
   bold: false,
   italic: false,
@@ -55,19 +67,6 @@ const DEFAULT_FORMAT = {
 export const useFormatting = () => {
   const [currentFormat, setCurrentFormat] = useState(DEFAULT_FORMAT);
   const actions = useDocumentActions();
-
-  /**
-   * Update alignment state helper
-   */
-  const updateAlignment = useCallback((align) => {
-    setCurrentFormat(prev => ({
-      ...prev,
-      alignLeft: align === 'left',
-      alignCenter: align === 'center',
-      alignRight: align === 'right',
-      alignJustify: align === 'justify'
-    }));
-  }, []);
 
   /**
    * Handle font family with improved reliability
@@ -210,34 +209,19 @@ export const useFormatting = () => {
         console.warn(`[useFormatting] Command "${command}" failed`);
       }
 
-      // Update format state based on command
+      // Update format state based on command - but let selection change handle the actual state
+      // This is kept for immediate feedback but will be overridden by selection change
       switch (command) {
         case 'bold':
-          setCurrentFormat(prev => ({ ...prev, bold: !prev.bold }));
-          break;
         case 'italic':
-          setCurrentFormat(prev => ({ ...prev, italic: !prev.italic }));
-          break;
         case 'underline':
-          setCurrentFormat(prev => ({ ...prev, underline: !prev.underline }));
-          break;
         case 'strikethrough':
-          setCurrentFormat(prev => ({ ...prev, strikethrough: !prev.strikethrough }));
-          break;
         case 'justifyLeft':
-          updateAlignment('left');
-          break;
         case 'justifyCenter':
-          updateAlignment('center');
-          break;
         case 'justifyRight':
-          updateAlignment('right');
-          break;
         case 'justifyFull':
-          updateAlignment('justify');
-          break;
         case 'fontName':
-          setCurrentFormat(prev => ({ ...prev, fontFamily: value }));
+          // These will be updated by the selection change listener
           break;
         case 'formatBlock':
           setCurrentFormat(prev => ({ ...prev, headingLevel: value }));
@@ -249,7 +233,7 @@ export const useFormatting = () => {
     } catch (error) {
       console.warn(`[useFormatting] Error executing command "${command}":`, error);
     }
-  }, [handleFontSize, handleFontName, updateAlignment, actions]);
+  }, [handleFontSize, handleFontName, actions]);
 
   // Image resize state and refs
   const resizeOverlayRef = useRef(null);
@@ -404,6 +388,70 @@ export const useFormatting = () => {
   }, []);
 
   /**
+   * Update current format state based on current selection
+   */
+  const updateCurrentFormatFromSelection = useCallback(() => {
+    try {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) {
+        return;
+      }
+
+      // Get the current selection range
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+
+      let fontSize = DEFAULT_FONT_SIZE;
+      let fontFamily = 'Arial';
+
+      if (selectedText) {
+        // Try to get font size from computed style of selected element
+        const startContainer = range.startContainer;
+        const element = startContainer.nodeType === Node.TEXT_NODE
+          ? startContainer.parentElement
+          : startContainer;
+
+        if (element) {
+          const computedStyle = window.getComputedStyle(element);
+          const computedFontSize = computedStyle.fontSize;
+          const computedFontFamily = computedStyle.fontFamily;
+
+          // Convert computed font size to our format (e.g., "16px" -> "16px")
+          if (computedFontSize && computedFontSize.endsWith('px')) {
+            fontSize = computedFontSize;
+          }
+
+          if (computedFontFamily && computedFontFamily !== 'serif') {
+            fontFamily = computedFontFamily.split(',')[0].replace(/['"]/g, '').trim();
+          }
+        }
+      }
+
+      // Fallback to execCommand for other formatting
+      const formatState = {
+        bold: document.queryCommandState('bold'),
+        italic: document.queryCommandState('italic'),
+        underline: document.queryCommandState('underline'),
+        strikethrough: document.queryCommandState('strikethrough'),
+        alignLeft: document.queryCommandState('justifyLeft'),
+        alignCenter: document.queryCommandState('justifyCenter'),
+        alignRight: document.queryCommandState('justifyRight'),
+        alignJustify: document.queryCommandState('justifyFull'),
+        fontFamily: fontFamily,
+        fontSize: fontSize,
+        headingLevel: document.queryCommandValue('formatBlock') || 'p'
+      };
+
+      setCurrentFormat(prev => ({
+        ...prev,
+        ...formatState
+      }));
+    } catch (error) {
+      console.warn('[useFormatting] Error updating format from selection:', error);
+    }
+  }, []);
+
+  /**
    * Reset formatting to default
    */
   const resetFormat = useCallback(() => {
@@ -424,6 +472,7 @@ export const useFormatting = () => {
     currentFormat,
     formatText,
     resetFormat,
+    updateCurrentFormatFromSelection,
     // Image resize functionality - now delegated to ImageResizeHandlers
     toggleAspectRatio
   };

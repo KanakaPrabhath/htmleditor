@@ -62,7 +62,7 @@ const HtmlEditor = forwardRef(({
   const containerRef = useRef(null);
   const editorRef = useRef(null);
 
-  const { currentFormat, formatText } = useFormatting();
+  const { currentFormat, formatText, updateCurrentFormatFromSelection } = useFormatting();
   const [imageSelected, setImageSelected] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [preserveAspectRatio, setPreserveAspectRatio] = useState(true);
@@ -188,15 +188,31 @@ const HtmlEditor = forwardRef(({
     }
   }), [continuousContent, actions, updateBoundaries, editorRef]);
 
-  // Focus editor on mount
+  // Update format state when selection changes
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const handleSelectionChange = () => {
+      updateCurrentFormatFromSelection();
+    };
+
+    // Listen for selection changes
+    document.addEventListener('selectionchange', handleSelectionChange);
+    
+    // Also update when editor gets focus
+    const handleFocus = () => {
+      setTimeout(updateCurrentFormatFromSelection, 10);
+    };
+    
+    if (editorRef.current) {
+      editorRef.current.addEventListener('focus', handleFocus);
+    }
+
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
       if (editorRef.current) {
-        editorRef.current.focus();
+        editorRef.current.removeEventListener('focus', handleFocus);
       }
-    }, 200);
-    return () => clearTimeout(timer);
-  }, []);
+    };
+  }, [updateCurrentFormatFromSelection]);
 
   // Extract content update logic for reuse
   const updateContent = useCallback(() => {

@@ -157,7 +157,7 @@ const EditorToolbar = ({
       
       <select 
         onChange={(e) => onFormatText('fontName', e.target.value)}
-        defaultValue="Segoe UI"
+        value={currentFormat.fontFamily || 'Segoe UI'}
         title="Font Family"
       >
         {/* English Fonts */}
@@ -169,18 +169,18 @@ const EditorToolbar = ({
         <option value="Verdana">Verdana </option>
         
         {/* Sinhala Fonts */}
-        <option value="Noto Sans Sinhala">Noto Sans Sinhala (සිංහල)</option>
-        <option value="Iskoola Pota">Iskoola Pota (සිංහල)</option>
+        <option value="Noto Sans Sinhala">Noto Sans Sinhala </option>
+        <option value="Iskoola Pota">Iskoola Pota </option>
         {/* Tamil Fonts */}
-        <option value="Noto Sans Tamil">Noto Sans Tamil (தமிழ்)</option>
+        <option value="Noto Sans Tamil">Noto Sans Tamil </option>
         
         {/* Unicode Fonts (support multiple scripts) */}
-        <option value="Noto Sans">Noto Sans (Unicode)</option>
+        <option value="Noto Sans">Noto Sans </option>
       </select>
       
       <select 
         onChange={(e) => onFormatText('fontSize', e.target.value)}
-        defaultValue={DEFAULT_FONT_SIZE}
+        value={currentFormat.fontSize || DEFAULT_FONT_SIZE}
         title="Font Size"
       >
         {COMMON_FONT_SIZES.map(({ value, label }) => (

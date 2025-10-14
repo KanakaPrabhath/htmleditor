@@ -55,6 +55,30 @@ export function normalizeParagraphs(htmlContent) {
 }
 
 /**
+ * Removes nested paragraph tags from heading elements
+ * @param {HTMLElement} headingElement - The heading element to clean
+ * @returns {string} Cleaned inner HTML without nested paragraphs
+ */
+function removeNestedParagraphs(headingElement) {
+  const clonedElement = headingElement.cloneNode(true);
+  
+  // Find all p tags that are direct children of the heading
+  const nestedParagraphs = clonedElement.querySelectorAll(':scope > p');
+  
+  // Remove the p tags and move their content to the heading level
+  nestedParagraphs.forEach(p => {
+    // Move all child nodes of the p tag to the heading level
+    while (p.firstChild) {
+      clonedElement.insertBefore(p.firstChild, p);
+    }
+    // Remove the empty p tag
+    p.remove();
+  });
+  
+  return clonedElement.innerHTML;
+}
+
+/**
  * Ensures all content in a container has proper paragraph structure
  * @param {HTMLElement} container - Container element with content
  * @returns {string} HTML string with proper paragraph structure
@@ -87,6 +111,12 @@ function ensureParagraphStructure(container) {
       } else if (element.tagName === 'P') {
         // Keep p tags as-is (don't process children recursively)
         fragments.push(element.outerHTML);
+      } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
+        // Handle heading elements - remove any nested p tags
+        const headingContent = removeNestedParagraphs(element);
+        const tagName = element.tagName.toLowerCase();
+        const attributes = getElementAttributes(element);
+        fragments.push(`<${tagName}${attributes}>${headingContent}</${tagName}>`);
       } else if (element.tagName === 'BR') {
         // Handle line breaks - convert to paragraph break
         fragments.push('<p><br></p>');

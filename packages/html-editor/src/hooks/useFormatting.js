@@ -403,6 +403,7 @@ export const useFormatting = () => {
 
       let fontSize = DEFAULT_FONT_SIZE;
       let fontFamily = 'Arial';
+      let headingLevel = 'p';
 
       if (selectedText) {
         // Try to get font size from computed style of selected element
@@ -424,6 +425,15 @@ export const useFormatting = () => {
           if (computedFontFamily && computedFontFamily !== 'serif') {
             fontFamily = computedFontFamily.split(',')[0].replace(/['"]/g, '').trim();
           }
+
+          // Find the nearest block-level element (heading or paragraph)
+          const blockElement = findNearestBlockElement(element);
+          if (blockElement) {
+            const tagName = blockElement.tagName?.toLowerCase();
+            if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(tagName)) {
+              headingLevel = tagName;
+            }
+          }
         }
       }
 
@@ -439,7 +449,7 @@ export const useFormatting = () => {
         alignJustify: document.queryCommandState('justifyFull'),
         fontFamily: fontFamily,
         fontSize: fontSize,
-        headingLevel: document.queryCommandValue('formatBlock') || 'p'
+        headingLevel: headingLevel
       };
 
       setCurrentFormat(prev => ({
@@ -477,6 +487,33 @@ export const useFormatting = () => {
     toggleAspectRatio
   };
 };
+
+/**
+ * Helper function to find the nearest block-level element (heading or paragraph)
+ * Walks up the DOM tree from the given element
+ */
+function findNearestBlockElement(element) {
+  let current = element;
+  
+  // Walk up the DOM tree until we find a block element or reach the contenteditable root
+  while (current && current !== document.body) {
+    const tagName = current.tagName?.toLowerCase();
+    
+    // Check if this is a block-level element we're interested in
+    if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(tagName)) {
+      return current;
+    }
+    
+    // Stop if we reach the contenteditable container
+    if (current.contentEditable === 'true' || current.contentEditable === '') {
+      break;
+    }
+    
+    current = current.parentElement;
+  }
+  
+  return null;
+}
 
 /**
  * Helper function to get cursor for resize handler

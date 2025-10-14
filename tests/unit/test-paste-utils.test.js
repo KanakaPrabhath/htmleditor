@@ -43,4 +43,22 @@ describe('normalizeParagraphs', () => {
     const expected = '<p>Hello <strong>world</strong></p>';
     expect(normalizeParagraphs(input)).toBe(expected);
   });
+
+  it('should remove nested paragraph tags from heading elements', () => {
+    const input = '<h1><p>Hello world</p></h1><p>Normal paragraph</p>';
+    const expected = '<h1>Hello world</h1><p>Normal paragraph</p>';
+    expect(normalizeParagraphs(input)).toBe(expected);
+  });
+
+  it('should handle multiple headings with nested paragraphs', () => {
+    const input = '<h1><p>Title 1</p></h1><h2><p>Title 2</p></h2><p>Content</p>';
+    const expected = '<h1>Title 1</h1><h2>Title 2</h2><p>Content</p>';
+    expect(normalizeParagraphs(input)).toBe(expected);
+  });
+
+  it('should preserve formatting inside headings when removing nested paragraphs', () => {
+    const input = '<h1><p>Hello <strong>world</strong></p></h1>';
+    const expected = '<h1>Hello <strong>world</strong></h1>';
+    expect(normalizeParagraphs(input)).toBe(expected);
+  });
 });

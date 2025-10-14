@@ -7,6 +7,7 @@ import { PAGE_SIZES, getPageDimensions } from '../../lib/editor/page-sizes';
 import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
 import { deleteImage } from '../../lib/storage/index-db';
 import { normalizeContent } from '../../lib/editor/content-normalize-utils';
+import { getCursorPosition } from '../../lib/editor/cursor-scroll-utils';
 import Sidebar from './Sidebar';
 import EditorToolbar from './EditorToolbar';
 import PageView from './PageView';
@@ -70,6 +71,7 @@ const HtmlEditor = forwardRef(({
   const [imageSelected, setImageSelected] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [preserveAspectRatio, setPreserveAspectRatio] = useState(true);
+  const lastCursorPositionRef = useRef(null); // Store last Range object
   const {
     checkAndUpdateBoundaries,
     getCurrentPage,
@@ -179,6 +181,14 @@ const HtmlEditor = forwardRef(({
         .trim();
     },
     /**
+     * Get the current cursor position in the editor
+     * @returns {Object|null} An object with page number, line number, and character offset, or null if no selection
+     */
+    getCursorPosition: () => {
+      if (!editorRef.current) return null;
+      return getCursorPosition(editorRef.current);
+    },
+    /**
      * Set the editor content programmatically
      * @param {string} html - HTML content to set
      */
@@ -205,6 +215,7 @@ const HtmlEditor = forwardRef(({
 
     /**
      * Insert content at the current cursor position without replacing existing content
+     * Falls back to the last cursor position if no active selection in the editor
      * @param {string} html - HTML content to insert
      */
     insertContent: (html) => {
@@ -212,34 +223,70 @@ const HtmlEditor = forwardRef(({
 
       const normalizedHtml = normalizeContent(html);
       const selection = window.getSelection();
+      let hasActiveSelection = false;
 
+      // Check if there's an active selection inside the editor
       if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-
-        // Check if the range is within the editor
-        if (editorRef.current.contains(range.commonAncestorContainer)) {
-          // Use execCommand to insert HTML at cursor position
-          document.execCommand('insertHTML', false, normalizedHtml);
-
-          // Update content state with the new content
-          const updatedContent = editorRef.current.innerHTML;
-          actions.updateContinuousContent(updatedContent);
-          lastContentRef.current = updatedContent;
-
-          // Update boundaries and trigger reflow
-          setTimeout(() => {
-            updateBoundaries();
-            triggerAutoReflow(200);
-          }, BOUNDARY_UPDATE_DELAY);
+        const activeRange = selection.getRangeAt(0);
+        if (editorRef.current.contains(activeRange.commonAncestorContainer)) {
+          hasActiveSelection = true;
         }
       }
+
+      // If no active selection, try to restore the last cursor position
+      if (!hasActiveSelection && lastCursorPositionRef.current) {
+        try {
+          selection.removeAllRanges();
+          selection.addRange(lastCursorPositionRef.current);
+        } catch (error) {
+          console.warn('[insertContent] Failed to restore last cursor position:', error);
+          // Fallback: position at end of editor
+          const lastChild = editorRef.current.lastChild;
+          if (lastChild) {
+            const range = document.createRange();
+            if (lastChild.nodeType === Node.TEXT_NODE) {
+              range.setStart(lastChild, lastChild.textContent.length);
+            } else {
+              range.setStartAfter(lastChild);
+            }
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        }
+      }
+
+      // Insert using execCommand for proper cursor handling
+      document.execCommand('insertHTML', false, normalizedHtml);
+
+      // Update content state with the new content
+      const updatedContent = editorRef.current.innerHTML;
+      actions.updateContinuousContent(updatedContent);
+      lastContentRef.current = updatedContent;
+
+      // Update boundaries and trigger reflow
+      setTimeout(() => {
+        updateBoundaries();
+        triggerAutoReflow(200);
+      }, BOUNDARY_UPDATE_DELAY);
     }
-  }), [continuousContent, actions, updateBoundaries, editorRef]);
+  }), [continuousContent, actions, updateBoundaries, editorRef, lastCursorPositionRef, checkAndUpdateBoundaries]);
 
   // Update format state when selection changes
   useEffect(() => {
     const handleSelectionChange = () => {
       updateCurrentFormatFromSelection();
+      
+      // Update last cursor position (only for caret/collapsed selections)
+      if (editorRef.current) {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          if (range.collapsed && editorRef.current.contains(range.commonAncestorContainer)) {
+            lastCursorPositionRef.current = range.cloneRange(); // Clone to store
+          }
+        }
+      }
     };
 
     // Listen for selection changes
@@ -248,6 +295,17 @@ const HtmlEditor = forwardRef(({
     // Also update when editor gets focus
     const handleFocus = () => {
       setTimeout(updateCurrentFormatFromSelection, 10);
+      
+      // Restore cursor to last position if available
+      if (lastCursorPositionRef.current && editorRef.current) {
+        try {
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(lastCursorPositionRef.current);
+        } catch (error) {
+          console.warn('[handleFocus] Failed to restore cursor:', error);
+        }
+      }
     };
     
     if (editorRef.current) {

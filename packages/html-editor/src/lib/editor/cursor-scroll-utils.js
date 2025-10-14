@@ -147,3 +147,53 @@ export const checkAndUpdateBoundaries = (
     updateBoundariesCallback(options);
   }, Math.max(0, delay));
 };
+
+/**
+ * Get the current cursor position in the editor
+ * @param {HTMLElement} editor - The editor element
+ * @returns {Object|null} An object with page number, line number, and character offset, or null if no selection
+ */
+export const getCursorPosition = (editor) => {
+  if (!editor) return null;
+  
+  const selection = window.getSelection();
+  if (selection.rangeCount === 0) return null;
+  
+  const range = selection.getRangeAt(0);
+  if (!editor.contains(range.commonAncestorContainer)) return null; // Ensure range is inside editor
+  
+  // Calculate page number: Count <page-break> elements before the caret
+  let pageNumber = 1; // Default to page 1
+  const pageBreaks = editor.querySelectorAll(PAGE_BREAK_SELECTOR);
+  for (const breakEl of pageBreaks) {
+    if (range.comparePoint(breakEl, 0) > 0) { // Caret is after this break
+      pageNumber++;
+    } else {
+      break; // No need to check further
+    }
+  }
+  
+  // Calculate character offset and line number: Get text length and newline count from start of editor to caret
+  const tempRange = document.createRange();
+  tempRange.setStart(editor, 0);
+  tempRange.setEnd(range.startContainer, range.startOffset);
+  const htmlBeforeCaret = tempRange.toString(); // HTML fragment as text
+  const plainTextBeforeCaret = htmlBeforeCaret
+    .replace(/<[^>]*>/g, ' ') // Strip tags
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+  const charOffset = plainTextBeforeCaret.length;
+  const lineNumber = (plainTextBeforeCaret.match(/\n/g) || []).length + 1; // Count \n and add 1 for 1-based indexing
+  
+  return {
+    page: pageNumber,
+    line: lineNumber,
+    charOffset
+  };
+};

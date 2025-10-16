@@ -1,6 +1,6 @@
 # HTML Editor Wiki
 
-Welcome to the official wiki for `@prabhath-tharaka/html-editor` - a React-based WYSIWYG HTML editor with automatic page reflow and rich text formatting.
+Welcome to the official wiki for `@kanaka-prabhath/html-editor` - a React-based WYSIWYG HTML editor with automatic page reflow and rich text formatting.
 
 ## 📚 Documentation Index
 
@@ -38,14 +38,14 @@ Welcome to the official wiki for `@prabhath-tharaka/html-editor` - a React-based
 
 ### Installation
 ```bash
-npm install @prabhath-tharaka/html-editor
+npm install @kanaka-prabhath/html-editor
 npm install react react-dom
 ```
 
 ### Basic Usage
 ```jsx
-import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
-import '@prabhath-tharaka/html-editor/styles';
+import { HtmlEditor, DocumentProvider } from '@kanaka-prabhath/html-editor';
+import '@kanaka-prabhath/html-editor/styles';
 
 function App() {
   return (
@@ -84,8 +84,8 @@ This wiki is organized to help you find information quickly:
 - [Pull Requests](https://github.com/Prabhath-Tharaka/htmleditor/pulls)
 
 ### npm Package
-- [Package Page](https://www.npmjs.com/package/@prabhath-tharaka/html-editor)
-- [Version History](https://www.npmjs.com/package/@prabhath-tharaka/html-editor?activeTab=versions)
+- [Package Page](https://www.npmjs.com/package/@kanaka-prabhath/html-editor)
+- [Version History](https://www.npmjs.com/package/@kanaka-prabhath/html-editor?activeTab=versions)
 
 ### Demo Application
 - [Live Demo](https://prabhath-tharaka.github.io/htmleditor) (if deployed)

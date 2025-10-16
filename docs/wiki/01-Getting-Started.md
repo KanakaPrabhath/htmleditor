@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `@prabhath-tharaka/html-editor` is a React-based WYSIWYG HTML editor that provides rich text editing capabilities with automatic page reflow and multi-page document management.
+The `@kanaka-prabhath/html-editor` is a React-based WYSIWYG HTML editor that provides rich text editing capabilities with automatic page reflow and multi-page document management.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ The `@prabhath-tharaka/html-editor` is a React-based WYSIWYG HTML editor that pr
 
 ```bash
 # Install the editor library
-npm install @prabhath-tharaka/html-editor
+npm install @kanaka-prabhath/html-editor
 
 # Install peer dependencies
 npm install react react-dom
@@ -26,8 +26,8 @@ npm install react react-dom
 
 ```jsx
 import React from 'react';
-import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
-import '@prabhath-tharaka/html-editor/styles';
+import { HtmlEditor, DocumentProvider } from '@kanaka-prabhath/html-editor';
+import '@kanaka-prabhath/html-editor/styles';
 
 function App() {
   return (
@@ -44,8 +44,8 @@ export default App;
 
 ```jsx
 import React, { useRef } from 'react';
-import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
-import '@prabhath-tharaka/html-editor/styles';
+import { HtmlEditor, DocumentProvider } from '@kanaka-prabhath/html-editor';
+import '@kanaka-prabhath/html-editor/styles';
 
 function App() {
   const editorRef = useRef(null);

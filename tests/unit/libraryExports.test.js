@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as HtmlEditor from '@prabhath-tharaka/html-editor';
+import * as HtmlEditor from '@kanaka-prabhath/html-editor';
 
 describe('Library Exports', () => {
   describe('Component Exports', () => {

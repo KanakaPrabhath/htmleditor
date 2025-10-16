@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor, DocumentProvider } from '@kanaka-prabhath/html-editor';
 
 // Mock the hooks to prevent actual DOM manipulations during tests
-vi.mock('@prabhath-tharaka/html-editor', async () => {
-  const actual = await vi.importActual('@prabhath-tharaka/html-editor');
+vi.mock('@kanaka-prabhath/html-editor', async () => {
+  const actual = await vi.importActual('@kanaka-prabhath/html-editor');
   return {
     ...actual,
     useFormatting: () => ({

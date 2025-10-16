@@ -1,6 +1,6 @@
-# @prabhath-tharaka/html-editor
+# @kanaka-prabhath/html-editor
 
-[![npm version](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor.svg)](https://badge.fury.io/js/%40prabhath-tharaka%2Fhtml-editor)
+[![npm version](https://badge.fury.io/js/%40kanaka-prabhath%2Fhtml-editor.svg)](https://badge.fury.io/js/%40kanaka-prabhath%2Fhtml-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Issues](https://img.shields.io/github/issues/Prabhath-Tharaka/htmleditor)](https://github.com/Prabhath-Tharaka/htmleditor/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/Prabhath-Tharaka/htmleditor)](https://github.com/Prabhath-Tharaka/htmleditor/stargazers)
@@ -27,7 +27,7 @@ A React-based WYSIWYG HTML editor with automatic page reflow, rich text formatti
 
 ```bash
 # Install the editor library
-npm install @prabhath-tharaka/html-editor
+npm install @kanaka-prabhath/html-editor
 
 # Install peer dependencies (if not already installed)
 npm install react react-dom
@@ -37,8 +37,8 @@ npm install react react-dom
 
 ```jsx
 import React from 'react';
-import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor';
-import '@prabhath-tharaka/html-editor/styles';
+import { HtmlEditor, DocumentProvider } from '@kanaka-prabhath/html-editor';
+import '@kanaka-prabhath/html-editor/styles';
 
 function App() {
   return (
@@ -158,7 +158,7 @@ For complete documentation, check out our [Wiki](https://github.com/Prabhath-Tha
 Import default styles:
 
 ```jsx
-import '@prabhath-tharaka/html-editor/styles';
+import '@kanaka-prabhath/html-editor/styles';
 ```
 
 Or use your own CSS:
@@ -180,7 +180,7 @@ Or use your own CSS:
 ### Custom Page Manager
 
 ```jsx
-import { useDocumentActions, useDocumentState } from '@prabhath-tharaka/html-editor';
+import { useDocumentActions, useDocumentState } from '@kanaka-prabhath/html-editor';
 
 function CustomPageManager() {
   const { pages, activePage } = useDocumentState();
@@ -284,7 +284,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🔗 Links
 
 - **GitHub**: https://github.com/Prabhath-Tharaka/htmleditor
-- **npm**: https://www.npmjs.com/package/@prabhath-tharaka/html-editor
+- **npm**: https://www.npmjs.com/package/@kanaka-prabhath/html-editor
 - **Issues**: https://github.com/Prabhath-Tharaka/htmleditor/issues
 - **Discussions**: https://github.com/Prabhath-Tharaka/htmleditor/discussions
 

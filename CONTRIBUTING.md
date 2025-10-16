@@ -95,7 +95,7 @@ Example test structure:
 ```javascript
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HtmlEditor } from '@prabhath-tharaka/html-editor';
+import { HtmlEditor } from '@kanaka-prabhath/html-editor';
 
 describe('HtmlEditor', () => {
   test('renders with default props', () => {

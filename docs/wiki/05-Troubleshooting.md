@@ -25,7 +25,7 @@
 
 3. **Check CSS Import**: Import default styles
    ```jsx
-   import '@prabhath-tharaka/html-editor/styles';
+   import '@kanaka-prabhath/html-editor/styles';
    ```
 
 ### Formatting Not Working
@@ -142,7 +142,7 @@
 
 4. **Clear Old Images**: Use clearImages() if database gets too large
    ```javascript
-   import { clearImages } from '@prabhath-tharaka/html-editor';
+   import { clearImages } from '@kanaka-prabhath/html-editor';
    
    // Clear all stored images
    await clearImages();
@@ -281,7 +281,7 @@ if (typeof document !== 'undefined' && document.execCommand) {
 
 **Solution**:
 ```javascript
-import { clearImages, getAllImageKeys } from '@prabhath-tharaka/html-editor';
+import { clearImages, getAllImageKeys } from '@kanaka-prabhath/html-editor';
 
 // Check current storage usage
 async function checkStorageUsage() {
@@ -411,7 +411,7 @@ Title: Formatting not working in Safari Mobile
 Environment:
 - Browser: Safari Mobile 15.4
 - React: 18.2.0
-- Editor: @prabhath-tharaka/html-editor@1.1.0
+- Editor: @kanaka-prabhath/html-editor@1.1.0
 
 Steps to Reproduce:
 1. Open editor in Safari Mobile

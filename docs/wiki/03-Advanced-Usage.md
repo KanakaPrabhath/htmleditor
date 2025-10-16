@@ -6,7 +6,7 @@ Create a custom page manager component for specialized page navigation:
 
 ```jsx
 import React from 'react';
-import { useDocumentActions, useDocumentState } from '@prabhath-tharaka/html-editor';
+import { useDocumentActions, useDocumentState } from '@kanaka-prabhath/html-editor';
 
 function CustomPageManager() {
   const { pages, activePage } = useDocumentState();
@@ -429,13 +429,13 @@ function OptimizedEditor() {
 import React, { lazy, Suspense } from 'react';
 
 const LazyContentEditableEditor = lazy(() => 
-  import('@prabhath-tharaka/html-editor').then(module => ({
+  import('@kanaka-prabhath/html-editor').then(module => ({
     default: module.ContentEditableEditor
   }))
 );
 
 const LazyDocumentProvider = lazy(() => 
-  import('@prabhath-tharaka/html-editor').then(module => ({
+  import('@kanaka-prabhath/html-editor').then(module => ({
     default: module.DocumentProvider
   }))
 );

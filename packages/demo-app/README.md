@@ -1,6 +1,6 @@
 # HTML Editor Demo App
 
-This is a demo application showcasing the `@prabhath-tharaka/html-editor` library with the latest features.
+This is a demo application showcasing the `@kanaka-prabhath/html-editor` library with the latest features.
 
 ## ✨ Latest Features
 
@@ -31,8 +31,8 @@ npm run preview
 The demo shows a minimal integration of the HTML Editor:
 
 ```jsx
-import { ContentEditableEditor, DocumentProvider } from '@prabhath-tharaka/html-editor'
-import '@prabhath-tharaka/html-editor/styles'
+import { ContentEditableEditor, DocumentProvider } from '@kanaka-prabhath/html-editor'
+import '@kanaka-prabhath/html-editor/styles'
 
 function App() {
   return (
@@ -48,7 +48,7 @@ function App() {
 ##  Documentation
 
 For complete documentation and API reference, see the main library:
-- npm: https://www.npmjs.com/package/@prabhath-tharaka/html-editor
+- npm: https://www.npmjs.com/package/@kanaka-prabhath/html-editor
 - GitHub: https://github.com/Prabhath-Tharaka/htmleditor
 
 ## 🎨 Customization
@@ -60,5 +60,5 @@ This demo uses the default styles. You can customize by:
 
 ## 🔗 Links
 
-- Library Package: [@prabhath-tharaka/html-editor](https://www.npmjs.com/package/@prabhath-tharaka/html-editor)
+- Library Package: [@kanaka-prabhath/html-editor](https://www.npmjs.com/package/@kanaka-prabhath/html-editor)
 - Repository: [GitHub](https://github.com/Prabhath-Tharaka/htmleditor)

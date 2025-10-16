@@ -103,7 +103,7 @@ Added a comprehensive page margin control feature that allows users to change pa
 
 ### Programmatic Usage
 ```javascript
-import { useDocumentActions } from '@prabhath-tharaka/html-editor';
+import { useDocumentActions } from '@kanaka-prabhath/html-editor';
 
 const actions = useDocumentActions();
 actions.updatePageMargins('NORMAL'); // Sets 1" margins on all sides
@@ -111,7 +111,7 @@ actions.updatePageMargins('NORMAL'); // Sets 1" margins on all sides
 
 ### Accessing Margin Values
 ```javascript
-import { getMarginPixels, getTotalVerticalMargins } from '@prabhath-tharaka/html-editor';
+import { getMarginPixels, getTotalVerticalMargins } from '@kanaka-prabhath/html-editor';
 
 const margins = getMarginPixels('NORMAL');
 // Returns: { top: 96, bottom: 96, left: 96, right: 96 }

@@ -186,7 +186,7 @@ import {
   pixelsToPoints, 
   COMMON_FONT_SIZES,
   DEFAULT_FONT_SIZE 
-} from '@prabhath-tharaka/html-editor';
+} from '@kanaka-prabhath/html-editor';
 
 // Convert 12pt to pixels
 const px = pointsToPixels(12);  // Returns: 16

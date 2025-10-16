@@ -79,7 +79,7 @@ The migration is **transparent** to existing code. The API remains identical:
 
 ```javascript
 // Old code (localStorage) - still works!
-import { saveImage, getImage } from '@prabhath-tharaka/html-editor';
+import { saveImage, getImage } from '@kanaka-prabhath/html-editor';
 
 const handleImageUpload = async (file) => {
   const key = await saveImage(file);
@@ -103,7 +103,7 @@ if (navigator.storage && navigator.storage.estimate) {
 
 ### Cleanup Large Storage
 ```javascript
-import { clearImages } from '@prabhath-tharaka/html-editor';
+import { clearImages } from '@kanaka-prabhath/html-editor';
 
 // Clear all stored images if needed
 await clearImages();

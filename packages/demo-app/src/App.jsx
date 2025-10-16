@@ -1,6 +1,6 @@
 import { useRef } from 'react'
-import { HtmlEditor, DocumentProvider } from '@prabhath-tharaka/html-editor'
-import '@prabhath-tharaka/html-editor/styles'
+import { HtmlEditor, DocumentProvider } from '@kanaka-prabhath/html-editor'
+import '@kanaka-prabhath/html-editor/styles';
 import './App.css'
 
 function App() {

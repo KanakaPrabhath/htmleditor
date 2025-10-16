@@ -10,8 +10,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@prabhath-tharaka/html-editor': path.resolve(__dirname, './packages/html-editor/src/index.js'),
-      '@prabhath-tharaka/html-editor/styles': path.resolve(__dirname, './packages/html-editor/src/components/editor/MultiPageEditor.css')
+      '@kanaka-prabhath/html-editor': path.resolve(__dirname, './packages/html-editor/src/index.js'),
+      '@kanaka-prabhath/html-editor/styles': path.resolve(__dirname, './packages/html-editor/src/components/editor/MultiPageEditor.css')
     }
   },
   test: {

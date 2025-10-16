@@ -192,7 +192,7 @@ getAllImageKeys(): Promise<string[]>
 
 **Example Usage:**
 ```javascript
-import { saveImage, getImage } from '@prabhath-tharaka/html-editor';
+import { saveImage, getImage } from '@kanaka-prabhath/html-editor';
 
 // Save an image
 const fileInput = document.getElementById('imageInput');

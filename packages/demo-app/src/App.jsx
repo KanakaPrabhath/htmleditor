@@ -37,6 +37,7 @@ function App() {
   const handlePrintHTML = () => {
     if (editorRef.current) {
       const htmlContent = editorRef.current.getHTMLContent();
+      console.log('Current HTML Content:', htmlContent);
     }
   };
 
@@ -51,7 +52,7 @@ function App() {
       // Insert a smaller sample content at cursor position
       const insertContent = `
         <h3>Inserted Content</h3>
-        <p>This content was inserted at the cursor position using the <code>insertContent</code> method.</p>
+        <p>This content was inserted at the cursor position using the insertContent method.</p>
         <p>You can continue typing after this inserted content.</p>
       `.trim();
       editorRef.current.insertContent(insertContent);

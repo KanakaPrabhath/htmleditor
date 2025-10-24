@@ -28,11 +28,14 @@
     "react-editor",
     "text-editor"
   ],
-  "author": "Prabhath Tharaka",
+  "author": {
+    "name": "Kanaka Prabhath",
+    "url": "https://github.com/KanakaPrabhath"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Prabhath-Tharaka/htmleditor.git",
+    "url": "https://github.com/KanakaPrabhath/htmleditor.git",
     "directory": "lib"
   },
   "scripts": {

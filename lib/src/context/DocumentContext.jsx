@@ -48,6 +48,13 @@ const createDefaultBoundary = (pageSize = DEFAULT_PAGE_SIZE) => {
   }];
 };
 
+const generatePageBreaks = (pages) => {
+  return pages.slice(0, -1).map((_, index) => ({
+    id: `auto-break-${index}`,
+    pageNumber: index + 1
+  }));
+};
+
 const buildInitialState = (overrides = {}) => {
   const now = new Date().toISOString();
   const pageSize = overrides.pageSize || DEFAULT_PAGE_SIZE;
@@ -92,9 +99,6 @@ const ActionTypes = {
   ADD_PAGE_BREAK: 'ADD_PAGE_BREAK',
   REMOVE_PAGE_BREAK: 'REMOVE_PAGE_BREAK',
   SET_EDITOR_MODE: 'SET_EDITOR_MODE',
-  INSERT_PAGE_AT: 'INSERT_PAGE_AT',
-  MOVE_PAGE_TO: 'MOVE_PAGE_TO',
-  DUPLICATE_PAGE: 'DUPLICATE_PAGE',
   SET_ZOOM_LEVEL: 'SET_ZOOM_LEVEL',
   ZOOM_IN: 'ZOOM_IN',
   ZOOM_OUT: 'ZOOM_OUT',
@@ -156,10 +160,7 @@ const documentReducer = (state, action) => {
       const nextPages = withMinimumPage(payload.pages || [], state.pageSize);
       const pageBreaks = Array.isArray(payload.pageBreaks)
         ? payload.pageBreaks
-        : nextPages.slice(0, -1).map((_, index) => ({
-            id: `auto-break-${index}`,
-            pageNumber: index + 1
-          }));
+        : generatePageBreaks(nextPages);
 
       return {
         ...state,
@@ -185,10 +186,7 @@ const documentReducer = (state, action) => {
         size: state.pageSize
       }));
 
-      const pageBreaks = updatedPages.slice(0, -1).map((_, index) => ({
-        id: `auto-break-${index}`,
-        pageNumber: index + 1
-      }));
+      const pageBreaks = generatePageBreaks(updatedPages);
 
       return {
         ...state,
@@ -222,10 +220,7 @@ const documentReducer = (state, action) => {
         newActivePage -= 1;
       }
 
-      const pageBreaks = updatedPages.slice(0, -1).map((_, index) => ({
-        id: `auto-break-${index}`,
-        pageNumber: index + 1
-      }));
+      const pageBreaks = generatePageBreaks(updatedPages);
 
       return {
         ...state,
@@ -283,10 +278,7 @@ const documentReducer = (state, action) => {
         size: newSize
       }));
 
-      const pageBreaks = updatedPages.slice(0, -1).map((_, index) => ({
-        id: `auto-break-${index}`,
-        pageNumber: index + 1
-      }));
+      const pageBreaks = generatePageBreaks(updatedPages);
 
       return {
         ...state,
@@ -586,55 +578,6 @@ const documentReducer = (state, action) => {
       };
     }
 
-    // Image operation actions (for undo/redo)
-    case 'IMAGE_ALIGN': {
-      const { element, state: imageState } = action.payload;
-      if (element && imageState) {
-        // Apply the image state
-        element.style.float = imageState.float;
-        element.style.margin = imageState.margin;
-        element.style.display = imageState.display;
-        if (imageState.width) element.style.width = imageState.width;
-        if (imageState.height) element.style.height = imageState.height;
-      }
-      return state;
-    }
-
-    case 'IMAGE_DELETE': {
-      const { element } = action.payload;
-      if (element && element.parentNode) {
-        element.parentNode.removeChild(element);
-      }
-      return state;
-    }
-
-    case 'IMAGE_REINSERT': {
-      const { state: imageState } = action.payload;
-      if (imageState && imageState.parent && imageState.element) {
-        // Re-insert the same element at its original position
-        if (imageState.nextSibling) {
-          imageState.parent.insertBefore(imageState.element, imageState.nextSibling);
-        } else {
-          imageState.parent.appendChild(imageState.element);
-        }
-      }
-      return state;
-    }
-
-    case 'IMAGE_ASPECT_RATIO': {
-      // This is handled by the component state, no document change needed
-      return state;
-    }
-
-    case 'IMAGE_RESIZE': {
-      const { element, state: imageState } = action.payload;
-      if (element && imageState) {
-        if (imageState.width) element.style.width = imageState.width;
-        if (imageState.height) element.style.height = imageState.height;
-      }
-      return state;
-    }
-
     default:
       return state;
   }
@@ -663,9 +606,6 @@ export const DocumentProvider = ({ children, initialState = {} }) => {
     addPageBreak: (payload) => dispatch({ type: ActionTypes.ADD_PAGE_BREAK, payload }),
     removePageBreak: (payload) => dispatch({ type: ActionTypes.REMOVE_PAGE_BREAK, payload }),
     setEditorMode: (mode) => dispatch({ type: ActionTypes.SET_EDITOR_MODE, payload: mode }),
-    insertPageAt: (payload) => dispatch({ type: ActionTypes.INSERT_PAGE_AT, payload }),
-    movePageTo: (payload) => dispatch({ type: ActionTypes.MOVE_PAGE_TO, payload }),
-    duplicatePage: (payload) => dispatch({ type: ActionTypes.DUPLICATE_PAGE, payload }),
     setZoomLevel: (level) => dispatch({ type: ActionTypes.SET_ZOOM_LEVEL, payload: level }),
     zoomIn: () => dispatch({ type: ActionTypes.ZOOM_IN }),
     zoomOut: () => dispatch({ type: ActionTypes.ZOOM_OUT }),

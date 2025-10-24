@@ -11,6 +11,215 @@ import {
 } from '../../lib/editor/image-resize-utils';
 
 /**
+ * Helper function to get cursor for handler
+ */
+function getCursorForHandler(handler) {
+  switch (handler) {
+    case RESIZE_HANDLERS.TOP_LEFT:
+    case RESIZE_HANDLERS.BOTTOM_RIGHT:
+      return 'nwse-resize';
+    case RESIZE_HANDLERS.TOP_RIGHT:
+    case RESIZE_HANDLERS.BOTTOM_LEFT:
+      return 'nesw-resize';
+    case RESIZE_HANDLERS.TOP:
+    case RESIZE_HANDLERS.BOTTOM:
+      return 'ns-resize';
+    case RESIZE_HANDLERS.LEFT:
+    case RESIZE_HANDLERS.RIGHT:
+      return 'ew-resize';
+    default:
+      return 'default';
+  }
+}
+
+/**
+ * Helper function to calculate resize dimensions
+ */
+function calculateResizeDimensions({
+  handler,
+  startX,
+  startY,
+  currentX,
+  currentY,
+  startWidth,
+  startHeight,
+  options = DEFAULT_IMAGE_RESIZE_OPTIONS
+}) {
+  const deltaX = currentX - startX;
+  const deltaY = currentY - startY;
+
+  let newWidth = startWidth;
+  let newHeight = startHeight;
+
+  // Calculate based on handler position
+  switch (handler) {
+    case RESIZE_HANDLERS.TOP_LEFT:
+      newWidth = Math.max(options.minWidth, startWidth - deltaX);
+      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      break;
+
+    case RESIZE_HANDLERS.TOP_RIGHT:
+      newWidth = Math.max(options.minWidth, startWidth + deltaX);
+      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      break;
+
+    case RESIZE_HANDLERS.BOTTOM_LEFT:
+      newWidth = Math.max(options.minWidth, startWidth - deltaX);
+      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      break;
+
+    case RESIZE_HANDLERS.BOTTOM_RIGHT:
+      newWidth = Math.max(options.minWidth, startWidth + deltaX);
+      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      break;
+
+    case RESIZE_HANDLERS.TOP:
+      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      break;
+
+    case RESIZE_HANDLERS.BOTTOM:
+      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      break;
+
+    case RESIZE_HANDLERS.LEFT:
+      newWidth = Math.max(options.minWidth, startWidth - deltaX);
+      break;
+
+    case RESIZE_HANDLERS.RIGHT:
+      newWidth = Math.max(options.minWidth, startWidth + deltaX);
+      break;
+
+    default:
+      return { width: newWidth, height: newHeight };
+  }
+
+  // Apply aspect ratio if needed
+  if (options.preserveAspectRatio && options.aspectRatio) {
+    const aspectRatio = startWidth / startHeight;
+
+    // For corner handlers, maintain aspect ratio
+    if ([RESIZE_HANDLERS.TOP_LEFT, RESIZE_HANDLERS.TOP_RIGHT,
+         RESIZE_HANDLERS.BOTTOM_LEFT, RESIZE_HANDLERS.BOTTOM_RIGHT].includes(handler)) {
+      // Use the larger dimension to maintain aspect ratio
+      if (newWidth / aspectRatio > newHeight) {
+        newHeight = Math.max(options.minHeight, newWidth / aspectRatio);
+      } else {
+        newWidth = Math.max(options.minWidth, newHeight * aspectRatio);
+      }
+    }
+    // For edge handlers, maintain aspect ratio
+    else if ([RESIZE_HANDLERS.TOP, RESIZE_HANDLERS.BOTTOM].includes(handler)) {
+      newWidth = newHeight * aspectRatio;
+    } else if ([RESIZE_HANDLERS.LEFT, RESIZE_HANDLERS.RIGHT].includes(handler)) {
+      newHeight = newWidth / aspectRatio;
+    }
+  }
+
+  // Apply max dimensions
+  if (options.maxWidth && newWidth > options.maxWidth) {
+    newWidth = options.maxWidth;
+    if (options.preserveAspectRatio && options.aspectRatio) {
+      newHeight = newWidth / (startWidth / startHeight);
+    }
+  }
+
+  if (options.maxHeight && newHeight > options.maxHeight) {
+    newHeight = options.maxHeight;
+    if (options.preserveAspectRatio && options.aspectRatio) {
+      newWidth = newHeight * (startWidth / startHeight);
+    }
+  }
+
+  // Ensure minimum dimensions
+  newWidth = Math.max(options.minWidth, newWidth);
+  newHeight = Math.max(options.minHeight, newHeight);
+
+  return {
+    width: Math.round(newWidth),
+    height: Math.round(newHeight)
+  };
+}
+
+/**
+ * Helper function to apply image dimensions
+ */
+function applyImageDimensions(element, { width, height }) {
+  if (!isResizableImage(element)) return;
+
+  // For img elements
+  if (element.tagName === 'IMG') {
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+    element.width = width;
+    element.height = height;
+  }
+  // For div elements with background images
+  else if (element.tagName === 'DIV') {
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+  }
+}
+
+/**
+ * Helper function to apply dimensions and trigger input event
+ */
+function applyDimensionsAndTriggerInput(editorRef, imageElement, dimensions) {
+  applyImageDimensions(imageElement, dimensions);
+  // Trigger input event to update document state
+  const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+  editorRef.current.dispatchEvent(inputEvent);
+}
+
+/**
+ * Helper function to handle keyboard shortcuts for image resizing
+ */
+function handleImageKeyboardShortcut(event, editorRef, imageElement, options) {
+  const { ctrlKey, metaKey, shiftKey, key } = event;
+  const isModifierPressed = ctrlKey || metaKey;
+  const currentWidth = imageElement.offsetWidth;
+  const currentHeight = imageElement.offsetHeight;
+
+  const shortcuts = {
+    // Increase width
+    '>': isModifierPressed && shiftKey ? () => ({
+      width: Math.min(options.maxWidth || 800, currentWidth + 10),
+      height: currentHeight
+    }) : null,
+
+    // Decrease width
+    '<': isModifierPressed && shiftKey ? () => ({
+      width: Math.max(options.minWidth || 50, currentWidth - 10),
+      height: currentHeight
+    }) : null,
+
+    // Increase height
+    '+': isModifierPressed && shiftKey ? () => ({
+      width: currentWidth,
+      height: Math.min(options.maxHeight || 600, currentHeight + 10)
+    }) : null,
+
+    // Decrease height
+    '-': isModifierPressed && shiftKey ? () => ({
+      width: currentWidth,
+      height: Math.max(options.minHeight || 50, currentHeight - 10)
+    }) : null,
+
+    // Reset to default
+    'r': isModifierPressed && !shiftKey ? () => ({ width: 300, height: 200 }) : null
+  };
+
+  const action = shortcuts[key];
+  if (action) {
+    event.preventDefault();
+    const dimensions = action();
+    applyDimensionsAndTriggerInput(editorRef, imageElement, dimensions);
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * ImageResizeHandlers - Component for handling image resize operations
  * Provides resize handlers, selection, and resize functionality for images
  */
@@ -283,63 +492,7 @@ const ImageResizeHandlers = ({
     
     // Add keyboard shortcuts for image operations
     if (resizeImageRef.current && !isResizingRef.current) {
-      // Ctrl/Cmd + Shift + > - Increase image width by 10px
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === '>') {
-        event.preventDefault();
-        const currentWidth = resizeImageRef.current.offsetWidth;
-        const newWidth = Math.min(resizeOptionsRef.current.maxWidth || 800, currentWidth + 10);
-        applyImageDimensions(resizeImageRef.current, { width: newWidth, height: resizeImageRef.current.offsetHeight });
-        
-        // Trigger input event to update document state
-        const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-        editorRef.current.dispatchEvent(inputEvent);
-      }
-      
-      // Ctrl/Cmd + Shift + < - Decrease image width by 10px
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === '<') {
-        event.preventDefault();
-        const currentWidth = resizeImageRef.current.offsetWidth;
-        const newWidth = Math.max(resizeOptionsRef.current.minWidth || 50, currentWidth - 10);
-        applyImageDimensions(resizeImageRef.current, { width: newWidth, height: resizeImageRef.current.offsetHeight });
-        
-        // Trigger input event to update document state
-        const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-        editorRef.current.dispatchEvent(inputEvent);
-      }
-      
-      // Ctrl/Cmd + Shift + + - Increase image height by 10px
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === '+') {
-        event.preventDefault();
-        const currentHeight = resizeImageRef.current.offsetHeight;
-        const newHeight = Math.min(resizeOptionsRef.current.maxHeight || 600, currentHeight + 10);
-        applyImageDimensions(resizeImageRef.current, { width: resizeImageRef.current.offsetWidth, height: newHeight });
-        
-        // Trigger input event to update document state
-        const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-        editorRef.current.dispatchEvent(inputEvent);
-      }
-      
-      // Ctrl/Cmd + Shift + - - Decrease image height by 10px
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === '-') {
-        event.preventDefault();
-        const currentHeight = resizeImageRef.current.offsetHeight;
-        const newHeight = Math.max(resizeOptionsRef.current.minHeight || 50, currentHeight - 10);
-        applyImageDimensions(resizeImageRef.current, { width: resizeImageRef.current.offsetWidth, height: newHeight });
-        
-        // Trigger input event to update document state
-        const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-        editorRef.current.dispatchEvent(inputEvent);
-      }
-      
-      // Ctrl/Cmd + R - Reset image to default size (300x200)
-      if ((event.ctrlKey || event.metaKey) && event.key === 'r') {
-        event.preventDefault();
-        applyImageDimensions(resizeImageRef.current, { width: 300, height: 200 });
-        
-        // Trigger input event to update document state
-        const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-        editorRef.current.dispatchEvent(inputEvent);
-      }
+      handleImageKeyboardShortcut(event, editorRef, resizeImageRef.current, resizeOptionsRef.current);
     }
   }, [editorRef, clearImageSelection]);
 
@@ -386,12 +539,6 @@ const ImageResizeHandlers = ({
     editor.addEventListener('click', handleEditorClick);
     editor.addEventListener('keydown', handleKeyDown);
     
-    // Add scroll listener to viewport
-    const viewport = editor.closest('.editor-viewport');
-    if (viewport) {
-      viewport.addEventListener('scroll', handleScroll);
-    }
-    
     // Add window resize listener
     window.addEventListener('resize', handleScroll);
 
@@ -399,10 +546,6 @@ const ImageResizeHandlers = ({
     return () => {
       editor.removeEventListener('click', handleEditorClick);
       editor.removeEventListener('keydown', handleKeyDown);
-      
-      if (viewport) {
-        viewport.removeEventListener('scroll', handleScroll);
-      }
       
       window.removeEventListener('resize', handleScroll);
       
@@ -427,43 +570,31 @@ const ImageResizeHandlers = ({
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'childList') {
-          // If an image was removed and we had a selection, clear it
-          if (mutation.removedNodes.length > 0) {
-            mutation.removedNodes.forEach(node => {
-              if (node.nodeType === Node.ELEMENT_NODE && isResizableImage(node)) {
-                if (node === resizeImageRef.current) {
-                  clearImageSelection();
-                }
-              }
-            });
+        if (mutation.type !== 'childList') return;
+
+        // Handle removed images
+        mutation.removedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE && isResizableImage(node) && node === resizeImageRef.current) {
+            clearImageSelection();
           }
-          
-          // If an image was added, automatically select it for immediate resize overlay
-          if (mutation.addedNodes.length > 0) {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === Node.ELEMENT_NODE) {
-                // Check if the node itself is an image
-                if (isResizableImage(node)) {
-                  // Auto-select newly inserted images
-                  setTimeout(() => {
-                    handleImageSelection(node);
-                  }, 50);
-                }
-                // Check if the node contains images
-                else {
-                  const images = node.querySelectorAll ? node.querySelectorAll('img') : [];
-                  if (images.length > 0) {
-                    // Auto-select the first newly inserted image
-                    setTimeout(() => {
-                      handleImageSelection(images[0]);
-                    }, 50);
-                  }
-                }
-              }
-            });
+        });
+
+        // Handle added images - auto-select the first one
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+          // Check if node itself is an image
+          if (isResizableImage(node)) {
+            setTimeout(() => handleImageSelection(node), 50);
+            return;
           }
-        }
+
+          // Check if node contains images
+          const images = node.querySelectorAll?.('img') || [];
+          if (images.length > 0) {
+            setTimeout(() => handleImageSelection(images[0]), 50);
+          }
+        });
       });
     });
 
@@ -472,154 +603,8 @@ const ImageResizeHandlers = ({
       subtree: true
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [editorRef, clearImageSelection, handleImageSelection]);
-
-  // Helper function to get cursor for handler
-  function getCursorForHandler(handler) {
-    switch (handler) {
-      case RESIZE_HANDLERS.TOP_LEFT:
-      case RESIZE_HANDLERS.BOTTOM_RIGHT:
-        return 'nwse-resize';
-      case RESIZE_HANDLERS.TOP_RIGHT:
-      case RESIZE_HANDLERS.BOTTOM_LEFT:
-        return 'nesw-resize';
-      case RESIZE_HANDLERS.TOP:
-      case RESIZE_HANDLERS.BOTTOM:
-        return 'ns-resize';
-      case RESIZE_HANDLERS.LEFT:
-      case RESIZE_HANDLERS.RIGHT:
-        return 'ew-resize';
-      default:
-        return 'default';
-    }
-  }
-
-  // Helper function to calculate resize dimensions
-  function calculateResizeDimensions({
-    handler,
-    startX,
-    startY,
-    currentX,
-    currentY,
-    startWidth,
-    startHeight,
-    options = DEFAULT_IMAGE_RESIZE_OPTIONS
-  }) {
-    const deltaX = currentX - startX;
-    const deltaY = currentY - startY;
-    
-    let newWidth = startWidth;
-    let newHeight = startHeight;
-    
-    // Calculate based on handler position
-    switch (handler) {
-      case RESIZE_HANDLERS.TOP_LEFT:
-        newWidth = Math.max(options.minWidth, startWidth - deltaX);
-        newHeight = Math.max(options.minHeight, startHeight - deltaY);
-        break;
-        
-      case RESIZE_HANDLERS.TOP_RIGHT:
-        newWidth = Math.max(options.minWidth, startWidth + deltaX);
-        newHeight = Math.max(options.minHeight, startHeight - deltaY);
-        break;
-        
-      case RESIZE_HANDLERS.BOTTOM_LEFT:
-        newWidth = Math.max(options.minWidth, startWidth - deltaX);
-        newHeight = Math.max(options.minHeight, startHeight + deltaY);
-        break;
-        
-      case RESIZE_HANDLERS.BOTTOM_RIGHT:
-        newWidth = Math.max(options.minWidth, startWidth + deltaX);
-        newHeight = Math.max(options.minHeight, startHeight + deltaY);
-        break;
-        
-      case RESIZE_HANDLERS.TOP:
-        newHeight = Math.max(options.minHeight, startHeight - deltaY);
-        break;
-        
-      case RESIZE_HANDLERS.BOTTOM:
-        newHeight = Math.max(options.minHeight, startHeight + deltaY);
-        break;
-        
-      case RESIZE_HANDLERS.LEFT:
-        newWidth = Math.max(options.minWidth, startWidth - deltaX);
-        break;
-        
-      case RESIZE_HANDLERS.RIGHT:
-        newWidth = Math.max(options.minWidth, startWidth + deltaX);
-        break;
-        
-      default:
-        return { width: newWidth, height: newHeight };
-    }
-    
-    // Apply aspect ratio if needed
-    if (options.preserveAspectRatio && options.aspectRatio) {
-      const aspectRatio = startWidth / startHeight;
-      
-      // For corner handlers, maintain aspect ratio
-      if ([RESIZE_HANDLERS.TOP_LEFT, RESIZE_HANDLERS.TOP_RIGHT, 
-           RESIZE_HANDLERS.BOTTOM_LEFT, RESIZE_HANDLERS.BOTTOM_RIGHT].includes(handler)) {
-        // Use the larger dimension to maintain aspect ratio
-        if (newWidth / aspectRatio > newHeight) {
-          newHeight = Math.max(options.minHeight, newWidth / aspectRatio);
-        } else {
-          newWidth = Math.max(options.minWidth, newHeight * aspectRatio);
-        }
-      }
-      // For edge handlers, maintain aspect ratio
-      else if ([RESIZE_HANDLERS.TOP, RESIZE_HANDLERS.BOTTOM].includes(handler)) {
-        newWidth = newHeight * aspectRatio;
-      } else if ([RESIZE_HANDLERS.LEFT, RESIZE_HANDLERS.RIGHT].includes(handler)) {
-        newHeight = newWidth / aspectRatio;
-      }
-    }
-    
-    // Apply max dimensions
-    if (options.maxWidth && newWidth > options.maxWidth) {
-      newWidth = options.maxWidth;
-      if (options.preserveAspectRatio && options.aspectRatio) {
-        newHeight = newWidth / (startWidth / startHeight);
-      }
-    }
-    
-    if (options.maxHeight && newHeight > options.maxHeight) {
-      newHeight = options.maxHeight;
-      if (options.preserveAspectRatio && options.aspectRatio) {
-        newWidth = newHeight * (startWidth / startHeight);
-      }
-    }
-    
-    // Ensure minimum dimensions
-    newWidth = Math.max(options.minWidth, newWidth);
-    newHeight = Math.max(options.minHeight, newHeight);
-    
-    return {
-      width: Math.round(newWidth),
-      height: Math.round(newHeight)
-    };
-  }
-
-  // Helper function to apply image dimensions
-  function applyImageDimensions(element, { width, height }) {
-    if (!isResizableImage(element)) return;
-    
-    // For img elements
-    if (element.tagName === 'IMG') {
-      element.style.width = `${width}px`;
-      element.style.height = `${height}px`;
-      element.width = width;
-      element.height = height;
-    }
-    // For div elements with background images
-    else if (element.tagName === 'DIV') {
-      element.style.width = `${width}px`;
-      element.style.height = `${height}px`;
-    }
-  }
 
   // This component doesn't render anything visible - it just manages the resize functionality
   return null;

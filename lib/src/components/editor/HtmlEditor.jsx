@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDocumentState, useDocumentActions } from '../../context/DocumentContext';
 import { useFormatting, useContinuousReflow } from '../../hooks';
 import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
-import { PAGE_SIZES, getPageDimensions } from '../../lib/editor/page-sizes';
+import { getPageDimensions } from '../../lib/editor/page-sizes';
 import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
 import { deleteImage } from '../../lib/storage/index-db';
 import { normalizeContent } from '../../lib/editor/content-normalize-utils';
@@ -19,12 +19,6 @@ import './MultiPageEditor.css';
 const INITIAL_BOUNDARY_DELAY = 50;
 const BOUNDARY_UPDATE_DELAY = 50;
 const NAVIGATION_DELAY = 50;
-const SCROLL_DEBOUNCE = 100;
-const FOCUS_DELAY = 200;
-const NAVIGATION_LOCK_TIMEOUT = 500;
-
-// Action type for content updates (matching DocumentContext)
-const UPDATE_CONTINUOUS_CONTENT = 'UPDATE_CONTINUOUS_CONTENT';
 
 /**
  * HtmlEditor - Main WYSIWYG HTML Editor Component
@@ -120,13 +114,7 @@ const HtmlEditor = forwardRef(({
           updateBoundaries();
           
           if (addingPageRef.current) {
-            addingPageRef.current = false;
-            const newPageIndex = Math.max(0, pageBoundaries.length - 1);
-            actions.setActivePage(newPageIndex);
-            
-            setTimeout(() => {
-              scrollToPage(newPageIndex, containerRef);
-            }, NAVIGATION_DELAY);
+            navigateToNewPage();
           }
         }, BOUNDARY_UPDATE_DELAY);
         
@@ -145,8 +133,8 @@ const HtmlEditor = forwardRef(({
     }
   }, [continuousContent, onChange]);
 
-  // Expose methods to parent component via ref
-  useImperativeHandle(ref, () => ({
+  // Exposed methods for parent component via ref
+  const exposedMethods = useMemo(() => ({
     /**
      * Get the current HTML content from the editor
      * Returns the actual DOM content to ensure latest changes (like indentation) are captured
@@ -272,6 +260,9 @@ const HtmlEditor = forwardRef(({
     }
   }), [continuousContent, actions, updateBoundaries, editorRef, lastCursorPositionRef, checkAndUpdateBoundaries]);
 
+  // Expose methods to parent component via ref
+  useImperativeHandle(ref, () => exposedMethods, [exposedMethods]);
+
   // Update format state when selection changes
   useEffect(() => {
     const handleSelectionChange = () => {
@@ -320,6 +311,15 @@ const HtmlEditor = forwardRef(({
     };
   }, [updateCurrentFormatFromSelection]);
 
+  const navigateToNewPage = useCallback(() => {
+    addingPageRef.current = false;
+    const newPageIndex = Math.max(0, pageBoundaries.length - 1);
+    actions.setActivePage(newPageIndex);
+    setTimeout(() => {
+      scrollToPage(newPageIndex, containerRef);
+    }, NAVIGATION_DELAY);
+  }, [pageBoundaries.length, actions, scrollToPage]);
+
   // Extract content update logic for reuse
   const updateContent = useCallback(() => {
     if (!editorRef.current) return;
@@ -339,13 +339,13 @@ const HtmlEditor = forwardRef(({
     if (previousContent !== html) {
       // Create the operation to update content
       const updateOperation = {
-        type: UPDATE_CONTINUOUS_CONTENT,
+        type: 'UPDATE_CONTINUOUS_CONTENT',
         payload: html
       };
       
       // Create the inverse operation to restore previous content
       const inverseOperation = {
-        type: UPDATE_CONTINUOUS_CONTENT,
+        type: 'UPDATE_CONTINUOUS_CONTENT',
         payload: previousContent
       };
       
@@ -435,13 +435,7 @@ const HtmlEditor = forwardRef(({
       // We just need to handle navigation after a delay
       setTimeout(() => {
         if (addingPageRef.current) {
-          addingPageRef.current = false;
-          const newPageIndex = Math.max(0, pageBoundaries.length - 1);
-          actions.setActivePage(newPageIndex);
-          
-          setTimeout(() => {
-            scrollToPage(newPageIndex, containerRef);
-          }, NAVIGATION_DELAY);
+          navigateToNewPage();
         }
       }, 100);
     }

@@ -15,7 +15,7 @@ import {
   getMarginPresetNames,
   getMarginPresetLabel,
   isValidMarginPreset
-} from '../../packages/html-editor/src/lib/editor/margin-utils.js';
+} from '../../lib/src/lib/editor/margin-utils.js';
 
 describe('margin-utils', () => {
   describe('Constants', () => {

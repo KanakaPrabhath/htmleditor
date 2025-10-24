@@ -5,8 +5,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import React from 'react';
-import { DocumentProvider } from '../../packages/html-editor/src/context/DocumentContext';
-import { useContinuousReflow } from '../../packages/html-editor/src/hooks/useContinuousReflow';
+import { DocumentProvider } from '../../lib/src/context/DocumentContext';
+import { useContinuousReflow } from '../../lib/src/hooks/useContinuousReflow';
 
 describe('useContinuousReflow with Zoom', () => {
   let editorRef;

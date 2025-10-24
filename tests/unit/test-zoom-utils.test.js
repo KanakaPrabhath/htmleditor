@@ -15,7 +15,7 @@ import {
   getPreviousZoomLevel,
   isValidZoomLevel,
   getZoomMultiplier
-} from '../../packages/html-editor/src/lib/editor/zoom-utils';
+} from '../../lib/src/lib/editor/zoom-utils';
 
 describe('Zoom Utils', () => {
   describe('constants', () => {

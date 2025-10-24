@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeContent } from '../../packages/html-editor/src/lib/editor/content-normalize-utils.js';
+import { normalizeContent } from '../../lib/src/lib/editor/content-normalize-utils.js';
 
 describe('normalizeContent', () => {
   it('should wrap plain text in paragraph tags', () => {

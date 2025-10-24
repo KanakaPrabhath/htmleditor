@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { handleTabIndentation, indentSelectedBlocks } from '../../packages/html-editor/src/lib/editor/indentation-utils.js';
+import { handleTabIndentation, indentSelectedBlocks } from '../../lib/src/lib/editor/indentation-utils.js';
 
 // Mock document and window objects for testing
 const mockDocument = {

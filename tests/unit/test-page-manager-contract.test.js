@@ -6,7 +6,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { PageManager } from '../../packages/html-editor/src/components/editor/PageManager';
+import { PageManager } from '../../lib/src/components/editor/PageManager';
 
 describe('PageManager Contract - Zoom Props', () => {
   const defaultProps = {

@@ -6,9 +6,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import HtmlEditor from '../../packages/html-editor/src/components/editor/HtmlEditor';
-import { PAGE_SIZES } from '../../packages/html-editor/src/lib/editor/page-sizes';
-import { DocumentProvider } from '../../packages/html-editor/src/context/DocumentContext';
+import HtmlEditor from '../../lib/src/components/editor/HtmlEditor';
+import { PAGE_SIZES } from '../../lib/src/lib/editor/page-sizes';
+import { DocumentProvider } from '../../lib/src/context/DocumentContext';
 
 describe('Integration Test - Page Size Real Dimensions', () => {
   const renderWithProvider = (component) => {

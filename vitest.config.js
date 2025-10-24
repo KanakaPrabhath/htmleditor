@@ -10,8 +10,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@kanaka-prabhath/html-editor': path.resolve(__dirname, './packages/html-editor/src/index.js'),
-      '@kanaka-prabhath/html-editor/styles': path.resolve(__dirname, './packages/html-editor/src/components/editor/MultiPageEditor.css')
+      '@kanaka-prabhath/html-editor': path.resolve(__dirname, './lib/src/index.js'),
+      '@kanaka-prabhath/html-editor/styles': path.resolve(__dirname, './lib/src/components/editor/MultiPageEditor.css')
     }
   },
   test: {
@@ -34,10 +34,10 @@ export default defineConfig({
         'tests/',
         'dist/',
         '**/*.config.js',
-        '**/demo-app/**'
+        '**/demo/**'
       ],
       include: [
-        'packages/html-editor/src/**/*.{js,jsx}'
+        'lib/src/**/*.{js,jsx}'
       ]
     }
   },

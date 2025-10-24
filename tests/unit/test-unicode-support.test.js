@@ -6,7 +6,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import React from 'react';
-import { DocumentProvider, useDocumentState, useDocumentActions } from '../../packages/html-editor/src/context/DocumentContext';
+import { DocumentProvider, useDocumentState, useDocumentActions } from '../../lib/src/context/DocumentContext';
 
 describe('Unicode Text Support', () => {
   const wrapper = ({ children }) => React.createElement(DocumentProvider, null, children);

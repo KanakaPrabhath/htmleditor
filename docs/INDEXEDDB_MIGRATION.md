@@ -6,7 +6,7 @@ Successfully migrated image storage from localStorage to IndexedDB for better sc
 ## Changes Made
 
 ### 1. New Storage Implementation
-**File**: `packages/html-editor/src/lib/storage/index-db.js`
+**File**: `lib/src/lib/storage/index-db.js`
 
 - Implemented IndexedDB-based storage with the same API as the previous localStorage implementation
 - Database: `html-editor-storage`

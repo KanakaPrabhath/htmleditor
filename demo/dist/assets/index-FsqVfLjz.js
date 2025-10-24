@@ -262,8 +262,8 @@ Error generating stack: `+a.message+`
     </ol>
     <p><br></p>
     <p>Start typing to see the editor in action!</p>
-  `.trim(),s=()=>{i.current&&i.current.getHTMLContent()},o=()=>{i.current&&i.current.setContent(f)},d=()=>{if(i.current){const m=`
+  `.trim(),s=()=>{if(i.current){const m=i.current.getHTMLContent();console.log("Current HTML Content:",m)}},o=()=>{i.current&&i.current.setContent(f)},d=()=>{if(i.current){const m=`
         <h3>Inserted Content</h3>
-        <p>This content was inserted at the cursor position using the <code>insertContent</code> method.</p>
+        <p>This content was inserted at the cursor position using the insertContent method.</p>
         <p>You can continue typing after this inserted content.</p>
       `.trim();i.current.insertContent(m)}};return Zt.jsxs("div",{id:"app-wrapper",children:[Zt.jsx("div",{id:"editor-container",children:Zt.jsx(Iy,{children:Zt.jsx(Di,{ref:i})})}),Zt.jsxs("div",{style:{position:"absolute",bottom:"10px",left:"50%",transform:"translateX(-50%)",display:"flex",gap:"10px"},children:[Zt.jsx("button",{onClick:s,style:{padding:"5px 10px",fontSize:"12px"},children:"HTML Content to Console"}),Zt.jsx("button",{onClick:o,style:{padding:"5px 10px",fontSize:"12px"},children:"Load Sample Content"}),Zt.jsx("button",{onClick:d,style:{padding:"5px 10px",fontSize:"12px"},children:"Insert Sample Content"})]})]})}By.createRoot(document.getElementById("root")).render(Zt.jsx(H.StrictMode,{children:Zt.jsx(p1,{})}));

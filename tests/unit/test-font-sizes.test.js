@@ -8,7 +8,7 @@ import {
   getPixelValue,
   getPointValue,
   isValidFontSize
-} from '../../packages/html-editor/src/lib/editor/font-sizes';
+} from '../../lib/src/lib/editor/font-sizes';
 
 describe('Font Sizes', () => {
   describe('Constants', () => {

@@ -6,8 +6,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import HtmlEditor from '../../packages/html-editor/src/components/editor/HtmlEditor';
-import { DocumentProvider } from '../../packages/html-editor/src/context/DocumentContext';
+import HtmlEditor from '../../lib/src/components/editor/HtmlEditor';
+import { DocumentProvider } from '../../lib/src/context/DocumentContext';
 
 describe('Integration Test - Zoom Keyboard Shortcuts', () => {
   const renderWithProvider = (component) => {

@@ -99,25 +99,25 @@ describe('Library Exports', () => {
   });
 
   describe('Constants and Utilities', () => {
-    it('should export PAGE_DIMENSIONS constant', () => {
-      expect(HtmlEditor.PAGE_DIMENSIONS).toBeDefined();
-      expect(typeof HtmlEditor.PAGE_DIMENSIONS).toBe('object');
+    it('should export PAGE_SIZES constant', () => {
+      expect(HtmlEditor.PAGE_SIZES).toBeDefined();
+      expect(typeof HtmlEditor.PAGE_SIZES).toBe('object');
     });
 
-    it('should have correct PAGE_DIMENSIONS structure', () => {
-      const { PAGE_DIMENSIONS } = HtmlEditor;
+    it('should have correct PAGE_SIZES structure', () => {
+      const { PAGE_SIZES } = HtmlEditor;
       
-      expect(PAGE_DIMENSIONS.A4).toBeDefined();
-      expect(PAGE_DIMENSIONS.A4.width).toBe(794);
-      expect(PAGE_DIMENSIONS.A4.height).toBe(1123);
+      expect(PAGE_SIZES.A4).toBeDefined();
+      expect(PAGE_SIZES.A4.width).toBe(794);
+      expect(PAGE_SIZES.A4.height).toBe(1123);
       
-      expect(PAGE_DIMENSIONS.Letter).toBeDefined();
-      expect(PAGE_DIMENSIONS.Letter.width).toBe(816);
-      expect(PAGE_DIMENSIONS.Letter.height).toBe(1056);
+      expect(PAGE_SIZES.Letter).toBeDefined();
+      expect(PAGE_SIZES.Letter.width).toBe(816);
+      expect(PAGE_SIZES.Letter.height).toBe(1056);
       
-      expect(PAGE_DIMENSIONS.Legal).toBeDefined();
-      expect(PAGE_DIMENSIONS.Legal.width).toBe(816);
-      expect(PAGE_DIMENSIONS.Legal.height).toBe(1344);
+      expect(PAGE_SIZES.Legal).toBeDefined();
+      expect(PAGE_SIZES.Legal.width).toBe(816);
+      expect(PAGE_SIZES.Legal.height).toBe(1344);
     });
 
     it('should export logger utility', () => {
@@ -147,7 +147,6 @@ describe('Library Exports', () => {
         'deleteImage',
         'clearImages',
         'getAllImageKeys',
-        'PAGE_DIMENSIONS',
         'PAGE_SIZES',
         'getPageDimensions',
         'isValidPageSize',
@@ -199,7 +198,6 @@ describe('Library Exports', () => {
         'deleteImage',
         'clearImages',
         'getAllImageKeys',
-        'PAGE_DIMENSIONS',
         'PAGE_SIZES',
         'getPageDimensions',
         'isValidPageSize',
@@ -257,7 +255,7 @@ describe('Library Exports', () => {
       expect(typeof HtmlEditor.getImage).toBe('function');
       
       // Constants should be objects
-      expect(typeof HtmlEditor.PAGE_DIMENSIONS).toBe('object');
+      expect(typeof HtmlEditor.PAGE_SIZES).toBe('object');
       // Logger is a function (default export)
       expect(typeof HtmlEditor.logger).toBe('function');
     });

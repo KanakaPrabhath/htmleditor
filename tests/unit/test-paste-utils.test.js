@@ -121,12 +121,33 @@ describe('normalizeContent', () => {
     expect(result).toContain('<pre>');
   });
 
-  it('should handle complex nested structures', () => {
-    const input = '<div><h1>Title</h1><p>Text with <strong>bold</strong> and <em>italic</em></p><ul><li>Item</li></ul></div>';
-    const result = normalizeContent(input);
-    expect(result).toContain('<h1>Title</h1>');
-    expect(result).toContain('<strong>bold</strong>');
-    expect(result).toContain('<em>italic</em>');
-    expect(result).toContain('<ul>');
+  it('should unwrap headings from inside paragraphs', () => {
+    const input = '<p><h1>Hello world</h1></p>';
+    const expected = '<p></p><h1>Hello world</h1><p></p>';
+    expect(normalizeContent(input)).toBe(expected);
+  });
+
+  it('should unwrap lists from inside paragraphs', () => {
+    const input = '<p><ul><li>Item 1</li><li>Item 2</li></ul></p>';
+    const expected = '<p></p><ul><li>Item 1</li><li>Item 2</li></ul><p></p>';
+    expect(normalizeContent(input)).toBe(expected);
+  });
+
+  it('should unwrap multiple block elements from paragraphs', () => {
+    const input = '<p><h1>Title</h1></p><p><ul><li>Item</li></ul></p>';
+    const expected = '<p></p><h1>Title</h1><p></p><p></p><ul><li>Item</li></ul><p></p>';
+    expect(normalizeContent(input)).toBe(expected);
+  });
+
+  it('should preserve paragraphs with mixed content', () => {
+    const input = '<p>Text <strong>bold</strong> and <h1>heading</h1></p>';
+    const expected = '<p>Text <strong>bold</strong> and </p><h1>heading</h1><p></p>';
+    expect(normalizeContent(input)).toBe(expected);
+  });
+
+  it('should preserve paragraphs with images', () => {
+    const input = '<p>Text with <img src="test.jpg" alt="test"></p>';
+    expect(normalizeContent(input)).toContain('<p>');
+    expect(normalizeContent(input)).toContain('<img src="test.jpg"');
   });
 });

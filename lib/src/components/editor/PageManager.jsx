@@ -165,7 +165,7 @@ export const PageManager = ({
 
       {/* Page List */}
       <div className="page-list">
-        {(pageBoundaries && pageBoundaries.length > 0 ? pageBoundaries : [{ id: 'page-0', pageNumber: 1 }]).map((boundary, index) => (
+        {pageBoundaries.map((boundary, index) => (
           <div key={boundary.id || `page-${index}`} className="page-item">
             <button
               type="button"

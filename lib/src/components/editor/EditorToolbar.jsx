@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { 
   Bold, 
@@ -24,6 +23,36 @@ import { saveImage, getImage } from '../../lib/storage/index-db';
 import { logger } from '../../lib/editor/utils/logger';
 import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 import { indentSelectedBlocks } from '../../lib/editor/indentation-utils';
+
+// Constants for toolbar options
+const FONT_FAMILIES = [
+  // English Fonts
+  { value: 'Segoe UI', label: 'Segoe UI' },
+  { value: 'Arial', label: 'Arial' },
+  { value: 'Times New Roman', label: 'Times New Roman' },
+  { value: 'Courier New', label: 'Courier New' },
+  { value: 'Georgia', label: 'Georgia' },
+  { value: 'Verdana', label: 'Verdana' },
+  // Sinhala Fonts
+  { value: 'Noto Sans Sinhala', label: 'Noto Sans Sinhala' },
+  { value: 'Iskoola Pota', label: 'Iskoola Pota' },
+  // Tamil Fonts
+  { value: 'Noto Sans Tamil', label: 'Noto Sans Tamil' },
+  // Unicode Fonts
+  { value: 'Noto Sans', label: 'Noto Sans' }
+];
+
+const HEADING_LEVELS = [
+  { value: 'p', label: 'Normal' },
+  { value: 'h1', label: 'Heading 1' },
+  { value: 'h2', label: 'Heading 2' },
+  { value: 'h3', label: 'Heading 3' },
+  { value: 'h4', label: 'Heading 4' },
+  { value: 'h5', label: 'Heading 5' },
+  { value: 'h6', label: 'Heading 6' }
+];
+
+const DEFAULT_TABLE_HTML = '<table border="1"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>';
 
 /**
  * EditorToolbar - Formatting toolbar for the multi-page editor
@@ -72,110 +101,71 @@ const EditorToolbar = ({
     }
   };
 
+  /**
+   * Render a formatting button with active state
+   */
+  const renderFormatButton = (command, formatKey, Icon, title) => (
+    <button 
+      key={command}
+      onClick={() => onFormatText(command)} 
+      className={currentFormat[formatKey] ? 'active' : ''} 
+      title={title}
+    >
+      <Icon size={16} />
+    </button>
+  );
+
+  /**
+   * Render an action button
+   */
+  const renderActionButton = (onClick, Icon, title, disabled = false) => (
+    <button 
+      key={title}
+      onClick={onClick} 
+      disabled={disabled}
+      title={title}
+      style={{ opacity: disabled ? 0.5 : 1 }}
+    >
+      <Icon size={16} />
+    </button>
+  );
+
+  /**
+   * Render a separator
+   */
+  const renderSeparator = () => <div className="toolbar-separator" />;
+
   return (
     <div className="editor-toolbar">
-      <button 
-        onClick={() => onFormatText('undo')} 
-        disabled={!canUndo}
-        title="Undo"
-        style={{ opacity: canUndo ? 1 : 0.5 }}
-      >
-        <Undo size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('redo')} 
-        disabled={!canRedo}
-        title="Redo"
-        style={{ opacity: canRedo ? 1 : 0.5 }}
-      >
-        <Redo size={16} />
-      </button>
+      {renderActionButton(() => onFormatText('undo'), Undo, 'Undo', !canUndo)}
+      {renderActionButton(() => onFormatText('redo'), Redo, 'Redo', !canRedo)}
       
-      <div className="toolbar-separator" />
+      {renderSeparator()}
       
-      <button 
-        onClick={() => onFormatText('bold')} 
-        className={currentFormat.bold ? 'active' : ''} 
-        title="Bold"
-      >
-        <Bold size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('italic')} 
-        className={currentFormat.italic ? 'active' : ''} 
-        title="Italic"
-      >
-        <Italic size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('underline')} 
-        className={currentFormat.underline ? 'active' : ''} 
-        title="Underline"
-      >
-        <Underline size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('strikethrough')} 
-        className={currentFormat.strikethrough ? 'active' : ''} 
-        title="Strikethrough"
-      >
-        <Strikethrough size={16} />
-      </button>
+      {renderFormatButton('bold', 'bold', Bold, 'Bold')}
+      {renderFormatButton('italic', 'italic', Italic, 'Italic')}
+      {renderFormatButton('underline', 'underline', Underline, 'Underline')}
+      {renderFormatButton('strikethrough', 'strikethrough', Strikethrough, 'Strikethrough')}
       
-      <div className="toolbar-separator" />
+      {renderSeparator()}
       
-      <button 
-        onClick={() => onFormatText('justifyLeft')} 
-        className={currentFormat.alignLeft ? 'active' : ''} 
-        title="Align Left"
-      >
-        <AlignLeft size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('justifyCenter')} 
-        className={currentFormat.alignCenter ? 'active' : ''} 
-        title="Align Center"
-      >
-        <AlignCenter size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('justifyRight')} 
-        className={currentFormat.alignRight ? 'active' : ''} 
-        title="Align Right"
-      >
-        <AlignRight size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('justifyFull')} 
-        className={currentFormat.alignJustify ? 'active' : ''} 
-        title="Justify"
-      >
-        <AlignJustify size={16} />
-      </button>
+      {renderFormatButton('justifyLeft', 'alignLeft', AlignLeft, 'Align Left')}
+      {renderFormatButton('justifyCenter', 'alignCenter', AlignCenter, 'Align Center')}
+      {renderFormatButton('justifyRight', 'alignRight', AlignRight, 'Align Right')}
+      {renderFormatButton('justifyFull', 'alignJustify', AlignJustify, 'Justify')}
       
-      <div className="toolbar-separator" />
+      {renderSeparator()}
       
       <select 
         onChange={(e) => onFormatText('fontName', e.target.value)}
         value={currentFormat.fontFamily || 'Segoe UI'}
         title="Font Family"
       >
-        {/* English Fonts */}
-        <option value="Segoe UI">Segoe UI </option>
-        <option value="Arial">Arial </option>
-        <option value="Times New Roman">Times New Roman </option>
-        <option value="Courier New">Courier New </option>
-        <option value="Georgia">Georgia </option>
-        <option value="Verdana">Verdana </option>
-        
-        {/* Sinhala Fonts */}
-        <option value="Noto Sans Sinhala">Noto Sans Sinhala </option>
-        <option value="Iskoola Pota">Iskoola Pota </option>
-        {/* Tamil Fonts */}
-        <option value="Noto Sans Tamil">Noto Sans Tamil </option>
-        
-        {/* Unicode Fonts (support multiple scripts) */}
-        <option value="Noto Sans">Noto Sans </option>
+        {FONT_FAMILIES.map(({ value, label }) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
       </select>
       
       <select 
@@ -195,31 +185,19 @@ const EditorToolbar = ({
         value={currentFormat.headingLevel || 'p'}
         title="Heading Level"
       >
-        <option value="p">Normal</option>
-        <option value="h1">Heading 1</option>
-        <option value="h2">Heading 2</option>
-        <option value="h3">Heading 3</option>
-        <option value="h4">Heading 4</option>
-        <option value="h5">Heading 5</option>
-        <option value="h6">Heading 6</option>
+        {HEADING_LEVELS.map(({ value, label }) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
       </select>
       
-      <div className="toolbar-separator" />
+      {renderSeparator()}
       
-      <button 
-        onClick={() => onFormatText('insertUnorderedList')} 
-        title="Bullet List"
-      >
-        <List size={16} />
-      </button>
-      <button 
-        onClick={() => onFormatText('insertOrderedList')} 
-        title="Numbered List"
-      >
-        <ListOrdered size={16} />
-      </button>
+      {renderActionButton(() => onFormatText('insertUnorderedList'), List, 'Bullet List')}
+      {renderActionButton(() => onFormatText('insertOrderedList'), ListOrdered, 'Numbered List')}
       
-      <div className="toolbar-separator" />
+      {renderSeparator()}
       
       <button 
         onClick={() => {
@@ -242,7 +220,7 @@ const EditorToolbar = ({
         <Outdent size={16} />
       </button>
       
-      <div className="toolbar-separator" />
+      {renderSeparator()}
       
       <button 
         onClick={() => {
@@ -253,23 +231,11 @@ const EditorToolbar = ({
       >
         <Link size={16} />
       </button>
-      <button 
-        onClick={() => onFormatText('insertHTML', '<table border="1"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>')} 
-        title="Insert Table"
-      >
-        <Table size={16} />
-      </button>
+      {renderActionButton(() => onFormatText('insertHTML', DEFAULT_TABLE_HTML), Table, 'Insert Table')}
       
-      {onAddPageBreak && (
-        <button 
-          onClick={onAddPageBreak} 
-          title="Insert Page Break"
-        >
-          <FileText size={16} />
-        </button>
-      )}
+      {onAddPageBreak && renderActionButton(onAddPageBreak, FileText, 'Insert Page Break')}
       
-      <div className="toolbar-separator" />
+      {renderSeparator()}
       
       <input 
         type="file" 

@@ -1,9 +1,20 @@
-import React from 'react';
+import { useCallback, useMemo, memo } from 'react';
 import PropTypes from 'prop-types';
 import { DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 import { getMarginPixels, DEFAULT_MARGIN_PRESET } from '../../lib/editor/margin-utils';
 import { handlePaste as processPasteEvent } from '../../lib/editor/paste-utils';
 import { handleTabIndentation } from '../../lib/editor/indentation-utils';
+
+/**
+ * Helper function to check if element is or contains a page-break
+ */
+const isPageBreakElement = (node) => {
+  if (!node) return false;
+  if (node.nodeType === Node.ELEMENT_NODE) {
+    return node.tagName === 'PAGE-BREAK' || node.getAttribute('data-page-break') === 'true';
+  }
+  return node.parentElement && isPageBreakElement(node.parentElement);
+};
 
 /**
  * PageView - MS Word-like continuous contenteditable surface
@@ -12,10 +23,7 @@ import { handleTabIndentation } from '../../lib/editor/indentation-utils';
  * Supports zoom scaling via CSS transform
  */
 const PageView = ({ 
-  content, 
   dimensions, 
-  pageSize,
-  pageBoundaries = [],
   editorRef,
   onInput,
   onContentChange,
@@ -27,14 +35,14 @@ const PageView = ({
   zoomLevel = 100,
   pageMargins = DEFAULT_MARGIN_PRESET
 }) => {
-  // Convert margin preset to pixel values
-  const padding = getMarginPixels(pageMargins);
+  // Memoize padding calculation
+  const padding = useMemo(() => getMarginPixels(pageMargins), [pageMargins]);
 
   // Calculate zoom multiplier
   const zoomMultiplier = zoomLevel / 100;
 
   // Helper function to check if cursor is in padding area
-  const isInPaddingArea = (element, clientY) => {
+  const isInPaddingArea = useCallback((element, clientY) => {
     if (!element) return false;
     
     const rect = element.getBoundingClientRect();
@@ -46,19 +54,71 @@ const PageView = ({
     }
     
     return false;
-  };
+  }, [padding.top, padding.bottom]);
 
-  // Helper function to check if element is or contains a page-break
-  const isPageBreakElement = (node) => {
-    if (!node) return false;
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      return node.tagName === 'PAGE-BREAK' || node.getAttribute('data-page-break') === 'true';
+  // Handle page-break click logic
+  const handlePageBreakClick = useCallback((clickedElement, event) => {
+    event.preventDefault();
+    
+    // Check if click is in the remove button area (top-right corner)
+    const rect = clickedElement.getBoundingClientRect();
+    const relativeX = event.clientX - rect.left;
+    const relativeY = event.clientY - rect.top;
+    
+    // Remove button is positioned at right: 20px, top: -12px
+    // Button is 20px wide and 20px tall
+    const removeButtonLeft = rect.width - 40; // 20px from right
+    const removeButtonTop = -12;
+    const removeButtonRight = rect.width - 20;
+    const removeButtonBottom = 8; // -12px + 20px
+    
+    // Check if click is within the remove button area
+    if (relativeX >= removeButtonLeft && 
+        relativeX <= removeButtonRight && 
+        relativeY >= removeButtonTop && 
+        relativeY <= removeButtonBottom) {
+      // Click is on remove button
+      if (onRemovePageBreak) {
+        onRemovePageBreak(clickedElement);
+      }
     }
-    return node.parentElement && isPageBreakElement(node.parentElement);
-  };
+  }, [onRemovePageBreak]);
+
+  // Handle padding click logic
+  const handlePaddingClick = useCallback((event) => {
+    event.preventDefault();
+    
+    // Move cursor to the nearest valid content area
+    const rect = editorRef.current.getBoundingClientRect();
+    const relativeY = event.clientY - rect.top;
+    
+    if (relativeY < padding.top) {
+      // Click was in top padding - move to first content element
+      const firstChild = editorRef.current.firstElementChild;
+      if (firstChild && firstChild.tagName !== 'PAGE-BREAK') {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.setStart(firstChild, 0);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    } else {
+      // Click was in bottom padding - move to last content element
+      const lastChild = editorRef.current.lastElementChild;
+      if (lastChild && lastChild.tagName !== 'PAGE-BREAK') {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(lastChild);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  }, [editorRef, padding.top]);
 
   // Prevent deletion of page-break elements and handle Tab key
-  const handleKeyDown = (event) => {
+  const handleKeyDown = useCallback((event) => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
@@ -93,85 +153,33 @@ const PageView = ({
     if (onKeyDown) {
       onKeyDown(event);
     }
-  };
+  }, [onKeyDown, onContentChange]);
 
   // Handle click events to prevent cursor placement in padding areas
-  const handleClick = (event) => {
+  const handleClick = useCallback((event) => {
     if (!editorRef.current) return;
 
     const clickedElement = event.target;
     
     // Check if click is on a page-break element
     if (isPageBreakElement(clickedElement)) {
-      event.preventDefault();
-      
-      // Check if click is in the remove button area (top-right corner)
-      const rect = clickedElement.getBoundingClientRect();
-      const relativeX = event.clientX - rect.left;
-      const relativeY = event.clientY - rect.top;
-      
-      // Remove button is positioned at right: 20px, top: -12px
-      // Button is 20px wide and 20px tall
-      const removeButtonLeft = rect.width - 40; // 20px from right
-      const removeButtonTop = -12;
-      const removeButtonRight = rect.width - 20;
-      const removeButtonBottom = 8; // -12px + 20px
-      
-      // Check if click is within the remove button area
-      if (relativeX >= removeButtonLeft && 
-          relativeX <= removeButtonRight && 
-          relativeY >= removeButtonTop && 
-          relativeY <= removeButtonBottom) {
-        // Click is on remove button
-        if (onRemovePageBreak) {
-          onRemovePageBreak(clickedElement);
-        }
-      }
-      
+      handlePageBreakClick(clickedElement, event);
       return;
     }
 
     // Check if click is in padding area
     if (isInPaddingArea(editorRef.current, event.clientY)) {
-      event.preventDefault();
-      
-      // Move cursor to the nearest valid content area
-      const rect = editorRef.current.getBoundingClientRect();
-      const relativeY = event.clientY - rect.top;
-      
-      if (relativeY < padding.top) {
-        // Click was in top padding - move to first content element
-        const firstChild = editorRef.current.firstElementChild;
-        if (firstChild && firstChild.tagName !== 'PAGE-BREAK') {
-          const range = document.createRange();
-          const sel = window.getSelection();
-          range.setStart(firstChild, 0);
-          range.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
-      } else {
-        // Click was in bottom padding - move to last content element
-        const lastChild = editorRef.current.lastElementChild;
-        if (lastChild && lastChild.tagName !== 'PAGE-BREAK') {
-          const range = document.createRange();
-          const sel = window.getSelection();
-          range.selectNodeContents(lastChild);
-          range.collapse(false);
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
-      }
+      handlePaddingClick(event);
       return;
     }
 
     if (onClick) {
       onClick(event);
     }
-  };
+  }, [editorRef, onClick, handlePageBreakClick, handlePaddingClick, isInPaddingArea]);
 
   // Prevent input in padding areas and on page breaks
-  const handleBeforeInput = (event) => {
+  const handleBeforeInput = useCallback((event) => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
@@ -183,10 +191,10 @@ const PageView = ({
       event.preventDefault();
       return false;
     }
-  };
+  }, []);
 
   // Handle paste events with custom processing
-  const handlePaste = (event) => {
+  const handlePaste = useCallback((event) => {
     // Use the custom paste handler from utils
     const processedContent = processPasteEvent(event);
     
@@ -194,7 +202,7 @@ const PageView = ({
     if (onPaste) {
       onPaste(event, processedContent);
     }
-  };
+  }, [onPaste]);
 
   return (
     <div 
@@ -252,20 +260,10 @@ const PageView = ({
 };
 
 PageView.propTypes = {
-  content: PropTypes.string.isRequired,
   dimensions: PropTypes.shape({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired
   }).isRequired,
-  pageSize: PropTypes.oneOf(['A4', 'Letter', 'Legal']).isRequired,
-  pageBoundaries: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      pageNumber: PropTypes.number.isRequired,
-      top: PropTypes.number,
-      height: PropTypes.number
-    })
-  ),
   editorRef: PropTypes.shape({
     current: PropTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object)
   }).isRequired,
@@ -281,7 +279,6 @@ PageView.propTypes = {
 };
 
 PageView.defaultProps = {
-  pageBoundaries: [],
   onContentChange: undefined,
   onKeyDown: undefined,
   onClick: undefined,
@@ -292,4 +289,4 @@ PageView.defaultProps = {
   pageMargins: DEFAULT_MARGIN_PRESET
 };
 
-export default PageView;
+export default memo(PageView);

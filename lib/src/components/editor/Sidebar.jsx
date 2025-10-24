@@ -14,18 +14,57 @@ import {
 import './Sidebar.css';
 
 /**
+ * Extracts headings from HTML content
+ * @param {string} htmlContent - The HTML content to parse
+ * @param {number|null} pageNumber - The page number for headings, or null for continuous mode
+ * @param {string} prefix - Prefix for heading IDs
+ * @returns {Array} Array of heading objects
+ */
+const extractHeadings = (htmlContent, pageNumber, prefix = '') => {
+  if (!htmlContent) return [];
+  
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
+  const headingElements = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  
+  return Array.from(headingElements).map((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent.trim();
+    return text ? {
+      id: `${prefix}heading-${index}`,
+      level,
+      text,
+      page: pageNumber || 1
+    } : null;
+  }).filter(Boolean);
+};
+
+/**
+ * Calculates word count from HTML content
+ * @param {string} htmlContent - The HTML content to parse
+ * @returns {number} Word count
+ */
+const calculateWordCount = (htmlContent) => {
+  if (!htmlContent) return 0;
+  
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
+  const text = tempDiv.textContent || tempDiv.innerText || '';
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+};
+
+/**
  * Sidebar Component
  * Displays document information, outline, and word count
  * @param {Object} props
- * @param {Object} props.editorView - Editor view instance (not used in contenteditable)
  * @param {boolean} props.isCollapsed - Whether sidebar is collapsed
  * @param {Function} props.onToggle - Callback for collapse toggle
  * @param {number} props.wordCount - Optional word count (for continuous mode)
  * @param {number} props.pageCount - Optional page count (for continuous mode)
  */
-export const Sidebar = ({ editorView, isCollapsed, onToggle, wordCount: propWordCount, pageCount: propPageCount }) => {
+export const Sidebar = ({ isCollapsed, onToggle, wordCount: propWordCount, pageCount: propPageCount }) => {
   const documentState = useDocumentState();
-  const { pages, activePage, continuousContent, editorMode } = documentState;
+  const { pages, activePage, continuousContent } = documentState;
   const [wordCount, setWordCount] = useState(0);
   const [outline, setOutline] = useState([]);
 
@@ -34,24 +73,7 @@ export const Sidebar = ({ editorView, isCollapsed, onToggle, wordCount: propWord
     // Use prop values if provided (continuous mode)
     if (propWordCount !== undefined && propPageCount !== undefined) {
       setWordCount(propWordCount);
-      
-      // Extract outline from continuous content
-      if (continuousContent) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = continuousContent;
-        const headingElements = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
-        const headings = Array.from(headingElements).map((heading, index) => {
-          const level = parseInt(heading.tagName.charAt(1));
-          const text = heading.textContent.trim();
-          return text ? {
-            id: `heading-${index}`,
-            level,
-            text,
-            page: 1 // Continuous mode doesn't have meaningful page numbers for headings
-          } : null;
-        }).filter(Boolean);
-        setOutline(headings);
-      }
+      setOutline(extractHeadings(continuousContent, 1, 'continuous-'));
       return;
     }
 
@@ -60,29 +82,8 @@ export const Sidebar = ({ editorView, isCollapsed, onToggle, wordCount: propWord
     const headings = [];
 
     pages.forEach((page, pageIndex) => {
-      if (page.content) {
-        // Extract text content and count words
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = page.content;
-        const text = tempDiv.textContent || tempDiv.innerText || '';
-        const words = text.trim().split(/\s+/).filter(word => word.length > 0);
-        totalWords += words.length;
-
-        // Extract headings for outline
-        const headingElements = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
-        headingElements.forEach((heading, index) => {
-          const level = parseInt(heading.tagName.charAt(1));
-          const text = heading.textContent.trim();
-          if (text) {
-            headings.push({
-              id: `heading-${pageIndex}-${index}`,
-              level,
-              text,
-              page: pageIndex + 1
-            });
-          }
-        });
-      }
+      totalWords += calculateWordCount(page.content);
+      headings.push(...extractHeadings(page.content, pageIndex + 1, `page-${pageIndex}-`));
     });
 
     setWordCount(totalWords);
@@ -164,12 +165,6 @@ export const Sidebar = ({ editorView, isCollapsed, onToggle, wordCount: propWord
               </div>
             </div>
           )}
-
-          <div className="sidebar-section">
-            <h3>Document</h3>
-            <p>HTML Editor</p>
-            <p>Multi-page support</p>
-          </div>
         </div>
       )}
     </aside>

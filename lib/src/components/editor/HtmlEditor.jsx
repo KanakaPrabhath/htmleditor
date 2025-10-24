@@ -19,6 +19,8 @@ import './MultiPageEditor.css';
 const INITIAL_BOUNDARY_DELAY = 50;
 const BOUNDARY_UPDATE_DELAY = 50;
 const NAVIGATION_DELAY = 50;
+const SCROLL_DEBOUNCE = 100;
+const NAVIGATION_LOCK_TIMEOUT = 300;
 
 /**
  * HtmlEditor - Main WYSIWYG HTML Editor Component

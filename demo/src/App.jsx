@@ -59,6 +59,35 @@ function App() {
     }
   };
 
+  const handleSetPageSize = () => {
+    if (editorRef.current) {
+      // Cycle through available page sizes
+      const sizes = ['A4', 'Letter', 'Legal'];
+      const currentSize = 'A4'; // You could get this from state if needed
+      const nextSize = sizes[(sizes.indexOf(currentSize) + 1) % sizes.length];
+      editorRef.current.setPageSize(nextSize);
+      console.log('Page size set to:', nextSize);
+    }
+  };
+
+  const handleSetPageMargins = () => {
+    if (editorRef.current) {
+      // Cycle through available margin presets and custom margins
+      const marginOptions = [
+        'NORMAL', // preset
+        'NARROW', // preset
+        { top: 0.6, bottom: 0.6, left: 0.6, right: 0.6 }, // custom: 0.6" all sides
+        { top: 0.5, bottom: 0.5, left: 1.0, right: 1.0 }, // custom: 0.5" top/bottom, 1.0" left/right
+        { top: 1.0, bottom: 1.0, left: 0.5, right: 0.5 }  // custom: 1.0" top/bottom, 0.5" left/right
+      ];
+      
+      // For demo purposes, we'll just set the custom 0.6" margins as requested
+      const customMargins = { top: 0.6, bottom: 0.6, left: 0.6, right: 0.6 };
+      editorRef.current.setPageMargins(customMargins);
+      console.log('Page margins set to custom:', customMargins);
+    }
+  };
+
   return (
       <div id="app-wrapper">
         <div id="editor-container">
@@ -75,6 +104,12 @@ function App() {
            </button>
            <button onClick={handleInsertSampleContent} style={{ padding: '5px 10px', fontSize: '12px' }}>
              Insert Sample Content
+           </button>
+           <button onClick={handleSetPageSize} style={{ padding: '5px 10px', fontSize: '12px' }}>
+             Change Page Size
+           </button>
+           <button onClick={handleSetPageMargins} style={{ padding: '5px 10px', fontSize: '12px' }}>
+             Set Custom Margins (0.6")
            </button>
          </div>
       </div>

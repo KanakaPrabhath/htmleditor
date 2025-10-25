@@ -32,6 +32,8 @@ const NAVIGATION_LOCK_TIMEOUT = 300;
  * - getHTMLContent() - Returns the current HTML content as a string
  * - getPlainText() - Returns the plain text content (HTML stripped)
  * - setContent(html) - Sets the editor content programmatically
+ * - setPageSize(size) - Sets the page size ('A4', 'Letter', 'Legal')
+ * - setPageMargins(margins) - Sets the page margins ('NORMAL', 'NARROW', 'MODERATE', 'WIDE', 'OFFICE_2003') or custom {top, bottom, left, right} in inches
  * - insertContent(html) - Inserts content at the current cursor position without replacing existing content
  * 
  * @param {Object} props
@@ -209,7 +211,24 @@ const HtmlEditor = forwardRef(({
         }, BOUNDARY_UPDATE_DELAY);
       }
     },
-
+    /**
+     * Set the page size programmatically
+     * @param {string} size - Page size ('A4', 'Letter', 'Legal')
+     */
+    setPageSize: (size) => {
+      actions.updatePageSize(size);
+      // Recalculate boundaries with new page size (debounced in hook)
+      updateBoundaries({ pageSize: size });
+    },
+    /**
+     * Set the page margins programmatically
+     * @param {string|Object} margins - Margin preset name ('NORMAL', 'NARROW', 'MODERATE', 'WIDE', 'OFFICE_2003') or custom margin object {top, bottom, left, right} in inches
+     */
+    setPageMargins: (margins) => {
+      actions.updatePageMargins(margins);
+      // Recalculate boundaries with new margins (debounced in hook)
+      updateBoundaries({ pageMargins: margins });
+    },
     /**
      * Insert content at the current cursor position without replacing existing content
      * Falls back to the last cursor position if no active selection in the editor

@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { AlignLeft, AlignCenter, AlignRight, ArrowUp, ArrowDown } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
-import { updateTableResizeOverlay, insertRowAbove, insertRowBelow } from '../../lib/editor/table-resize-utils';
+import { updateTableResizeOverlay, insertRowAbove, insertRowBelow, insertColumnLeft, insertColumnRight, deleteRow, deleteColumn } from '../../lib/editor/table-resize-utils';
 
 /**
- * TableTooltipMenu - Component for table tooltip menu with alignment options and row manipulation
+ * TableTooltipMenu - Component for table tooltip menu with alignment options and row/column manipulation
  */
 const TableTooltipMenu = ({
   tableElement,
   onAlignChange,
   onClose,
   selectedRowIndex,
+  selectedColIndex,
   editorRef
 }) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -302,6 +303,158 @@ const TableTooltipMenu = ({
     }
   };
 
+  const handleInsertColumnLeft = () => {
+    console.log('handleInsertColumnLeft called', { selectedColIndex, tableElement, hasEditorRef: !!editorRef });
+    
+    if (!tableElement) {
+      console.warn('handleInsertColumnLeft: No table element');
+      return;
+    }
+
+    if (selectedColIndex === null || selectedColIndex === undefined) {
+      console.warn('handleInsertColumnLeft: No column selected');
+      return;
+    }
+
+    console.log(`Inserting column left of index ${selectedColIndex}`);
+    const success = insertColumnLeft(tableElement, selectedColIndex);
+    
+    if (success) {
+      console.log('Column inserted successfully, updating content');
+      // Update the context with the new content
+      if (editorRef && editorRef.current) {
+        const updatedContent = editorRef.current.innerHTML;
+        console.log('Updated content length:', updatedContent.length);
+        actions.updateContinuousContent(updatedContent);
+      } else {
+        console.warn('No editor ref available to update content');
+      }
+
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'INSERT_COLUMN', payload: { element: tableElement, position: 'left', index: selectedColIndex } },
+        { type: 'DELETE_COLUMN', payload: { element: tableElement, index: selectedColIndex } }
+      );
+      syncResizeOverlayPosition(tableElement);
+    } else {
+      console.error('Failed to insert column left');
+    }
+  };
+
+  const handleInsertColumnRight = () => {
+    console.log('handleInsertColumnRight called', { selectedColIndex, tableElement, hasEditorRef: !!editorRef });
+    
+    if (!tableElement) {
+      console.warn('handleInsertColumnRight: No table element');
+      return;
+    }
+
+    if (selectedColIndex === null || selectedColIndex === undefined) {
+      console.warn('handleInsertColumnRight: No column selected');
+      return;
+    }
+
+    console.log(`Inserting column right of index ${selectedColIndex}`);
+    const success = insertColumnRight(tableElement, selectedColIndex);
+    
+    if (success) {
+      console.log('Column inserted successfully, updating content');
+      // Update the context with the new content
+      if (editorRef && editorRef.current) {
+        const updatedContent = editorRef.current.innerHTML;
+        console.log('Updated content length:', updatedContent.length);
+        actions.updateContinuousContent(updatedContent);
+      } else {
+        console.warn('No editor ref available to update content');
+      }
+
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'INSERT_COLUMN', payload: { element: tableElement, position: 'right', index: selectedColIndex } },
+        { type: 'DELETE_COLUMN', payload: { element: tableElement, index: selectedColIndex + 1 } }
+      );
+      syncResizeOverlayPosition(tableElement);
+    } else {
+      console.error('Failed to insert column right');
+    }
+  };
+
+  const handleDeleteRow = () => {
+    console.log('handleDeleteRow called', { selectedRowIndex, tableElement, hasEditorRef: !!editorRef });
+    
+    if (!tableElement) {
+      console.warn('handleDeleteRow: No table element');
+      return;
+    }
+
+    if (selectedRowIndex === null || selectedRowIndex === undefined) {
+      console.warn('handleDeleteRow: No row selected');
+      return;
+    }
+
+    console.log(`Deleting row at index ${selectedRowIndex}`);
+    const success = deleteRow(tableElement, selectedRowIndex);
+    
+    if (success) {
+      console.log('Row deleted successfully, updating content');
+      // Update the context with the new content
+      if (editorRef && editorRef.current) {
+        const updatedContent = editorRef.current.innerHTML;
+        console.log('Updated content length:', updatedContent.length);
+        actions.updateContinuousContent(updatedContent);
+      } else {
+        console.warn('No editor ref available to update content');
+      }
+
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'DELETE_ROW', payload: { element: tableElement, index: selectedRowIndex } },
+        { type: 'INSERT_ROW', payload: { element: tableElement, position: 'at', index: selectedRowIndex } }
+      );
+      syncResizeOverlayPosition(tableElement);
+    } else {
+      console.error('Failed to delete row');
+    }
+  };
+
+  const handleDeleteColumn = () => {
+    console.log('handleDeleteColumn called', { selectedColIndex, tableElement, hasEditorRef: !!editorRef });
+    
+    if (!tableElement) {
+      console.warn('handleDeleteColumn: No table element');
+      return;
+    }
+
+    if (selectedColIndex === null || selectedColIndex === undefined) {
+      console.warn('handleDeleteColumn: No column selected');
+      return;
+    }
+
+    console.log(`Deleting column at index ${selectedColIndex}`);
+    const success = deleteColumn(tableElement, selectedColIndex);
+    
+    if (success) {
+      console.log('Column deleted successfully, updating content');
+      // Update the context with the new content
+      if (editorRef && editorRef.current) {
+        const updatedContent = editorRef.current.innerHTML;
+        console.log('Updated content length:', updatedContent.length);
+        actions.updateContinuousContent(updatedContent);
+      } else {
+        console.warn('No editor ref available to update content');
+      }
+
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'DELETE_COLUMN', payload: { element: tableElement, index: selectedColIndex } },
+        { type: 'INSERT_COLUMN', payload: { element: tableElement, position: 'at', index: selectedColIndex } }
+      );
+      syncResizeOverlayPosition(tableElement);
+    } else {
+      console.error('Failed to delete column');
+    }
+  };
+
   const buttonBaseStyle = {
     border: '1px solid #ccc',
     borderRadius: '4px',
@@ -415,6 +568,73 @@ const TableTooltipMenu = ({
           >
             <ArrowDown size={14} />
           </button>
+
+          {/* Delete Row button */}
+          <button
+            className="tooltip-button delete-row"
+            onClick={handleDeleteRow}
+            title="Delete Row"
+            style={{
+              ...buttonBaseStyle,
+              background: '#dc3545',
+              color: '#fff'
+            }}
+            disabled={selectedRowIndex === null || selectedRowIndex === undefined}
+          >
+            <Trash2 size={14} />
+          </button>
+        </>
+      )}
+
+      {/* Divider - only show if column is selected */}
+      {selectedColIndex !== null && selectedColIndex !== undefined && (
+        <>
+          <div style={{ width: '1px', height: '24px', background: '#ddd', margin: '0 4px' }} />
+
+          {/* Insert Column Left button */}
+          <button
+            className="tooltip-button insert-column-left"
+            onClick={handleInsertColumnLeft}
+            title="Insert Column Left"
+            style={{
+              ...buttonBaseStyle,
+              background: '#0056b3',
+              color: '#fff'
+            }}
+            disabled={selectedColIndex === null || selectedColIndex === undefined}
+          >
+            <ArrowLeft size={14} />
+          </button>
+
+          {/* Insert Column Right button */}
+          <button
+            className="tooltip-button insert-column-right"
+            onClick={handleInsertColumnRight}
+            title="Insert Column Right"
+            style={{
+              ...buttonBaseStyle,
+              background: '#0056b3',
+              color: '#fff'
+            }}
+            disabled={selectedColIndex === null || selectedColIndex === undefined}
+          >
+            <ArrowRight size={14} />
+          </button>
+
+          {/* Delete Column button */}
+          <button
+            className="tooltip-button delete-column"
+            onClick={handleDeleteColumn}
+            title="Delete Column"
+            style={{
+              ...buttonBaseStyle,
+              background: '#dc3545',
+              color: '#fff'
+            }}
+            disabled={selectedColIndex === null || selectedColIndex === undefined}
+          >
+            <Trash2 size={14} />
+          </button>
         </>
       )}
     </div>,
@@ -427,6 +647,7 @@ TableTooltipMenu.propTypes = {
   onAlignChange: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   selectedRowIndex: PropTypes.number,
+  selectedColIndex: PropTypes.number,
   editorRef: PropTypes.shape({
     current: PropTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object)
   })
@@ -436,6 +657,7 @@ TableTooltipMenu.defaultProps = {
   tableElement: null,
   onAlignChange: undefined,
   selectedRowIndex: null,
+  selectedColIndex: null,
   editorRef: null
 };
 

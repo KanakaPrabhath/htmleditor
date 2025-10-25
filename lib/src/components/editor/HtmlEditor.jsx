@@ -73,6 +73,7 @@ const HtmlEditor = forwardRef(({
   const [tableSelected, setTableSelected] = useState(false);
   const [selectedTable, setSelectedTable] = useState(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [selectedColIndex, setSelectedColIndex] = useState(null);
   const lastCursorPositionRef = useRef(null); // Store last Range object
   const {
     checkAndUpdateBoundaries,
@@ -747,10 +748,17 @@ const HtmlEditor = forwardRef(({
               // Row is selected
               console.log('Row selected with index:', selection.rowIndex);
               setSelectedRowIndex(selection.rowIndex);
-            } else {
-              // No row selected
-              console.log('No row selected, clearing selection');
+              setSelectedColIndex(null);
+            } else if (selection && selection.mode === 'column') {
+              // Column is selected
+              console.log('Column selected with index:', selection.colIndex);
+              setSelectedColIndex(selection.colIndex);
               setSelectedRowIndex(null);
+            } else {
+              // No row or column selected
+              console.log('No row/column selected, clearing selection');
+              setSelectedRowIndex(null);
+              setSelectedColIndex(null);
             }
           }}
         />
@@ -792,6 +800,7 @@ const HtmlEditor = forwardRef(({
             }}
             onClose={handleTableDeselect}
             selectedRowIndex={selectedRowIndex}
+            selectedColIndex={selectedColIndex}
             editorRef={editorRef}
           />
         )}

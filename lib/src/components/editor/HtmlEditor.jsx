@@ -72,6 +72,7 @@ const HtmlEditor = forwardRef(({
   const [preserveAspectRatio, setPreserveAspectRatio] = useState(true);
   const [tableSelected, setTableSelected] = useState(false);
   const [selectedTable, setSelectedTable] = useState(null);
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const lastCursorPositionRef = useRef(null); // Store last Range object
   const {
     checkAndUpdateBoundaries,
@@ -740,8 +741,17 @@ const HtmlEditor = forwardRef(({
         <TableCellSelection
           editorRef={editorRef}
           onCellSelectionChange={(selection) => {
-            // Handle cell selection changes if needed
-            console.log('Cell selection changed:', selection);
+            // Handle cell selection changes
+            console.log('onCellSelectionChange:', selection);
+            if (selection && selection.mode === 'row') {
+              // Row is selected
+              console.log('Row selected with index:', selection.rowIndex);
+              setSelectedRowIndex(selection.rowIndex);
+            } else {
+              // No row selected
+              console.log('No row selected, clearing selection');
+              setSelectedRowIndex(null);
+            }
           }}
         />
 
@@ -781,6 +791,8 @@ const HtmlEditor = forwardRef(({
               // Handle alignment change if needed
             }}
             onClose={handleTableDeselect}
+            selectedRowIndex={selectedRowIndex}
+            editorRef={editorRef}
           />
         )}
 

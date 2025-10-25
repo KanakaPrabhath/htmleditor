@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, ArrowUp, ArrowDown } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
-import { updateTableResizeOverlay } from '../../lib/editor/table-resize-utils';
+import { updateTableResizeOverlay, insertRowAbove, insertRowBelow } from '../../lib/editor/table-resize-utils';
 
 /**
- * TableTooltipMenu - Component for table tooltip menu with alignment options
+ * TableTooltipMenu - Component for table tooltip menu with alignment options and row manipulation
  */
 const TableTooltipMenu = ({
   tableElement,
   onAlignChange,
-  onClose
+  onClose,
+  selectedRowIndex,
+  editorRef
 }) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [isVisible, setIsVisible] = useState(false);
@@ -224,6 +226,82 @@ const TableTooltipMenu = ({
     }
   };
 
+  const handleInsertRowAbove = () => {
+    console.log('handleInsertRowAbove called', { selectedRowIndex, tableElement, hasEditorRef: !!editorRef });
+    
+    if (!tableElement) {
+      console.warn('handleInsertRowAbove: No table element');
+      return;
+    }
+
+    if (selectedRowIndex === null || selectedRowIndex === undefined) {
+      console.warn('handleInsertRowAbove: No row selected');
+      return;
+    }
+
+    console.log(`Inserting row above index ${selectedRowIndex}`);
+    const newRow = insertRowAbove(tableElement, selectedRowIndex);
+    
+    if (newRow) {
+      console.log('Row inserted successfully, updating content');
+      // Update the context with the new content
+      if (editorRef && editorRef.current) {
+        const updatedContent = editorRef.current.innerHTML;
+        console.log('Updated content length:', updatedContent.length);
+        actions.updateContinuousContent(updatedContent);
+      } else {
+        console.warn('No editor ref available to update content');
+      }
+
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'INSERT_ROW', payload: { element: tableElement, row: newRow, position: 'above', index: selectedRowIndex } },
+        { type: 'DELETE_ROW', payload: { element: tableElement, index: selectedRowIndex } }
+      );
+      syncResizeOverlayPosition(tableElement);
+    } else {
+      console.error('Failed to insert row above');
+    }
+  };
+
+  const handleInsertRowBelow = () => {
+    console.log('handleInsertRowBelow called', { selectedRowIndex, tableElement, hasEditorRef: !!editorRef });
+    
+    if (!tableElement) {
+      console.warn('handleInsertRowBelow: No table element');
+      return;
+    }
+
+    if (selectedRowIndex === null || selectedRowIndex === undefined) {
+      console.warn('handleInsertRowBelow: No row selected');
+      return;
+    }
+
+    console.log(`Inserting row below index ${selectedRowIndex}`);
+    const newRow = insertRowBelow(tableElement, selectedRowIndex);
+    
+    if (newRow) {
+      console.log('Row inserted successfully, updating content');
+      // Update the context with the new content
+      if (editorRef && editorRef.current) {
+        const updatedContent = editorRef.current.innerHTML;
+        console.log('Updated content length:', updatedContent.length);
+        actions.updateContinuousContent(updatedContent);
+      } else {
+        console.warn('No editor ref available to update content');
+      }
+
+      // Record operation for undo
+      actions.recordOperation(
+        { type: 'INSERT_ROW', payload: { element: tableElement, row: newRow, position: 'below', index: selectedRowIndex } },
+        { type: 'DELETE_ROW', payload: { element: tableElement, index: selectedRowIndex + 1 } }
+      );
+      syncResizeOverlayPosition(tableElement);
+    } else {
+      console.error('Failed to insert row below');
+    }
+  };
+
   const buttonBaseStyle = {
     border: '1px solid #ccc',
     borderRadius: '4px',
@@ -302,6 +380,43 @@ const TableTooltipMenu = ({
       >
         <AlignRight size={14} />
       </button>
+
+      {/* Divider - only show if row is selected */}
+      {selectedRowIndex !== null && selectedRowIndex !== undefined && (
+        <>
+          <div style={{ width: '1px', height: '24px', background: '#ddd', margin: '0 4px' }} />
+
+          {/* Insert Row Above button */}
+          <button
+            className="tooltip-button insert-row-above"
+            onClick={handleInsertRowAbove}
+            title="Insert Row Above"
+            style={{
+              ...buttonBaseStyle,
+              background: '#28a745',
+              color: '#fff'
+            }}
+            disabled={selectedRowIndex === null || selectedRowIndex === undefined}
+          >
+            <ArrowUp size={14} />
+          </button>
+
+          {/* Insert Row Below button */}
+          <button
+            className="tooltip-button insert-row-below"
+            onClick={handleInsertRowBelow}
+            title="Insert Row Below"
+            style={{
+              ...buttonBaseStyle,
+              background: '#28a745',
+              color: '#fff'
+            }}
+            disabled={selectedRowIndex === null || selectedRowIndex === undefined}
+          >
+            <ArrowDown size={14} />
+          </button>
+        </>
+      )}
     </div>,
     document.body
   );
@@ -310,12 +425,18 @@ const TableTooltipMenu = ({
 TableTooltipMenu.propTypes = {
   tableElement: PropTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object),
   onAlignChange: PropTypes.func,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  selectedRowIndex: PropTypes.number,
+  editorRef: PropTypes.shape({
+    current: PropTypes.instanceOf(typeof Element !== 'undefined' ? Element : Object)
+  })
 };
 
 TableTooltipMenu.defaultProps = {
   tableElement: null,
-  onAlignChange: undefined
+  onAlignChange: undefined,
+  selectedRowIndex: null,
+  editorRef: null
 };
 
 export default TableTooltipMenu;

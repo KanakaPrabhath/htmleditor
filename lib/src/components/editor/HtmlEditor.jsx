@@ -14,6 +14,7 @@ import PageView from './PageView';
 import PageManager from './PageManager';
 import ImageResizeHandlers from './ImageResizeHandlers';
 import ImageTooltipMenu from './ImageTooltipMenu';
+import TableResizeHandlers from './TableResizeHandlers';
 import './MultiPageEditor.css';
 
 const INITIAL_BOUNDARY_DELAY = 50;
@@ -67,6 +68,8 @@ const HtmlEditor = forwardRef(({
   const [imageSelected, setImageSelected] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [preserveAspectRatio, setPreserveAspectRatio] = useState(true);
+  const [tableSelected, setTableSelected] = useState(false);
+  const [selectedTable, setSelectedTable] = useState(null);
   const lastCursorPositionRef = useRef(null); // Store last Range object
   const {
     checkAndUpdateBoundaries,
@@ -639,6 +642,22 @@ const HtmlEditor = forwardRef(({
     // We can add any additional handling here if needed
   }, []);
 
+  // Table resize handlers callbacks
+  const handleTableSelect = useCallback((tableElement) => {
+    setTableSelected(true);
+    setSelectedTable(tableElement);
+  }, []);
+
+  const handleTableDeselect = useCallback(() => {
+    setTableSelected(false);
+    setSelectedTable(null);
+  }, []);
+
+  const handleTableResize = useCallback((_, __) => {
+    // Table resize completed - content will be updated by the TableResizeHandlers component
+    // We can add any additional handling here if needed
+  }, []);
+
   // Cleanup scroll timeout on unmount
   useEffect(() => {
     return () => {
@@ -705,6 +724,14 @@ const HtmlEditor = forwardRef(({
             preserveAspectRatio,
             aspectRatio: preserveAspectRatio
           }}
+        />
+
+        {/* Table Resize Handlers - manages table selection and resizing */}
+        <TableResizeHandlers
+          editorRef={editorRef}
+          onTableSelect={handleTableSelect}
+          onTableDeselect={handleTableDeselect}
+          onTableResize={handleTableResize}
         />
 
         {/* Image Tooltip Menu - shows when an image is selected */}

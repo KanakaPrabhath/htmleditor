@@ -169,7 +169,16 @@ describe('Library Exports', () => {
         'applyImageDimensions',
         'createResizeOverlay',
         'updateResizeOverlay',
-        'removeResizeOverlay'
+        'removeResizeOverlay',
+        'DEFAULT_TABLE_RESIZE_OPTIONS',
+        'TABLE_RESIZE_HANDLERS',
+        'calculateTableResizeDimensions',
+        'isResizableTable',
+        'getTableStructure',
+        'applyTableDimensions',
+        'createTableResizeOverlay',
+        'updateTableResizeOverlay',
+        'removeTableResizeOverlay'
       ];
       
       expectedExports.forEach(exportName => {
@@ -191,6 +200,7 @@ describe('Library Exports', () => {
         'PageView',
         'PageManager',
         'ImageResizeHandlers',
+        'TableResizeHandlers',
         'useFormatting',
         'useContinuousReflow',
         'saveImage',
@@ -220,7 +230,16 @@ describe('Library Exports', () => {
         'applyImageDimensions',
         'createResizeOverlay',
         'updateResizeOverlay',
-        'removeResizeOverlay'
+        'removeResizeOverlay',
+        'DEFAULT_TABLE_RESIZE_OPTIONS',
+        'TABLE_RESIZE_HANDLERS',
+        'calculateTableResizeDimensions',
+        'isResizableTable',
+        'getTableStructure',
+        'applyTableDimensions',
+        'createTableResizeOverlay',
+        'updateTableResizeOverlay',
+        'removeTableResizeOverlay'
       ];
       
       // All actual exports should be in expected list

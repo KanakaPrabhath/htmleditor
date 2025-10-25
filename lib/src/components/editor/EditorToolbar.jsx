@@ -19,10 +19,11 @@ import {
   Indent,
   Outdent
 } from 'lucide-react';
-import { saveImage, getImage } from '../../lib/storage/index-db';
+import { deleteImage, saveImage, getImage } from '../../lib/storage/index-db';
 import { logger } from '../../lib/editor/utils/logger';
 import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 import { indentSelectedBlocks } from '../../lib/editor/indentation-utils';
+import ColorPickerDropdown from './ColorPickerDropdown';
 
 // Constants for toolbar options
 const FONT_FAMILIES = [
@@ -62,6 +63,7 @@ const EditorToolbar = ({
   currentFormat, 
   onFormatText, 
   onAddPageBreak,
+  onInsertImage,
   canUndo = false,
   canRedo = false
 }) => {
@@ -81,14 +83,25 @@ const EditorToolbar = ({
         return;
       }
 
-      const key = await saveImage(file);
-      const imageUrl = await getImage(key);
+      logger.info('Starting image upload', { fileName: file.name, fileSize: file.size });
       
-      if (imageUrl) {
+      const key = await saveImage(file);
+      logger.info('Image saved to IndexedDB', { key });
+      
+      const imageUrl = await getImage(key);
+      logger.info('Image retrieved from IndexedDB', { key, hasUrl: !!imageUrl });
+      
+      if (imageUrl && onInsertImage) {
         // Insert image with data-key attribute to enable deletion from IndexedDB
         const imageHtml = `<img src="${imageUrl}" data-key="${key}" alt="Inserted image" />`;
-        document.execCommand('insertHTML', false, imageHtml);
+        logger.info('Calling onInsertImage with HTML', { imageHtml: imageHtml.substring(0, 100) });
+        onInsertImage(imageHtml);
         logger.info('Image inserted', { key });
+      } else {
+        logger.warn('Image not inserted: missing imageUrl or onInsertImage callback', { 
+          hasUrl: !!imageUrl, 
+          hasCallback: !!onInsertImage 
+        });
       }
       
       // Reset the file input to allow uploading the same file again
@@ -180,6 +193,12 @@ const EditorToolbar = ({
         ))}
       </select>
       
+      <ColorPickerDropdown
+        currentColor={currentFormat.fontColor}
+        onColorSelect={(color) => onFormatText('foreColor', color)}
+        title="Font Color"
+      />
+      
       <select 
         onChange={(e) => onFormatText('formatBlock', e.target.value)}
         value={currentFormat.headingLevel || 'p'}
@@ -266,16 +285,19 @@ EditorToolbar.propTypes = {
     alignJustify: PropTypes.bool,
     fontFamily: PropTypes.string,
     fontSize: PropTypes.string,
+    fontColor: PropTypes.string,
     headingLevel: PropTypes.string
   }).isRequired,
   onFormatText: PropTypes.func.isRequired,
   onAddPageBreak: PropTypes.func,
+  onInsertImage: PropTypes.func,
   canUndo: PropTypes.bool,
   canRedo: PropTypes.bool
 };
 
 EditorToolbar.defaultProps = {
   onAddPageBreak: undefined,
+  onInsertImage: undefined,
   canUndo: false,
   canRedo: false
 };

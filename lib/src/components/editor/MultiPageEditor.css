@@ -1020,3 +1020,80 @@ page-break,
 .table-cell-selection * {
   cursor: cell !important;
 }
+
+/* Color Picker Dropdown Styles */
+.color-picker-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.color-picker-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.color-picker-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.color-picker-palette {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  color: #fff;
+  background:#2D3748;
+  border: 1px solid #2D3748;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  min-width: 200px;
+  margin-top: 4px;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.color-option {
+  transition: all 0.2s ease;
+  border-radius: 3px;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.color-option.selected {
+  box-shadow: 0 0 0 2px #007acc, inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.custom-color-section {
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+
+.custom-color-section label {
+  color: #333;
+  font-weight: 500;
+}

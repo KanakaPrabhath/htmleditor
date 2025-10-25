@@ -35,6 +35,11 @@ describe('Library Exports', () => {
       expect(HtmlEditor.ImageResizeHandlers).toBeDefined();
       expect(typeof HtmlEditor.ImageResizeHandlers).toBe('function');
     });
+
+    it('should export ColorPickerDropdown component', () => {
+      expect(HtmlEditor.ColorPickerDropdown).toBeDefined();
+      expect(typeof HtmlEditor.ColorPickerDropdown).toBe('function');
+    });
   });
 
   describe('Hook Exports', () => {
@@ -200,6 +205,7 @@ describe('Library Exports', () => {
         'PageView',
         'PageManager',
         'ImageResizeHandlers',
+        'ColorPickerDropdown',
         'TableResizeHandlers',
         'useFormatting',
         'useContinuousReflow',

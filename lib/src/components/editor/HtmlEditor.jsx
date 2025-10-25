@@ -480,6 +480,58 @@ const HtmlEditor = forwardRef(({
     }
   }, [updateBoundaries, getCurrentPage, actions, containerRef]);
 
+  const handleInsertImage = useCallback((imageHtml) => {
+    if (!editorRef.current || !imageHtml) return;
+
+    const selection = window.getSelection();
+    let hasActiveSelection = false;
+
+    // Check if there's an active selection inside the editor
+    if (selection && selection.rangeCount > 0) {
+      const activeRange = selection.getRangeAt(0);
+      if (editorRef.current.contains(activeRange.commonAncestorContainer)) {
+        hasActiveSelection = true;
+      }
+    }
+
+    // If no active selection, try to restore the last cursor position
+    if (!hasActiveSelection && lastCursorPositionRef.current) {
+      try {
+        selection.removeAllRanges();
+        selection.addRange(lastCursorPositionRef.current);
+      } catch (error) {
+        console.warn('[handleInsertImage] Failed to restore last cursor position:', error);
+        // Fallback: position at end of editor
+        const lastChild = editorRef.current.lastChild;
+        if (lastChild) {
+          const range = document.createRange();
+          if (lastChild.nodeType === Node.TEXT_NODE) {
+            range.setStart(lastChild, lastChild.textContent.length);
+          } else {
+            range.setStartAfter(lastChild);
+          }
+          range.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
+    }
+
+    // Insert the image using execCommand
+    document.execCommand('insertHTML', false, imageHtml);
+
+    // Update content state with the new content
+    const updatedContent = editorRef.current.innerHTML;
+    actions.updateContinuousContent(updatedContent);
+    lastContentRef.current = updatedContent;
+
+    // Update boundaries and trigger reflow
+    setTimeout(() => {
+      updateBoundaries();
+      triggerAutoReflow(200);
+    }, BOUNDARY_UPDATE_DELAY);
+  }, [actions, updateBoundaries, triggerAutoReflow, editorRef, lastCursorPositionRef]);
+
   const handleRemovePageBreak = useCallback((pageBreakElement) => {
     if (!pageBreakElement) return;
     
@@ -698,6 +750,7 @@ const HtmlEditor = forwardRef(({
           }}
           onFormatText={formatText}
           onAddPageBreak={handleAddPageBreak}
+          onInsertImage={handleInsertImage}
           canUndo={canUndo}
           canRedo={canRedo}
         />

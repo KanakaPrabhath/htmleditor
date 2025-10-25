@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import { useDocumentState, useDocumentActions } from '../../context/DocumentContext';
-import { useFormatting, useContinuousReflow } from '../../hooks';
+import { useFormatting, useContinuousReflow, useKeyboardShortcuts, useSelectionHandling } from '../../hooks';
 import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
 import { getPageDimensions } from '../../lib/editor/page-sizes';
 import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
@@ -76,7 +76,6 @@ const HtmlEditor = forwardRef(({
   const [selectedTable, setSelectedTable] = useState(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [selectedColIndex, setSelectedColIndex] = useState(null);
-  const lastCursorPositionRef = useRef(null); // Store last Range object
   const {
     checkAndUpdateBoundaries,
     getCurrentPage,
@@ -97,45 +96,52 @@ const HtmlEditor = forwardRef(({
   // Initialize editor content and sync programmatic updates
   const contentSetRef = useRef(false);
   const lastContentRef = useRef(continuousContent);
-  
+
+  const navigateToNewPage = useCallback(() => {
+    addingPageRef.current = false;
+    const newPageIndex = Math.max(0, pageBoundaries.length - 1);
+    actions.setActivePage(newPageIndex);
+    setTimeout(() => {
+      scrollToPage(newPageIndex, containerRef);
+    }, NAVIGATION_DELAY);
+  }, [pageBoundaries.length, actions, scrollToPage]);
+
+  // Initialize editor content on mount
   useEffect(() => {
-    if (!editorRef.current) return;
-    
-    // Initial setup
-    if (!contentSetRef.current) {
+    if (!editorRef.current || contentSetRef.current) return;
+
+    editorRef.current.innerHTML = continuousContent;
+    contentSetRef.current = true;
+    lastContentRef.current = continuousContent;
+
+    const timer = setTimeout(() => {
+      updateBoundaries();
+    }, INITIAL_BOUNDARY_DELAY);
+    return () => clearTimeout(timer);
+  }, []); // Empty dependency array - only run once on mount
+
+  // Sync programmatic content changes to DOM
+  useEffect(() => {
+    if (!editorRef.current || !contentSetRef.current) return;
+
+    const currentDOMContent = editorRef.current.innerHTML;
+
+    // Only update if DOM is out of sync (prevents user input loops)
+    if (currentDOMContent !== continuousContent) {
       editorRef.current.innerHTML = continuousContent;
-      contentSetRef.current = true;
-      lastContentRef.current = continuousContent;
-      
+
       const timer = setTimeout(() => {
         updateBoundaries();
-      }, INITIAL_BOUNDARY_DELAY);
+
+        if (addingPageRef.current) {
+          navigateToNewPage();
+        }
+      }, BOUNDARY_UPDATE_DELAY);
+
+      lastContentRef.current = continuousContent;
       return () => clearTimeout(timer);
     }
-    
-    // Sync programmatic content changes to DOM
-    if (lastContentRef.current !== continuousContent) {
-      const currentDOMContent = editorRef.current.innerHTML;
-      
-      // Only update if DOM is out of sync (prevents user input loops)
-      if (currentDOMContent !== continuousContent) {
-        editorRef.current.innerHTML = continuousContent;
-        
-        const timer = setTimeout(() => {
-          updateBoundaries();
-          
-          if (addingPageRef.current) {
-            navigateToNewPage();
-          }
-        }, BOUNDARY_UPDATE_DELAY);
-        
-        lastContentRef.current = continuousContent;
-        return () => clearTimeout(timer);
-      }
-      
-      lastContentRef.current = continuousContent;
-    }
-  }, [continuousContent, updateBoundaries, pageBoundaries.length, actions, scrollToPage]);
+  }, [continuousContent, updateBoundaries, navigateToNewPage]);
 
   // Notify parent app when content changes
   useEffect(() => {
@@ -144,46 +150,53 @@ const HtmlEditor = forwardRef(({
     }
   }, [continuousContent, onChange]);
 
-  // Helper to restore cursor position or position at editor end
-  const restoreCursorPosition = useCallback(() => {
-    if (!editorRef.current) return;
-    
-    const selection = window.getSelection();
-    if (lastCursorPositionRef.current) {
-      try {
-        selection.removeAllRanges();
-        selection.addRange(lastCursorPositionRef.current);
-        return;
-      } catch (error) {
-        console.warn('[restoreCursorPosition] Failed to restore cursor:', error);
-      }
-    }
-    
-    // Fallback: position at end of editor
-    const lastChild = editorRef.current.lastChild;
-    if (lastChild) {
-      const range = document.createRange();
-      if (lastChild.nodeType === Node.TEXT_NODE) {
-        range.setStart(lastChild, lastChild.textContent.length);
-      } else {
-        range.setStartAfter(lastChild);
-      }
-      range.collapse(true);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-  }, []);
+  const { restoreCursorPosition, hasActiveCursorSelection } = useSelectionHandling({
+    updateCurrentFormatFromSelection,
+    editorRef
+  });
 
-  // Helper to check if there's an active selection in the editor
-  const hasActiveCursorSelection = useCallback(() => {
-    if (!editorRef.current) return false;
-    
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return false;
-    
-    const activeRange = selection.getRangeAt(0);
-    return editorRef.current.contains(activeRange.commonAncestorContainer);
-  }, []);
+  // Helper function to update content and trigger boundary updates
+  const updateContentAndBoundaries = useCallback((html) => {
+    // Sync state only when the new content differs to avoid redundant updates
+    if (html !== continuousContent) {
+      actions.updateContinuousContent(html);
+    }
+
+    if (editorRef.current && editorRef.current.innerHTML !== html) {
+      editorRef.current.innerHTML = html;
+    }
+
+    lastContentRef.current = html;
+
+    // Update boundaries after a delay
+    setTimeout(() => {
+      updateBoundaries();
+    }, BOUNDARY_UPDATE_DELAY);
+  }, [continuousContent, actions, updateBoundaries]);
+
+  // Helper function for inserting HTML content with cursor restoration
+  const insertHtmlWithCursorRestore = useCallback((html) => {
+    if (!editorRef.current || !html) return;
+
+    // If no active selection, restore the last cursor position
+    if (!hasActiveCursorSelection()) {
+      restoreCursorPosition();
+    }
+
+    // Insert using execCommand for proper cursor handling
+    document.execCommand('insertHTML', false, html);
+
+    // Update content state with the new content
+    const updatedContent = editorRef.current.innerHTML;
+    actions.updateContinuousContent(updatedContent);
+    lastContentRef.current = updatedContent;
+
+    // Update boundaries and trigger reflow
+    setTimeout(() => {
+      updateBoundaries();
+      triggerAutoReflow(200);
+    }, BOUNDARY_UPDATE_DELAY);
+  }, [hasActiveCursorSelection, restoreCursorPosition, actions, updateBoundaries, triggerAutoReflow]);
 
   // Exposed methods for parent component via ref
   const exposedMethods = useMemo(() => ({
@@ -234,23 +247,7 @@ const HtmlEditor = forwardRef(({
      */
     setContent: (html) => {
       const normalizedHtml = normalizeContent(html);
-
-      // Sync state only when the new content differs to avoid redundant updates
-      if (normalizedHtml !== continuousContent) {
-        actions.updateContinuousContent(normalizedHtml);
-      }
-
-      if (editorRef.current && editorRef.current.innerHTML !== normalizedHtml) {
-        editorRef.current.innerHTML = normalizedHtml;
-      }
-
-      lastContentRef.current = normalizedHtml;
-
-      if (editorRef.current) {
-        setTimeout(() => {
-          updateBoundaries();
-        }, BOUNDARY_UPDATE_DELAY);
-      }
+      updateContentAndBoundaries(normalizedHtml);
     },
     /**
      * Set the page size programmatically
@@ -276,90 +273,13 @@ const HtmlEditor = forwardRef(({
      * @param {string} html - HTML content to insert
      */
     insertContent: (html) => {
-      if (!editorRef.current || !html) return;
-
       const normalizedHtml = normalizeContent(html);
-
-      // If no active selection, restore the last cursor position
-      if (!hasActiveCursorSelection()) {
-        restoreCursorPosition();
-      }
-
-      // Insert using execCommand for proper cursor handling
-      document.execCommand('insertHTML', false, normalizedHtml);
-
-      // Update content state with the new content
-      const updatedContent = editorRef.current.innerHTML;
-      actions.updateContinuousContent(updatedContent);
-      lastContentRef.current = updatedContent;
-
-      // Update boundaries and trigger reflow
-      setTimeout(() => {
-        updateBoundaries();
-        triggerAutoReflow(200);
-      }, BOUNDARY_UPDATE_DELAY);
+      insertHtmlWithCursorRestore(normalizedHtml);
     }
   }), [continuousContent, actions, updateBoundaries, triggerAutoReflow, hasActiveCursorSelection, restoreCursorPosition]);
 
   // Expose methods to parent component via ref
   useImperativeHandle(ref, () => exposedMethods, [exposedMethods]);
-
-  // Update format state when selection changes
-  useEffect(() => {
-    const handleSelectionChange = () => {
-      updateCurrentFormatFromSelection();
-      
-      // Update last cursor position (only for caret/collapsed selections)
-      if (editorRef.current) {
-        const selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-          const range = selection.getRangeAt(0);
-          if (range.collapsed && editorRef.current.contains(range.commonAncestorContainer)) {
-            lastCursorPositionRef.current = range.cloneRange(); // Clone to store
-          }
-        }
-      }
-    };
-
-    // Listen for selection changes
-    document.addEventListener('selectionchange', handleSelectionChange);
-    
-    // Also update when editor gets focus
-    const handleFocus = () => {
-      setTimeout(updateCurrentFormatFromSelection, 10);
-      
-      // Restore cursor to last position if available
-      if (lastCursorPositionRef.current && editorRef.current) {
-        try {
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(lastCursorPositionRef.current);
-        } catch (error) {
-          console.warn('[handleFocus] Failed to restore cursor:', error);
-        }
-      }
-    };
-    
-    if (editorRef.current) {
-      editorRef.current.addEventListener('focus', handleFocus);
-    }
-
-    return () => {
-      document.removeEventListener('selectionchange', handleSelectionChange);
-      if (editorRef.current) {
-        editorRef.current.removeEventListener('focus', handleFocus);
-      }
-    };
-  }, [updateCurrentFormatFromSelection]);
-
-  const navigateToNewPage = useCallback(() => {
-    addingPageRef.current = false;
-    const newPageIndex = Math.max(0, pageBoundaries.length - 1);
-    actions.setActivePage(newPageIndex);
-    setTimeout(() => {
-      scrollToPage(newPageIndex, containerRef);
-    }, NAVIGATION_DELAY);
-  }, [pageBoundaries.length, actions, scrollToPage]);
 
   // Extract content update logic for reuse
   const updateContent = useCallback(() => {
@@ -513,27 +433,8 @@ const HtmlEditor = forwardRef(({
   }, [updateBoundaries, getCurrentPage, actions, containerRef]);
 
   const handleInsertImage = useCallback((imageHtml) => {
-    if (!editorRef.current || !imageHtml) return;
-
-    // If no active selection, restore the last cursor position
-    if (!hasActiveCursorSelection()) {
-      restoreCursorPosition();
-    }
-
-    // Insert the image using execCommand
-    document.execCommand('insertHTML', false, imageHtml);
-
-    // Update content state with the new content
-    const updatedContent = editorRef.current.innerHTML;
-    actions.updateContinuousContent(updatedContent);
-    lastContentRef.current = updatedContent;
-
-    // Update boundaries and trigger reflow
-    setTimeout(() => {
-      updateBoundaries();
-      triggerAutoReflow(200);
-    }, BOUNDARY_UPDATE_DELAY);
-  }, [actions, updateBoundaries, triggerAutoReflow, hasActiveCursorSelection, restoreCursorPosition]);
+    insertHtmlWithCursorRestore(imageHtml);
+  }, [insertHtmlWithCursorRestore]);
 
   const handleRemovePageBreak = useCallback((pageBreakElement) => {
     if (!pageBreakElement) return;
@@ -572,78 +473,23 @@ const HtmlEditor = forwardRef(({
     }
   }, [pageBoundaries.length, removePageAndContent, actions, onDeletePage]);
 
-  // Zoom handlers
-  const handleZoomIn = useCallback(() => {
-    actions.zoomIn();
-  }, [actions]);
+  // Action handlers object for zoom and undo/redo operations
+  const actionHandlers = useMemo(() => ({
+    handleZoomIn: () => actions.zoomIn(),
+    handleZoomOut: () => actions.zoomOut(),
+    handleZoomReset: () => actions.resetZoom(),
+    handleUndo: () => actions.undo(),
+    handleRedo: () => actions.redo()
+  }), [actions]);
 
-  const handleZoomOut = useCallback(() => {
-    actions.zoomOut();
-  }, [actions]);
-
-  const handleZoomReset = useCallback(() => {
-    actions.resetZoom();
-  }, [actions]);
-
-  const handleUndo = useCallback(() => {
-    actions.undo();
-  }, [actions]);
-
-  const handleRedo = useCallback(() => {
-    actions.redo();
-  }, [actions]);
+  // Extract individual handlers for use in components
+  const { handleZoomIn, handleZoomOut, handleZoomReset, handleUndo, handleRedo } = actionHandlers;
 
   // Keyboard shortcuts for zoom, undo, redo
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      // Check if Ctrl key (or Cmd on Mac) is pressed
-      if (event.ctrlKey || event.metaKey) {
-        // Prevent default browser behavior for our shortcuts
-        if (['+', '=', '-', '_', '0', 'z', 'y'].includes(event.key)) {
-          event.preventDefault();
-        }
-        
-        // Only handle shortcuts when editor or its container has focus
-        // or when no specific input elements are focused
-        const isEditorFocused = document.activeElement === editorRef.current;
-        const isContainerFocused = document.activeElement === containerRef.current;
-        const isInputFocused = document.activeElement?.tagName === 'INPUT' ||
-                               document.activeElement?.tagName === 'TEXTAREA' ||
-                               document.activeElement?.isContentEditable === false;
-        
-        if (isEditorFocused || isContainerFocused || !isInputFocused) {
-          switch (event.key) {
-            case '+':
-            case '=':
-              handleZoomIn();
-              break;
-            case '-':
-            case '_':
-              handleZoomOut();
-              break;
-            case '0':
-              handleZoomReset();
-              break;
-            case 'z':
-              if (!event.shiftKey) {
-                handleUndo();
-              }
-              break;
-            case 'y':
-              handleRedo();
-              break;
-            default:
-              break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleZoomIn, handleZoomOut, handleZoomReset, handleUndo, handleRedo]);
+  useKeyboardShortcuts(
+    { handleZoomIn, handleZoomOut, handleZoomReset, handleUndo, handleRedo },
+    { editorRef, containerRef }
+  );
 
   const handleScroll = useCallback(() => {
     // Early exit if refs not ready or navigating

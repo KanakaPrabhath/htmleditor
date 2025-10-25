@@ -295,8 +295,8 @@ const TableResizeHandlers = ({
    * Handle keydown events (for deleting selected tables, etc.)
    */
   const handleKeyDown = useCallback((event) => {
-    // Delete selected table with Delete or Backspace key
-    if ((event.key === 'Delete' || event.key === 'Backspace') &&
+    // Delete selected table with Delete key only
+    if (event.key === 'Delete' &&
         resizeTableRef.current &&
         !isResizingRef.current) {
 
@@ -316,6 +316,9 @@ const TableResizeHandlers = ({
         editorRef.current.dispatchEvent(inputEvent);
       }
     }
+
+    // For Backspace key, allow normal text editing behavior in cells
+    // Don't prevent default - let the browser handle text deletion in cells
 
     // Escape key to clear selection
     if (event.key === 'Escape' && resizeTableRef.current) {

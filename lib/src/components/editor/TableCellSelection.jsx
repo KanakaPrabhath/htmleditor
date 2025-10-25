@@ -129,6 +129,11 @@ const TableCellSelection = ({
         cell.classList.add('table-cell-selected');
       });
     }
+
+    // Clear any text selection when applying visual selection
+    if (window.getSelection) {
+      window.getSelection().removeAllRanges();
+    }
   }, []);
 
   // Update selection based on current state

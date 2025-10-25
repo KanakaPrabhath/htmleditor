@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
 import {
@@ -31,49 +31,13 @@ const TableResizeHandlers = ({
   const resizeIndexRef = useRef(null);
   const resizeOptionsRef = useRef(resizeOptions);
   const isResizingRef = useRef(false);
+  const [selectedTable, setSelectedTable] = useState(null);
   const actions = useDocumentActions();
 
   // Update resize options when they change
   useEffect(() => {
     resizeOptionsRef.current = resizeOptions;
   }, [resizeOptions]);
-
-  /**
-   * Handle table selection
-   */
-  const handleTableSelection = useCallback((tableElement) => {
-    if (!isResizableTable(tableElement)) return;
-
-    // Clear any existing resize overlay
-    if (resizeOverlayRef.current) {
-      removeTableResizeOverlay(resizeOverlayRef.current);
-      resizeOverlayRef.current = null;
-    }
-
-    // Mark table as selected
-    tableElement.classList.add('selected');
-
-    // Create resize overlay
-    const overlay = createTableResizeOverlay(tableElement, resizeOptionsRef.current);
-    if (overlay) {
-      resizeOverlayRef.current = overlay;
-      resizeTableRef.current = tableElement;
-
-      // Add overlay to document body
-      document.body.appendChild(overlay);
-
-      // Add event listeners to handlers
-      const handlers = overlay.querySelectorAll('.table-resize-handler');
-      handlers.forEach(handler => {
-        handler.addEventListener('mousedown', handleResizeStart);
-      });
-
-      // Notify parent
-      if (onTableSelect) {
-        onTableSelect(tableElement);
-      }
-    }
-  }, [onTableSelect]);
 
   /**
    * Clear table selection
@@ -89,6 +53,7 @@ const TableResizeHandlers = ({
       resizeOverlayRef.current = null;
     }
 
+    setSelectedTable(null);
     resizeStartRef.current = null;
     resizeTypeRef.current = null;
     resizeIndexRef.current = null;
@@ -122,9 +87,7 @@ const TableResizeHandlers = ({
     resizeStartRef.current = {
       x: event.clientX,
       y: event.clientY,
-      structure: { ...structure },
-      offsetX: event.clientX - tableRect.left - scrollLeft,
-      offsetY: event.clientY - tableRect.top - scrollTop
+      structure: { ...structure }
     };
 
     resizeTypeRef.current = type;
@@ -135,12 +98,65 @@ const TableResizeHandlers = ({
     document.body.classList.add('table-resize-in-progress');
 
     // Update cursor based on resize type
-    document.body.style.cursor = getCursorForTableHandler(type);
+    const cursorMap = {
+      [TABLE_RESIZE_HANDLERS.COLUMN]: 'col-resize',
+      [TABLE_RESIZE_HANDLERS.ROW]: 'row-resize',
+      [TABLE_RESIZE_HANDLERS.TABLE_BOTTOM]: 'ns-resize',
+      [TABLE_RESIZE_HANDLERS.TABLE_RIGHT]: 'ew-resize'
+    };
+    document.body.style.cursor = cursorMap[type] || 'default';
 
     // Add global event listeners
     document.addEventListener('mousemove', handleResizeMove);
     document.addEventListener('mouseup', handleResizeEnd);
   }, []);
+
+  /**
+   * Create and attach resize overlay for a table
+   */
+  const createAndAttachOverlay = useCallback((tableElement) => {
+    const overlay = createTableResizeOverlay(tableElement, resizeOptionsRef.current);
+    if (overlay) {
+      resizeOverlayRef.current = overlay;
+      resizeTableRef.current = tableElement;
+
+      // Add overlay to document body
+      document.body.appendChild(overlay);
+
+      // Add event listeners to handlers
+      const handlers = overlay.querySelectorAll('.table-resize-handler');
+      handlers.forEach(handler => {
+        handler.addEventListener('mousedown', handleResizeStart);
+      });
+    }
+    return overlay;
+  }, [handleResizeStart]);
+
+  /**
+   * Handle table selection
+   */
+  const handleTableSelection = useCallback((tableElement) => {
+    if (!isResizableTable(tableElement)) return;
+
+    // Clear any existing resize overlay
+    if (resizeOverlayRef.current) {
+      removeTableResizeOverlay(resizeOverlayRef.current);
+      resizeOverlayRef.current = null;
+    }
+
+    // Mark table as selected
+    tableElement.classList.add('selected');
+
+    // Create resize overlay
+    const overlay = createAndAttachOverlay(tableElement);
+    if (overlay) {
+      setSelectedTable(tableElement);
+      // Notify parent
+      if (onTableSelect) {
+        onTableSelect(tableElement);
+      }
+    }
+  }, [onTableSelect, createAndAttachOverlay]);
 
   /**
    * Perform table resize operation
@@ -157,11 +173,8 @@ const TableResizeHandlers = ({
     const currentX = event.clientX;
     const currentY = event.clientY;
 
-    let delta = 0;
-    let deltaX = 0;
-    let deltaY = 0;
-
     // Calculate delta based on resize type
+    let delta = 0;
     switch (type) {
       case TABLE_RESIZE_HANDLERS.COLUMN:
         delta = currentX - startX;
@@ -182,8 +195,6 @@ const TableResizeHandlers = ({
       type,
       index,
       delta,
-      deltaX,
-      deltaY,
       currentStructure: startStructure,
       options: resizeOptionsRef.current
     });
@@ -321,21 +332,6 @@ const TableResizeHandlers = ({
     }
   }, []);
 
-  function getCursorForTableHandler(type) {
-    switch (type) {
-      case TABLE_RESIZE_HANDLERS.COLUMN:
-        return 'col-resize';
-      case TABLE_RESIZE_HANDLERS.ROW:
-        return 'row-resize';
-      case TABLE_RESIZE_HANDLERS.TABLE_BOTTOM:
-        return 'ns-resize';
-      case TABLE_RESIZE_HANDLERS.TABLE_RIGHT:
-        return 'ew-resize';
-      default:
-        return 'default';
-    }
-  }
-
   // Add scroll listener to editor viewport
   useEffect(() => {
     if (!editorRef.current) return;
@@ -405,7 +401,7 @@ const TableResizeHandlers = ({
 
         // Handle removed tables
         mutation.removedNodes.forEach(node => {
-          if (node.nodeType === Node.ELEMENT_NODE && isResizableTable(node) && node === resizeTableRef.current) {
+          if (node.nodeType === Node.ELEMENT_NODE && isResizableTable(node) && node === selectedTable) {
             clearTableSelection();
           }
         });
@@ -439,42 +435,20 @@ const TableResizeHandlers = ({
 
   // Add a mutation observer to detect changes in the selected table structure
   useEffect(() => {
-    if (!resizeTableRef.current) return;
+    if (!selectedTable) return;
 
     const tableObserver = new MutationObserver((mutations) => {
-      let structureChanged = false;
-
-      mutations.forEach((mutation) => {
-        // Check for changes that affect table structure
+      const structureChanged = mutations.some((mutation) => {
         if (mutation.type === 'childList') {
-          // Check if rows were added/removed
-          const addedRows = Array.from(mutation.addedNodes).filter(node =>
+          // Check for added/removed table rows
+          const hasRowChanges = [...mutation.addedNodes, ...mutation.removedNodes].some(node =>
             node.nodeType === Node.ELEMENT_NODE && node.tagName === 'TR'
           );
-          const removedRows = Array.from(mutation.removedNodes).filter(node =>
-            node.nodeType === Node.ELEMENT_NODE && node.tagName === 'TR'
-          );
-
-          if (addedRows.length > 0 || removedRows.length > 0) {
-            structureChanged = true;
-          }
-
-          // Check if cells were added/removed within rows
-          mutation.addedNodes.forEach(node => {
-            if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'TR') {
-              structureChanged = true;
-            }
-          });
-          mutation.removedNodes.forEach(node => {
-            if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'TR') {
-              structureChanged = true;
-            }
-          });
+          if (hasRowChanges) return true;
+        } else if (mutation.type === 'attributes' && ['colspan', 'rowspan'].includes(mutation.attributeName)) {
+          return true;
         }
-        // Check for attribute changes that might affect structure
-        else if (mutation.type === 'attributes' && mutation.attributeName === 'colspan') {
-          structureChanged = true;
-        }
+        return false;
       });
 
       // If table structure changed, update the resize overlay
@@ -484,22 +458,12 @@ const TableResizeHandlers = ({
         resizeOverlayRef.current = null;
 
         // Create a new overlay with the updated structure
-        const newOverlay = createTableResizeOverlay(resizeTableRef.current, resizeOptionsRef.current);
-        if (newOverlay) {
-          resizeOverlayRef.current = newOverlay;
-          document.body.appendChild(newOverlay);
-
-          // Re-add event listeners to handlers
-          const handlers = newOverlay.querySelectorAll('.table-resize-handler');
-          handlers.forEach(handler => {
-            handler.addEventListener('mousedown', handleResizeStart);
-          });
-        }
+        createAndAttachOverlay(resizeTableRef.current);
       }
     });
 
     // Observe the selected table for structural changes
-    tableObserver.observe(resizeTableRef.current, {
+    tableObserver.observe(selectedTable, {
       childList: true,
       subtree: true,
       attributes: true,
@@ -507,7 +471,7 @@ const TableResizeHandlers = ({
     });
 
     return () => tableObserver.disconnect();
-  }, [resizeTableRef.current, handleResizeStart]); // Re-run when selected table changes
+  }, [selectedTable, createAndAttachOverlay]); // Re-run when selected table changes
 
   // This component doesn't render anything visible - it just manages the resize functionality
   return null;

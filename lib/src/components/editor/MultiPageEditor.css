@@ -3,6 +3,24 @@
   --toolbar-text: #FFFFFF;
   --toolbar-hover: #4A5568;
   --toolbar-active: #1A202C;
+  --font-family: "Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
+  --text-color: #333;
+  --background-color: #f5f5f5;
+  --border-color: #dee2e6;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-strong: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --border-radius: 4px;
+  --transition: all 0.2s ease-in-out;
+  --white: #fff;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
 }
 
 .multi-page-editor {
@@ -158,7 +176,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  background-color: #f5f5f5;
+  background-color: var(--background-color);
   scroll-behavior: smooth;
 }
 
@@ -167,47 +185,16 @@
   padding: 40px 0;
 }
 
-.editor-content {
-  /* Contenteditable editor container */
-  width: 100%;
-  min-height: 100%;
-  outline: none;
-  background-color: #f8f9fa;
-  padding: 20px;
-}
-
-/* Continuous content mode */
-.editor-content.continuous {
-  position: relative;
-  background-color: transparent;
-  padding: 0;
-}
-
-/* Page boundaries overlay */
-.page-boundaries {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.page-boundary {
-  margin-bottom: 20px;
-}
-
 /* Continuous contenteditable surface */
 .continuous-content {
   position: relative;
   z-index: 1;
   background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  font-family: "Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
+  box-shadow: var(--shadow-strong);
+  font-family: var(--font-family);
   font-size: 16px;
-  line-height: 1.6;
-  color: #333;
+  line-height: 1.4;
+  color: var(--text-color);
   word-wrap: break-word;
   white-space: pre-wrap;
   /* Unicode text rendering optimizations */
@@ -223,185 +210,60 @@
 }
 
 .continuous-content p {
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
+  margin: 0 0 10px 0;
+  min-height: 1.4em;
 }
 
 .continuous-content h1 {
   font-size: 24px; /* 18pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
+  margin: 0 0 10px 0;
+  min-height: 1.4em;
   font-weight: bold;
 }
 
 .continuous-content h2 {
   font-size: 21px; /* 16pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
+  margin: 0 0 10px 0;
+  min-height: 1.4em;
   font-weight: bold;
 }
 
 .continuous-content h3 {
   font-size: 19px; /* 14pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
+  margin: 0 0 10px 0;
+  min-height: 1.4em;
   font-weight: bold;
 }
 
 .continuous-content h4 {
   font-size: 16px; /* 12pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
+  margin: 0 0 10px 0;
+  min-height: 1.4em;
   font-weight: bold;
 }
 
 .continuous-content h5 {
   font-size: 13px; /* 10pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
+  margin: 0 0 10px 0;
+  min-height: 1.4em;
   font-weight: bold;
 }
 
 .continuous-content h6 {
   font-size: 10px; /* 7.5pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
+  margin: 0 0 10px 0;
+  min-height: 1.4em;
   font-weight: bold;
+}
+
+.continuous-content ul,
+.continuous-content ol {
+  margin: 0 0 10px 0;
+  padding-left: 20px;
 }
 
 .continuous-content p:last-child {
   margin-bottom: 0;
-}
-
-.pages-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  padding: 40px 20px;
-  background-color: #f5f5f5;
-  min-height: 100%;
-}
-
-.page-content {
-  padding: 60px 72px;
-  height: 100%;
-  box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: "Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333;
-  outline: none;
-  cursor: text;
-  scroll-behavior: smooth;
-  /* Unicode text rendering optimizations */
-  text-rendering: optimizeLegibility;
-  font-variant-ligatures: common-ligatures;
-  font-feature-settings: "liga" on, "calt" on;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.page-content h1 {
-  font-size: 24px; /* 18pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
-  font-weight: bold;
-}
-
-.page-content h2 {
-  font-size: 21px; /* 16pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
-  font-weight: bold;
-}
-
-.page-content h3 {
-  font-size: 19px; /* 14pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
-  font-weight: bold;
-}
-
-.page-content h4 {
-  font-size: 16px; /* 12pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
-  font-weight: bold;
-}
-
-.page-content h5 {
-  font-size: 13px; /* 10pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
-  font-weight: bold;
-}
-
-.page-content h6 {
-  font-size: 10px; /* 7.5pt */
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
-  font-weight: bold;
-}
-
-.page-content p {
-  margin: 0 0 14px 0;
-  min-height: 1.6em;
-}
-
-.page-content p:last-child {
-  margin-bottom: 0;
-}
-
-/* Hide scrollbar but keep functionality */
-.page-content::-webkit-scrollbar {
-  width: 4px;
-}
-
-.page-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.page-content::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 2px;
-}
-
-.page-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.page-break-indicator {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  pointer-events: none;
-  z-index: 2;
-  color: #718096;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.page-break-indicator::before,
-.page-break-indicator::after {
-  content: '';
-  flex: 1;
-  border-top: 1px dashed #cbd5e0;
-}
-
-.page-break-indicator span {
-  background: #f5f5f5;
-  padding: 2px 10px;
-  border-radius: 999px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* Responsive Design */
@@ -424,8 +286,8 @@
 /* Page Manager Sidebar Styles */
 .page-manager-sidebar {
   width: 240px;
-  background-color: #f8f9fa;
-  border-left: 1px solid #dee2e6;
+  background-color: var(--gray-100);
+  border-left: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   overflow: hidden; /* Changed from overflow-y: auto to prevent double scrollbar */
@@ -445,32 +307,32 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  background-color: #fff;
+  background-color: var(--white);
   border-radius: 8px;
-  border: 1px solid #dee2e6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
 }
 
 .page-size-controls label {
   font-size: 13px;
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-700);
   display: flex;
   align-items: center;
 }
 
 .page-size-controls select {
   padding: 6px 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  background-color: #fff;
+  border: 1px solid var(--gray-400);
+  border-radius: var(--border-radius);
+  background-color: var(--white);
   font-size: 13px;
-  color: #212529;
+  color: var(--gray-900);
   cursor: pointer;
 }
 
 .page-size-controls select:hover {
-  border-color: #adb5bd;
+  border-color: var(--gray-500);
 }
 
 .page-size-controls select:focus {
@@ -485,32 +347,32 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  background-color: #fff;
+  background-color: var(--white);
   border-radius: 8px;
-  border: 1px solid #dee2e6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
 }
 
 .page-margins-controls label {
   font-size: 13px;
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-700);
   display: flex;
   align-items: center;
 }
 
 .page-margins-controls select {
   padding: 6px 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  background-color: #fff;
+  border: 1px solid var(--gray-400);
+  border-radius: var(--border-radius);
+  background-color: var(--white);
   font-size: 13px;
-  color: #212529;
+  color: var(--gray-900);
   cursor: pointer;
 }
 
 .page-margins-controls select:hover {
-  border-color: #adb5bd;
+  border-color: var(--gray-500);
 }
 
 .page-margins-controls select:focus {

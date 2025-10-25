@@ -238,7 +238,7 @@ const PageView = ({
           cursor: 'text',
           fontFamily: '"Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif',
           fontSize: DEFAULT_FONT_SIZE,
-          lineHeight: '1.3',
+          lineHeight: '1.4',
           color: '#333',
           wordWrap: 'break-word',
           whiteSpace: 'pre-wrap',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDocumentState } from '../../context/DocumentContext';
 import { 
   FileText, 
@@ -65,16 +65,15 @@ const calculateWordCount = (htmlContent) => {
 export const Sidebar = ({ isCollapsed, onToggle, wordCount: propWordCount, pageCount: propPageCount }) => {
   const documentState = useDocumentState();
   const { pages, activePage, continuousContent } = documentState;
-  const [wordCount, setWordCount] = useState(0);
-  const [outline, setOutline] = useState([]);
 
-  // Calculate word count and extract outline from content
-  useEffect(() => {
+  // Memoize word count and outline calculations for better performance
+  const { wordCount, outline } = useMemo(() => {
     // Use prop values if provided (continuous mode)
     if (propWordCount !== undefined && propPageCount !== undefined) {
-      setWordCount(propWordCount);
-      setOutline(extractHeadings(continuousContent, 1, 'continuous-'));
-      return;
+      return {
+        wordCount: propWordCount,
+        outline: extractHeadings(continuousContent, 1, 'continuous-')
+      };
     }
 
     // Paged mode: Calculate from pages array
@@ -86,8 +85,7 @@ export const Sidebar = ({ isCollapsed, onToggle, wordCount: propWordCount, pageC
       headings.push(...extractHeadings(page.content, pageIndex + 1, `page-${pageIndex}-`));
     });
 
-    setWordCount(totalWords);
-    setOutline(headings);
+    return { wordCount: totalWords, outline: headings };
   }, [pages, propWordCount, propPageCount, continuousContent]);
 
   const displayPageCount = propPageCount !== undefined ? propPageCount : pages.length;

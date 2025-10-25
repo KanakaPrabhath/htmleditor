@@ -15,6 +15,7 @@ import PageManager from './PageManager';
 import ImageResizeHandlers from './ImageResizeHandlers';
 import ImageTooltipMenu from './ImageTooltipMenu';
 import TableResizeHandlers from './TableResizeHandlers';
+import TableTooltipMenu from './TableTooltipMenu';
 import './MultiPageEditor.css';
 
 const INITIAL_BOUNDARY_DELAY = 50;
@@ -739,7 +740,7 @@ const HtmlEditor = forwardRef(({
           <ImageTooltipMenu
             imageElement={selectedImage}
             initialPreserveAspectRatio={preserveAspectRatio}
-            onAlignChange={(_) => {
+            onAlignChange={(_alignment) => {
               // Handle alignment change if needed
             }}
             onAspectRatioToggle={(newPreserveRatio) => {
@@ -759,6 +760,17 @@ const HtmlEditor = forwardRef(({
               }
             }}
             onClose={handleImageDeselect}
+          />
+        )}
+
+        {/* Table Tooltip Menu - shows when a table is selected */}
+        {tableSelected && selectedTable && (
+          <TableTooltipMenu
+            tableElement={selectedTable}
+            onAlignChange={(_alignment) => {
+              // Handle alignment change if needed
+            }}
+            onClose={handleTableDeselect}
           />
         )}
 

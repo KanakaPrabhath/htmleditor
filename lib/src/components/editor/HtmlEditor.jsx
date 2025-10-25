@@ -144,6 +144,47 @@ const HtmlEditor = forwardRef(({
     }
   }, [continuousContent, onChange]);
 
+  // Helper to restore cursor position or position at editor end
+  const restoreCursorPosition = useCallback(() => {
+    if (!editorRef.current) return;
+    
+    const selection = window.getSelection();
+    if (lastCursorPositionRef.current) {
+      try {
+        selection.removeAllRanges();
+        selection.addRange(lastCursorPositionRef.current);
+        return;
+      } catch (error) {
+        console.warn('[restoreCursorPosition] Failed to restore cursor:', error);
+      }
+    }
+    
+    // Fallback: position at end of editor
+    const lastChild = editorRef.current.lastChild;
+    if (lastChild) {
+      const range = document.createRange();
+      if (lastChild.nodeType === Node.TEXT_NODE) {
+        range.setStart(lastChild, lastChild.textContent.length);
+      } else {
+        range.setStartAfter(lastChild);
+      }
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }, []);
+
+  // Helper to check if there's an active selection in the editor
+  const hasActiveCursorSelection = useCallback(() => {
+    if (!editorRef.current) return false;
+    
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return false;
+    
+    const activeRange = selection.getRangeAt(0);
+    return editorRef.current.contains(activeRange.commonAncestorContainer);
+  }, []);
+
   // Exposed methods for parent component via ref
   const exposedMethods = useMemo(() => ({
     /**
@@ -238,38 +279,10 @@ const HtmlEditor = forwardRef(({
       if (!editorRef.current || !html) return;
 
       const normalizedHtml = normalizeContent(html);
-      const selection = window.getSelection();
-      let hasActiveSelection = false;
 
-      // Check if there's an active selection inside the editor
-      if (selection && selection.rangeCount > 0) {
-        const activeRange = selection.getRangeAt(0);
-        if (editorRef.current.contains(activeRange.commonAncestorContainer)) {
-          hasActiveSelection = true;
-        }
-      }
-
-      // If no active selection, try to restore the last cursor position
-      if (!hasActiveSelection && lastCursorPositionRef.current) {
-        try {
-          selection.removeAllRanges();
-          selection.addRange(lastCursorPositionRef.current);
-        } catch (error) {
-          console.warn('[insertContent] Failed to restore last cursor position:', error);
-          // Fallback: position at end of editor
-          const lastChild = editorRef.current.lastChild;
-          if (lastChild) {
-            const range = document.createRange();
-            if (lastChild.nodeType === Node.TEXT_NODE) {
-              range.setStart(lastChild, lastChild.textContent.length);
-            } else {
-              range.setStartAfter(lastChild);
-            }
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
-        }
+      // If no active selection, restore the last cursor position
+      if (!hasActiveCursorSelection()) {
+        restoreCursorPosition();
       }
 
       // Insert using execCommand for proper cursor handling
@@ -286,7 +299,7 @@ const HtmlEditor = forwardRef(({
         triggerAutoReflow(200);
       }, BOUNDARY_UPDATE_DELAY);
     }
-  }), [continuousContent, actions, updateBoundaries, editorRef, lastCursorPositionRef, checkAndUpdateBoundaries]);
+  }), [continuousContent, actions, updateBoundaries, triggerAutoReflow, hasActiveCursorSelection, restoreCursorPosition]);
 
   // Expose methods to parent component via ref
   useImperativeHandle(ref, () => exposedMethods, [exposedMethods]);
@@ -502,38 +515,9 @@ const HtmlEditor = forwardRef(({
   const handleInsertImage = useCallback((imageHtml) => {
     if (!editorRef.current || !imageHtml) return;
 
-    const selection = window.getSelection();
-    let hasActiveSelection = false;
-
-    // Check if there's an active selection inside the editor
-    if (selection && selection.rangeCount > 0) {
-      const activeRange = selection.getRangeAt(0);
-      if (editorRef.current.contains(activeRange.commonAncestorContainer)) {
-        hasActiveSelection = true;
-      }
-    }
-
-    // If no active selection, try to restore the last cursor position
-    if (!hasActiveSelection && lastCursorPositionRef.current) {
-      try {
-        selection.removeAllRanges();
-        selection.addRange(lastCursorPositionRef.current);
-      } catch (error) {
-        console.warn('[handleInsertImage] Failed to restore last cursor position:', error);
-        // Fallback: position at end of editor
-        const lastChild = editorRef.current.lastChild;
-        if (lastChild) {
-          const range = document.createRange();
-          if (lastChild.nodeType === Node.TEXT_NODE) {
-            range.setStart(lastChild, lastChild.textContent.length);
-          } else {
-            range.setStartAfter(lastChild);
-          }
-          range.collapse(true);
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-      }
+    // If no active selection, restore the last cursor position
+    if (!hasActiveCursorSelection()) {
+      restoreCursorPosition();
     }
 
     // Insert the image using execCommand
@@ -549,7 +533,7 @@ const HtmlEditor = forwardRef(({
       updateBoundaries();
       triggerAutoReflow(200);
     }, BOUNDARY_UPDATE_DELAY);
-  }, [actions, updateBoundaries, triggerAutoReflow, editorRef, lastCursorPositionRef]);
+  }, [actions, updateBoundaries, triggerAutoReflow, hasActiveCursorSelection, restoreCursorPosition]);
 
   const handleRemovePageBreak = useCallback((pageBreakElement) => {
     if (!pageBreakElement) return;

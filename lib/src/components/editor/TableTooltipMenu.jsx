@@ -260,6 +260,9 @@ const TableTooltipMenu = ({
         { type: 'DELETE_ROW', payload: { element: tableElement, index: selectedRowIndex } }
       );
       syncResizeOverlayPosition(tableElement);
+      
+      // Recalculate tooltip menu position after DOM changes
+      requestAnimationFrame(() => calculateMenuPosition());
     } else {
       console.error('Failed to insert row above');
     }
@@ -298,6 +301,9 @@ const TableTooltipMenu = ({
         { type: 'DELETE_ROW', payload: { element: tableElement, index: selectedRowIndex + 1 } }
       );
       syncResizeOverlayPosition(tableElement);
+      
+      // Recalculate tooltip menu position after DOM changes
+      requestAnimationFrame(() => calculateMenuPosition());
     } else {
       console.error('Failed to insert row below');
     }
@@ -336,6 +342,9 @@ const TableTooltipMenu = ({
         { type: 'DELETE_COLUMN', payload: { element: tableElement, index: selectedColIndex } }
       );
       syncResizeOverlayPosition(tableElement);
+      
+      // Recalculate tooltip menu position after DOM changes
+      requestAnimationFrame(() => calculateMenuPosition());
     } else {
       console.error('Failed to insert column left');
     }
@@ -374,6 +383,9 @@ const TableTooltipMenu = ({
         { type: 'DELETE_COLUMN', payload: { element: tableElement, index: selectedColIndex + 1 } }
       );
       syncResizeOverlayPosition(tableElement);
+      
+      // Recalculate tooltip menu position after DOM changes
+      requestAnimationFrame(() => calculateMenuPosition());
     } else {
       console.error('Failed to insert column right');
     }
@@ -412,6 +424,9 @@ const TableTooltipMenu = ({
         { type: 'INSERT_ROW', payload: { element: tableElement, position: 'at', index: selectedRowIndex } }
       );
       syncResizeOverlayPosition(tableElement);
+      
+      // Recalculate tooltip menu position after DOM changes
+      requestAnimationFrame(() => calculateMenuPosition());
     } else {
       console.error('Failed to delete row');
     }
@@ -450,6 +465,9 @@ const TableTooltipMenu = ({
         { type: 'INSERT_COLUMN', payload: { element: tableElement, position: 'at', index: selectedColIndex } }
       );
       syncResizeOverlayPosition(tableElement);
+      
+      // Recalculate tooltip menu position after DOM changes
+      requestAnimationFrame(() => calculateMenuPosition());
     } else {
       console.error('Failed to delete column');
     }

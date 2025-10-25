@@ -992,3 +992,31 @@ page-break,
   background-color: #007bff;
   border: 1px solid #fff;
 }
+
+/* Table Cell Selection Styles */
+.table-cell-selected {
+  background-color: rgba(0, 123, 255, 0.1) !important;
+  border: 2px solid #007bff !important;
+  box-shadow: inset 0 0 0 1px #007bff;
+}
+
+.table-row-selected {
+  background-color: rgba(0, 123, 255, 0.15) !important;
+  border: 2px solid #007bff !important;
+  box-shadow: inset 0 0 0 1px #007bff;
+}
+
+.table-col-selected {
+  background-color: rgba(0, 123, 255, 0.15) !important;
+  border: 2px solid #007bff !important;
+  box-shadow: inset 0 0 0 1px #007bff;
+}
+
+/* Table selection cursor styles */
+.table-cell-selection {
+  cursor: cell !important;
+}
+
+.table-cell-selection * {
+  cursor: cell !important;
+}

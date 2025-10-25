@@ -16,6 +16,7 @@ import ImageResizeHandlers from './ImageResizeHandlers';
 import ImageTooltipMenu from './ImageTooltipMenu';
 import TableResizeHandlers from './TableResizeHandlers';
 import TableTooltipMenu from './TableTooltipMenu';
+import TableCellSelection from './TableCellSelection';
 import './MultiPageEditor.css';
 
 const INITIAL_BOUNDARY_DELAY = 50;
@@ -733,6 +734,15 @@ const HtmlEditor = forwardRef(({
           onTableSelect={handleTableSelect}
           onTableDeselect={handleTableDeselect}
           onTableResize={handleTableResize}
+        />
+
+        {/* Table Cell Selection - manages cell selection within tables */}
+        <TableCellSelection
+          editorRef={editorRef}
+          onCellSelectionChange={(selection) => {
+            // Handle cell selection changes if needed
+            console.log('Cell selection changed:', selection);
+          }}
         />
 
         {/* Image Tooltip Menu - shows when an image is selected */}

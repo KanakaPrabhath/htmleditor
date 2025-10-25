@@ -25,6 +25,7 @@ const TableCellSelection = ({
 
   const actions = useDocumentActions();
   const selectionRef = useRef(null);
+  const lastSelectionRef = useRef(null); // Track last selection to avoid unnecessary callbacks
 
   // Clear all selections
   const clearSelection = useCallback(() => {
@@ -42,8 +43,12 @@ const TableCellSelection = ({
       cell.classList.remove('table-cell-selected', 'table-row-selected', 'table-col-selected');
     });
 
-    if (onCellSelectionChange) {
-      onCellSelectionChange(null);
+    // Only call callback if selection actually changed
+    if (lastSelectionRef.current !== null) {
+      lastSelectionRef.current = null;
+      if (onCellSelectionChange) {
+        onCellSelectionChange(null);
+      }
     }
   }, [onCellSelectionChange]);
 
@@ -148,14 +153,21 @@ const TableCellSelection = ({
 
     applyVisualSelection(expansion.mode, expansion.rowIndex, expansion.colIndex, newCells, table);
 
-    if (onCellSelectionChange && expansion.mode) {
-      onCellSelectionChange({
-        mode: expansion.mode,
-        cells: newCells,
-        rowIndex: expansion.rowIndex,
-        colIndex: expansion.colIndex,
-        table
-      });
+    // Only call callback if selection actually changed
+    const newSelection = expansion.mode ? {
+      mode: expansion.mode,
+      cells: newCells,
+      rowIndex: expansion.rowIndex,
+      colIndex: expansion.colIndex,
+      table
+    } : null;
+
+    const hasChanged = JSON.stringify(lastSelectionRef.current) !== JSON.stringify(newSelection);
+    if (hasChanged) {
+      lastSelectionRef.current = newSelection;
+      if (onCellSelectionChange) {
+        onCellSelectionChange(newSelection);
+      }
     }
   }, [checkSelectionExpansion, applyVisualSelection, onCellSelectionChange]);
 

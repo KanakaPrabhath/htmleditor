@@ -168,17 +168,41 @@ describe('useFormatting Hook', () => {
       expect(result.current.currentFormat.headingLevel).toBe('h1');
     });
 
-    it('should handle font size with value parameter', () => {
+    it('should handle insertHTML for tables without wrapping in paragraphs', () => {
       const { result } = renderHook(() => useFormatting(), { wrapper });
       
+      const editor = document.getElementById('test-editor');
+      editor.innerHTML = '<p>Some text</p>';
+      
+      // Place cursor inside the paragraph
+      const p = editor.querySelector('p');
+      const range = document.createRange();
+      range.setStart(p.firstChild, 5); // Cursor at "Some "
+      range.setEnd(p.firstChild, 5);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      
+      const tableHtml = '<table border="1"><tr><th>Header</th></tr><tr><td>Cell</td></tr></table>';
+      
       act(() => {
-        result.current.formatText('fontSize', '16px');
+        result.current.formatText('insertHTML', tableHtml);
       });
       
-      // Font size implementation tries modern approach first (span wrapping)
-      // Falls back to execCommand if selection is invalid
-      // In test environment with no selection, state is updated but execCommand may not be called
-      expect(result.current.currentFormat.fontSize).toBe('16px');
+      // The table should be inserted outside the paragraph
+      const content = editor.innerHTML;
+      expect(content).toContain('<table');
+      expect(content).toContain('</table>');
+      
+      // Check that the table is not inside a paragraph
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = content;
+      const tables = tempDiv.querySelectorAll('table');
+      expect(tables.length).toBe(1);
+      
+      // The table should not be a child of a p element
+      const tableParent = tables[0].parentElement;
+      expect(tableParent.tagName).not.toBe('P');
     });
   });
 

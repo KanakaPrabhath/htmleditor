@@ -646,6 +646,23 @@ const HtmlEditor = forwardRef(({
     // We can add any additional handling here if needed
   }, []);
 
+  // Table cell selection callback - memoized to prevent unnecessary re-renders
+  const handleCellSelectionChange = useCallback((selection) => {
+    if (selection && selection.mode === 'row') {
+      // Row is selected
+      setSelectedRowIndex(selection.rowIndex);
+      setSelectedColIndex(null);
+    } else if (selection && selection.mode === 'column') {
+      // Column is selected
+      setSelectedColIndex(selection.colIndex);
+      setSelectedRowIndex(null);
+    } else {
+      // No row or column selected
+      setSelectedRowIndex(null);
+      setSelectedColIndex(null);
+    }
+  }, []);
+
   // Table resize handlers callbacks
   const handleTableSelect = useCallback((tableElement) => {
     setTableSelected(true);
@@ -741,26 +758,7 @@ const HtmlEditor = forwardRef(({
         {/* Table Cell Selection - manages cell selection within tables */}
         <TableCellSelection
           editorRef={editorRef}
-          onCellSelectionChange={(selection) => {
-            // Handle cell selection changes
-            console.log('onCellSelectionChange:', selection);
-            if (selection && selection.mode === 'row') {
-              // Row is selected
-              console.log('Row selected with index:', selection.rowIndex);
-              setSelectedRowIndex(selection.rowIndex);
-              setSelectedColIndex(null);
-            } else if (selection && selection.mode === 'column') {
-              // Column is selected
-              console.log('Column selected with index:', selection.colIndex);
-              setSelectedColIndex(selection.colIndex);
-              setSelectedRowIndex(null);
-            } else {
-              // No row or column selected
-              console.log('No row/column selected, clearing selection');
-              setSelectedRowIndex(null);
-              setSelectedColIndex(null);
-            }
-          }}
+          onCellSelectionChange={handleCellSelectionChange}
         />
 
         {/* Image Tooltip Menu - shows when an image is selected */}

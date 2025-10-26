@@ -5,6 +5,85 @@ import { getMarginPixels, DEFAULT_MARGIN_PRESET } from '../../lib/editor/margin-
 import { handlePaste as processPasteEvent } from '../../lib/editor/paste-utils';
 import { handleTabIndentation } from '../../lib/editor/indentation-utils';
 
+// Constants for page break remove button dimensions
+const REMOVE_BUTTON_WIDTH = 20;
+const REMOVE_BUTTON_HEIGHT = 20;
+const REMOVE_BUTTON_OFFSET_RIGHT = 20;
+const REMOVE_BUTTON_OFFSET_TOP = -12;
+
+// Style constants
+const EDITOR_CONTAINER_STYLE = {
+  position: 'relative',
+  width: '100%',
+  maxWidth: '100%',
+  margin: '40px auto',
+  backgroundColor: 'transparent',
+  minHeight: '100vh'
+};
+
+const CONTENT_EDITABLE_STYLE = {
+  position: 'relative',
+  zIndex: 1,
+  backgroundColor: 'white',
+  outline: 'none',
+  cursor: 'text',
+  fontFamily: '"Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif',
+  fontSize: DEFAULT_FONT_SIZE,
+  lineHeight: '1.4',
+  color: '#333',
+  wordWrap: 'break-word',
+  whiteSpace: 'pre-wrap',
+  overflowWrap: 'break-word',
+  border: '1px solid #e0e0e0',
+  boxSizing: 'border-box',
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+};
+
+/**
+ * Helper function to set cursor position at the start or end of an element
+ */
+const setCursorAtElement = (element, atStart = true) => {
+  if (!element) return;
+  
+  const range = document.createRange();
+  const sel = window.getSelection();
+  
+  if (atStart) {
+    range.setStart(element, 0);
+    range.collapse(true);
+  } else {
+    range.selectNodeContents(element);
+    range.collapse(false);
+  }
+  
+  sel.removeAllRanges();
+  sel.addRange(range);
+};
+
+/**
+ * Check if typing should be prevented on page-break elements
+ */
+const shouldPreventTypingOnPageBreak = (event, startContainer, endContainer) => {
+  if (isPageBreakElement(startContainer) || isPageBreakElement(endContainer)) {
+    if (event.key.length === 1 || event.key === 'Enter' || event.key === ' ') {
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * Check if deletion should be prevented on page-break elements
+ */
+const shouldPreventDeletionOnPageBreak = (event, startContainer, endContainer) => {
+  if (event.key === 'Backspace' || event.key === 'Delete') {
+    if (isPageBreakElement(startContainer) || isPageBreakElement(endContainer)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 /**
  * Helper function to check if element is or contains a page-break
  */
@@ -65,12 +144,11 @@ const PageView = ({
     const relativeX = event.clientX - rect.left;
     const relativeY = event.clientY - rect.top;
     
-    // Remove button is positioned at right: 20px, top: -12px
-    // Button is 20px wide and 20px tall
-    const removeButtonLeft = rect.width - 40; // 20px from right
-    const removeButtonTop = -12;
-    const removeButtonRight = rect.width - 20;
-    const removeButtonBottom = 8; // -12px + 20px
+    // Remove button dimensions and positioning
+    const removeButtonLeft = rect.width - REMOVE_BUTTON_OFFSET_RIGHT - REMOVE_BUTTON_WIDTH;
+    const removeButtonTop = REMOVE_BUTTON_OFFSET_TOP;
+    const removeButtonRight = rect.width - REMOVE_BUTTON_OFFSET_RIGHT;
+    const removeButtonBottom = REMOVE_BUTTON_OFFSET_TOP + REMOVE_BUTTON_HEIGHT;
     
     // Check if click is within the remove button area
     if (relativeX >= removeButtonLeft && 
@@ -96,23 +174,13 @@ const PageView = ({
       // Click was in top padding - move to first content element
       const firstChild = editorRef.current.firstElementChild;
       if (firstChild && firstChild.tagName !== 'PAGE-BREAK') {
-        const range = document.createRange();
-        const sel = window.getSelection();
-        range.setStart(firstChild, 0);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
+        setCursorAtElement(firstChild, true);
       }
     } else {
       // Click was in bottom padding - move to last content element
       const lastChild = editorRef.current.lastElementChild;
       if (lastChild && lastChild.tagName !== 'PAGE-BREAK') {
-        const range = document.createRange();
-        const sel = window.getSelection();
-        range.selectNodeContents(lastChild);
-        range.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(range);
+        setCursorAtElement(lastChild, false);
       }
     }
   }, [editorRef, padding.top]);
@@ -126,11 +194,9 @@ const PageView = ({
     const { startContainer, endContainer } = range;
 
     // Prevent typing on page-break elements
-    if (isPageBreakElement(startContainer) || isPageBreakElement(endContainer)) {
-      if (event.key.length === 1 || event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        return false;
-      }
+    if (shouldPreventTypingOnPageBreak(event, startContainer, endContainer)) {
+      event.preventDefault();
+      return false;
     }
 
     // Handle Tab key for indentation (multi-line or single line)
@@ -143,11 +209,9 @@ const PageView = ({
     }
 
     // Prevent deletion of page-break elements
-    if (event.key === 'Backspace' || event.key === 'Delete') {
-      if (isPageBreakElement(startContainer) || isPageBreakElement(endContainer)) {
-        event.preventDefault();
-        return false;
-      }
+    if (shouldPreventDeletionOnPageBreak(event, startContainer, endContainer)) {
+      event.preventDefault();
+      return false;
     }
 
     if (onKeyDown) {
@@ -208,12 +272,8 @@ const PageView = ({
     <div 
       className="continuous-page-container"
       style={{
-        position: 'relative',
-        width: '100%',
+        ...EDITOR_CONTAINER_STYLE,
         maxWidth: `${dimensions.width}px`,
-        margin: '40px auto',
-        backgroundColor: 'transparent',
-        minHeight: '100vh',
         transform: `scale(${zoomMultiplier})`,
         transformOrigin: 'top center',
         transition: 'transform 0.2s ease-out'
@@ -226,24 +286,10 @@ const PageView = ({
         suppressContentEditableWarning={true}
         className="continuous-content"
         style={{
-          position: 'relative',
-          zIndex: 1,
+          ...CONTENT_EDITABLE_STYLE,
           minHeight: `${dimensions.height}px`,
           width: `${dimensions.width}px`,
-          backgroundColor: 'white',
-          padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
-          boxSizing: 'border-box',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-          outline: 'none',
-          cursor: 'text',
-          fontFamily: '"Segoe UI", "Noto Sans Sinhala", "Noto Sans", "Malithi Web", "Iskoola Pota", "Kaputa Unicode", "Helvetica Neue", Arial, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif',
-          fontSize: DEFAULT_FONT_SIZE,
-          lineHeight: '1.4',
-          color: '#333',
-          wordWrap: 'break-word',
-          whiteSpace: 'pre-wrap',
-          overflowWrap: 'break-word',
-          border: '1px solid #e0e0e0'
+          padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`
         }}
         onInput={onInput}
         onKeyDown={handleKeyDown}
@@ -279,12 +325,6 @@ PageView.propTypes = {
 };
 
 PageView.defaultProps = {
-  onContentChange: undefined,
-  onKeyDown: undefined,
-  onClick: undefined,
-  onScroll: undefined,
-  onPaste: undefined,
-  onRemovePageBreak: undefined,
   zoomLevel: 100,
   pageMargins: DEFAULT_MARGIN_PRESET
 };

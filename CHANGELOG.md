@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to Semantic Versioning (https://semver.org/spec/v2.0.0.html).
 
+## [1.1.9] - 2025-10-26
+- **New API Methods**: Added `getSelectedHTMLContent()` method to retrieve selected HTML content from the editor
+- **Page Configuration API**: Added `setPageSize()` and `setPageMargins()` methods for programmatic page configuration
+- **Table Performance Optimization**: Optimized TableTooltipMenu and TableResizeUtils for improved performance and maintainability
+- **Image Resize Enhancements**: Enhanced image resize handlers and tooltip menu with better user experience
+- **Component Refactoring**: Refactored PageManager, EditorToolbar, and HtmlEditor components for improved functionality
+- **Cursor Handling Improvements**: Enhanced cursor position handling and simplified selection checks
+- **Keyboard Shortcuts Enhancement**: Improved keyboard shortcuts and selection handling capabilities
+- **PageView Component Updates**: Enhanced PageView component with improved cursor handling and styling
+
 ## [1.1.8] - 2025-10-16
 - **Package Name Update**: Changed package name from `@prabhath-tharaka/html-editor` to `@kanaka-prabhath/html-editor`
 - **Code Structure Refactor**: Improved code readability and maintainability across the codebase

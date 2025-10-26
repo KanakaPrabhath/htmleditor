@@ -49,7 +49,7 @@ function App() {
 
 For complete documentation and API reference, see the main library:
 - npm: https://www.npmjs.com/package/@kanaka-prabhath/html-editor
-- GitHub: https://github.com/Prabhath-Tharaka/htmleditor
+- GitHub: https://github.com/KanakaPrabhath/htmleditor
 
 ## 🎨 Customization
 
@@ -61,4 +61,4 @@ This demo uses the default styles. You can customize by:
 ## 🔗 Links
 
 - Library Package: [@kanaka-prabhath/html-editor](https://www.npmjs.com/package/@kanaka-prabhath/html-editor)
-- Repository: [GitHub](https://github.com/Prabhath-Tharaka/htmleditor)
+- Repository: [GitHub](https://github.com/KanakaPrabhath/htmleditor)

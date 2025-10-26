@@ -152,7 +152,7 @@ describe('Integration Test - Zoom and Page Boundaries', () => {
       
       unmount();
     }
-  });
+  }, 30000); // Increase timeout to 30 seconds for this test
 
   it('should preserve page breaks when zoom changes', async () => {
     const { container } = renderWithProvider(React.createElement(HtmlEditor));

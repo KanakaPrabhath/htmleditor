@@ -5,6 +5,32 @@ import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
 import { updateResizeOverlay } from '../../lib/editor/image-resize-utils';
 
+// Button style constants
+const buttonBaseStyle = {
+  border: '1px solid #ccc',
+  borderRadius: '4px',
+  padding: '4px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: '28px',
+  height: '28px'
+};
+
+const deleteButtonStyle = {
+  ...buttonBaseStyle,
+  background: 'transparent',
+  color: '#dc3545',
+  borderColor: '#dc3545'
+};
+
+const getAlignmentButtonStyle = (isActive) => ({
+  ...buttonBaseStyle,
+  background: isActive ? '#007bff' : 'transparent',
+  color: isActive ? '#fff' : '#333'
+});
+
 /**
  * ImageTooltipMenu - Component for image tooltip menu with alignment, aspect ratio, and delete options
  */
@@ -21,7 +47,6 @@ const ImageTooltipMenu = ({
   const [menuPosition, setMenuPosition] = useState('top'); // 'top' or 'bottom'
   const [preserveAspectRatio, setPreserveAspectRatio] = useState(initialPreserveAspectRatio);
   const menuRef = useRef(null);
-  const scrollContainerRef = useRef(null);
   const actions = useDocumentActions();
 
   const syncResizeOverlayPosition = (element) => {
@@ -29,11 +54,7 @@ const ImageTooltipMenu = ({
       return;
     }
 
-    const raf = typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function'
-      ? window.requestAnimationFrame
-      : (callback) => setTimeout(callback, 16);
-
-    raf(() => {
+    requestAnimationFrame(() => {
       const overlay = document.querySelector('.image-resize-overlay');
       if (overlay) {
         updateResizeOverlay(overlay, element);
@@ -80,19 +101,15 @@ const ImageTooltipMenu = ({
     const imageRect = imageElement.getBoundingClientRect();
     const menuRect = menuRef.current.getBoundingClientRect();
 
-    const viewportRect = window.visualViewport ? window.visualViewport : {
-      width: window.innerWidth,
-      height: window.innerHeight,
-      offsetTop: 0,
-      offsetLeft: 0
-    };
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
 
     // Check if image is visible in viewport
     const isImageInViewport = (
       imageRect.bottom >= 0 &&
-      imageRect.top <= viewportRect.height &&
+      imageRect.top <= viewportHeight &&
       imageRect.right >= 0 &&
-      imageRect.left <= viewportRect.width
+      imageRect.left <= viewportWidth
     );
 
     let menuPosition = 'top';
@@ -101,7 +118,7 @@ const ImageTooltipMenu = ({
 
     if (isImageInViewport) {
       const spaceAbove = imageRect.top - menuRect.height - 10;
-      const spaceBelow = viewportRect.height - imageRect.bottom - menuRect.height - 10;
+      const spaceBelow = viewportHeight - imageRect.bottom - menuRect.height - 10;
 
       if (spaceBelow > spaceAbove && spaceBelow > 0) {
         menuPosition = 'bottom';
@@ -118,9 +135,6 @@ const ImageTooltipMenu = ({
     left = imageRect.left + (imageRect.width / 2) - (menuRect.width / 2);
 
     // Ensure the menu stays within viewport
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
     let adjustedLeft = Math.max(10, Math.min(left, viewportWidth - menuRect.width - 10));
     let adjustedTop = Math.max(10, Math.min(top, viewportHeight - menuRect.height - 10));
 
@@ -139,22 +153,11 @@ const ImageTooltipMenu = ({
       calculateMenuPosition();
     };
 
-    // Capture the current scroll container ref for cleanup
-    const currentScrollContainer = scrollContainerRef.current;
-
-    // Add scroll listener to scroll container if available
-    if (currentScrollContainer) {
-      currentScrollContainer.addEventListener('scroll', handleScroll);
-    }
-
     // Also add window scroll listener for safety
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleScroll);
 
     return () => {
-      if (currentScrollContainer) {
-        currentScrollContainer.removeEventListener('scroll', handleScroll);
-      }
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
       setIsVisible(false);
@@ -243,24 +246,6 @@ const ImageTooltipMenu = ({
     }
   };
 
-  const buttonBaseStyle = {
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    padding: '4px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minWidth: '28px',
-    height: '28px'
-  };
-
-  const getAlignmentButtonStyle = (isActive) => ({
-    ...buttonBaseStyle,
-    background: isActive ? '#007bff' : 'transparent',
-    color: isActive ? '#fff' : '#333'
-  });
-
   if (!imageElement) return null;
 
   if (typeof document === 'undefined') {
@@ -336,19 +321,7 @@ const ImageTooltipMenu = ({
         className="tooltip-button delete-button"
         onClick={handleDelete}
         title="Delete Image"
-        style={{
-          background: 'transparent',
-          color: '#dc3545',
-          border: '1px solid #dc3545',
-          borderRadius: '4px',
-          padding: '4px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minWidth: '28px',
-          height: '28px'
-        }}
+        style={deleteButtonStyle}
       >
         <Trash2 size={14} />
       </button>

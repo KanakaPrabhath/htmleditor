@@ -10,6 +10,12 @@ import {
   DEFAULT_IMAGE_RESIZE_OPTIONS
 } from '../../lib/editor/image-resize-utils';
 
+// Constants for keyboard shortcuts and defaults
+const KEYBOARD_RESIZE_STEP = 10;
+const DEFAULT_RESET_WIDTH = 300;
+const DEFAULT_RESET_HEIGHT = 200;
+const MUTATION_OBSERVER_DELAY = 50;
+
 /**
  * Helper function to get cursor for handler
  */
@@ -30,6 +36,34 @@ function getCursorForHandler(handler) {
     default:
       return 'default';
   }
+}
+
+/**
+ * Apply aspect ratio constraints to dimensions
+ */
+function applyAspectRatioConstraints(newWidth, newHeight, startWidth, startHeight, handler, options) {
+  if (!options.preserveAspectRatio) return { width: newWidth, height: newHeight };
+
+  const aspectRatio = startWidth / startHeight;
+
+  // For corner handlers, maintain aspect ratio
+  if ([RESIZE_HANDLERS.TOP_LEFT, RESIZE_HANDLERS.TOP_RIGHT,
+       RESIZE_HANDLERS.BOTTOM_LEFT, RESIZE_HANDLERS.BOTTOM_RIGHT].includes(handler)) {
+    // Use the larger dimension to maintain aspect ratio
+    if (newWidth / aspectRatio > newHeight) {
+      newHeight = newWidth / aspectRatio;
+    } else {
+      newWidth = newHeight * aspectRatio;
+    }
+  }
+  // For edge handlers, maintain aspect ratio
+  else if ([RESIZE_HANDLERS.TOP, RESIZE_HANDLERS.BOTTOM].includes(handler)) {
+    newWidth = newHeight * aspectRatio;
+  } else if ([RESIZE_HANDLERS.LEFT, RESIZE_HANDLERS.RIGHT].includes(handler)) {
+    newHeight = newWidth / aspectRatio;
+  }
+
+  return { width: newWidth, height: newHeight };
 }
 
 /**
@@ -54,85 +88,60 @@ function calculateResizeDimensions({
   // Calculate based on handler position
   switch (handler) {
     case RESIZE_HANDLERS.TOP_LEFT:
-      newWidth = Math.max(options.minWidth, startWidth - deltaX);
-      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      newWidth = startWidth - deltaX;
+      newHeight = startHeight - deltaY;
       break;
-
     case RESIZE_HANDLERS.TOP_RIGHT:
-      newWidth = Math.max(options.minWidth, startWidth + deltaX);
-      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      newWidth = startWidth + deltaX;
+      newHeight = startHeight - deltaY;
       break;
-
     case RESIZE_HANDLERS.BOTTOM_LEFT:
-      newWidth = Math.max(options.minWidth, startWidth - deltaX);
-      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      newWidth = startWidth - deltaX;
+      newHeight = startHeight + deltaY;
       break;
-
     case RESIZE_HANDLERS.BOTTOM_RIGHT:
-      newWidth = Math.max(options.minWidth, startWidth + deltaX);
-      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      newWidth = startWidth + deltaX;
+      newHeight = startHeight + deltaY;
       break;
-
     case RESIZE_HANDLERS.TOP:
-      newHeight = Math.max(options.minHeight, startHeight - deltaY);
+      newHeight = startHeight - deltaY;
       break;
-
     case RESIZE_HANDLERS.BOTTOM:
-      newHeight = Math.max(options.minHeight, startHeight + deltaY);
+      newHeight = startHeight + deltaY;
       break;
-
     case RESIZE_HANDLERS.LEFT:
-      newWidth = Math.max(options.minWidth, startWidth - deltaX);
+      newWidth = startWidth - deltaX;
       break;
-
     case RESIZE_HANDLERS.RIGHT:
-      newWidth = Math.max(options.minWidth, startWidth + deltaX);
+      newWidth = startWidth + deltaX;
       break;
-
     default:
       return { width: newWidth, height: newHeight };
   }
 
-  // Apply aspect ratio if needed
-  if (options.preserveAspectRatio && options.aspectRatio) {
-    const aspectRatio = startWidth / startHeight;
-
-    // For corner handlers, maintain aspect ratio
-    if ([RESIZE_HANDLERS.TOP_LEFT, RESIZE_HANDLERS.TOP_RIGHT,
-         RESIZE_HANDLERS.BOTTOM_LEFT, RESIZE_HANDLERS.BOTTOM_RIGHT].includes(handler)) {
-      // Use the larger dimension to maintain aspect ratio
-      if (newWidth / aspectRatio > newHeight) {
-        newHeight = Math.max(options.minHeight, newWidth / aspectRatio);
-      } else {
-        newWidth = Math.max(options.minWidth, newHeight * aspectRatio);
-      }
-    }
-    // For edge handlers, maintain aspect ratio
-    else if ([RESIZE_HANDLERS.TOP, RESIZE_HANDLERS.BOTTOM].includes(handler)) {
-      newWidth = newHeight * aspectRatio;
-    } else if ([RESIZE_HANDLERS.LEFT, RESIZE_HANDLERS.RIGHT].includes(handler)) {
-      newHeight = newWidth / aspectRatio;
-    }
-  }
+  // Apply aspect ratio constraints
+  ({ width: newWidth, height: newHeight } = applyAspectRatioConstraints(
+    newWidth, newHeight, startWidth, startHeight, handler, options
+  ));
 
   // Apply max dimensions
   if (options.maxWidth && newWidth > options.maxWidth) {
     newWidth = options.maxWidth;
-    if (options.preserveAspectRatio && options.aspectRatio) {
+    if (options.preserveAspectRatio) {
       newHeight = newWidth / (startWidth / startHeight);
     }
   }
 
   if (options.maxHeight && newHeight > options.maxHeight) {
     newHeight = options.maxHeight;
-    if (options.preserveAspectRatio && options.aspectRatio) {
+    if (options.preserveAspectRatio) {
       newWidth = newHeight * (startWidth / startHeight);
     }
   }
 
-  // Ensure minimum dimensions
-  newWidth = Math.max(options.minWidth, newWidth);
-  newHeight = Math.max(options.minHeight, newHeight);
+  // Ensure minimum and maximum dimensions
+  newWidth = Math.max(options.minWidth, Math.min(options.maxWidth || newWidth, newWidth));
+  newHeight = Math.max(options.minHeight, Math.min(options.maxHeight || newHeight, newHeight));
 
   return {
     width: Math.round(newWidth),
@@ -182,30 +191,30 @@ function handleImageKeyboardShortcut(event, editorRef, imageElement, options) {
   const shortcuts = {
     // Increase width
     '>': isModifierPressed && shiftKey ? () => ({
-      width: Math.min(options.maxWidth || 800, currentWidth + 10),
+      width: Math.min(options.maxWidth || 800, currentWidth + KEYBOARD_RESIZE_STEP),
       height: currentHeight
     }) : null,
 
     // Decrease width
     '<': isModifierPressed && shiftKey ? () => ({
-      width: Math.max(options.minWidth || 50, currentWidth - 10),
+      width: Math.max(options.minWidth || 50, currentWidth - KEYBOARD_RESIZE_STEP),
       height: currentHeight
     }) : null,
 
     // Increase height
     '+': isModifierPressed && shiftKey ? () => ({
       width: currentWidth,
-      height: Math.min(options.maxHeight || 600, currentHeight + 10)
+      height: Math.min(options.maxHeight || 600, currentHeight + KEYBOARD_RESIZE_STEP)
     }) : null,
 
     // Decrease height
     '-': isModifierPressed && shiftKey ? () => ({
       width: currentWidth,
-      height: Math.max(options.minHeight || 50, currentHeight - 10)
+      height: Math.max(options.minHeight || 50, currentHeight - KEYBOARD_RESIZE_STEP)
     }) : null,
 
     // Reset to default
-    'r': isModifierPressed && !shiftKey ? () => ({ width: 300, height: 200 }) : null
+    'r': isModifierPressed && !shiftKey ? () => ({ width: DEFAULT_RESET_WIDTH, height: DEFAULT_RESET_HEIGHT }) : null
   };
 
   const action = shortcuts[key];
@@ -222,6 +231,20 @@ function handleImageKeyboardShortcut(event, editorRef, imageElement, options) {
 /**
  * ImageResizeHandlers - Component for handling image resize operations
  * Provides resize handlers, selection, and resize functionality for images
+ * 
+ * Features:
+ * - Visual resize handles around selected images
+ * - Mouse-based resizing with aspect ratio preservation
+ * - Keyboard shortcuts for quick resizing
+ * - Automatic overlay positioning on scroll
+ * - Undo/redo support for resize operations
+ * 
+ * @param {Object} props - Component props
+ * @param {React.RefObject} props.editorRef - Reference to the editor element
+ * @param {Function} props.onImageResize - Callback when image is resized
+ * @param {Function} props.onImageSelect - Callback when image is selected
+ * @param {Function} props.onImageDeselect - Callback when image selection is cleared
+ * @param {Object} props.resizeOptions - Resize configuration options
  */
 const ImageResizeHandlers = ({
   editorRef,
@@ -230,12 +253,14 @@ const ImageResizeHandlers = ({
   onImageDeselect,
   resizeOptions = DEFAULT_IMAGE_RESIZE_OPTIONS
 }) => {
-  const resizeOverlayRef = useRef(null);
-  const resizeImageRef = useRef(null);
-  const resizeStartRef = useRef(null);
-  const resizeHandlerRef = useRef(null);
+  const resizeStateRef = useRef({
+    overlay: null,
+    image: null,
+    start: null,
+    handler: null,
+    isResizing: false
+  });
   const resizeOptionsRef = useRef(resizeOptions);
-  const isResizingRef = useRef(false);
   const actions = useDocumentActions();
 
   // Update resize options when they change
@@ -244,15 +269,16 @@ const ImageResizeHandlers = ({
   }, [resizeOptions]);
 
   /**
-   * Handle image selection
+   * Handle image selection by creating resize overlay and handlers
+   * @param {HTMLElement} imageElement - The image element to select
    */
   const handleImageSelection = useCallback((imageElement) => {
     if (!isResizableImage(imageElement)) return;
 
     // Clear any existing resize overlay
-    if (resizeOverlayRef.current) {
-      removeResizeOverlay(resizeOverlayRef.current);
-      resizeOverlayRef.current = null;
+    if (resizeStateRef.current.overlay) {
+      removeResizeOverlay(resizeStateRef.current.overlay);
+      resizeStateRef.current.overlay = null;
     }
 
     // Mark image as selected
@@ -261,8 +287,8 @@ const ImageResizeHandlers = ({
     // Create resize overlay
     const overlay = createResizeOverlay(imageElement, resizeOptionsRef.current);
     if (overlay) {
-      resizeOverlayRef.current = overlay;
-      resizeImageRef.current = imageElement;
+      resizeStateRef.current.overlay = overlay;
+      resizeStateRef.current.image = imageElement;
       
       // Add overlay to document body
       document.body.appendChild(overlay);
@@ -281,22 +307,22 @@ const ImageResizeHandlers = ({
   }, [onImageSelect]);
 
   /**
-   * Clear image selection
+   * Clear current image selection and remove resize overlay
    */
   const clearImageSelection = useCallback(() => {
-    if (resizeImageRef.current) {
-      resizeImageRef.current.classList.remove('selected');
-      resizeImageRef.current = null;
+    if (resizeStateRef.current.image) {
+      resizeStateRef.current.image.classList.remove('selected');
+      resizeStateRef.current.image = null;
     }
 
-    if (resizeOverlayRef.current) {
-      removeResizeOverlay(resizeOverlayRef.current);
-      resizeOverlayRef.current = null;
+    if (resizeStateRef.current.overlay) {
+      removeResizeOverlay(resizeStateRef.current.overlay);
+      resizeStateRef.current.overlay = null;
     }
 
-    resizeStartRef.current = null;
-    resizeHandlerRef.current = null;
-    isResizingRef.current = false;
+    resizeStateRef.current.start = null;
+    resizeStateRef.current.handler = null;
+    resizeStateRef.current.isResizing = false;
 
     // Notify parent
     if (onImageDeselect) {
@@ -305,33 +331,34 @@ const ImageResizeHandlers = ({
   }, [onImageDeselect]);
 
   /**
-   * Start image resize operation
+   * Start image resize operation when user clicks on a resize handler
+   * @param {MouseEvent} event - The mousedown event
    */
   const handleResizeStart = useCallback((event) => {
     event.preventDefault();
     event.stopPropagation();
     
-    if (!resizeImageRef.current) return;
+    if (!resizeStateRef.current.image) return;
 
     const handler = event.currentTarget.dataset.handler;
-    const rect = resizeImageRef.current.getBoundingClientRect();
+    const rect = resizeStateRef.current.image.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
     // Store the original dimensions for undo
-    resizeStartRef.current = {
+    resizeStateRef.current.start = {
       x: event.clientX,
       y: event.clientY,
-      width: resizeImageRef.current.offsetWidth,
-      height: resizeImageRef.current.offsetHeight,
-      originalWidth: resizeImageRef.current.offsetWidth,
-      originalHeight: resizeImageRef.current.offsetHeight,
+      width: resizeStateRef.current.image.offsetWidth,
+      height: resizeStateRef.current.image.offsetHeight,
+      originalWidth: resizeStateRef.current.image.offsetWidth,
+      originalHeight: resizeStateRef.current.image.offsetHeight,
       offsetX: event.clientX - rect.left - scrollLeft,
       offsetY: event.clientY - rect.top - scrollTop
     };
 
-    resizeHandlerRef.current = handler;
-    isResizingRef.current = true;
+    resizeStateRef.current.handler = handler;
+    resizeStateRef.current.isResizing = true;
 
     // Add resize class to prevent text selection
     document.body.classList.add('resize-in-progress');
@@ -345,16 +372,17 @@ const ImageResizeHandlers = ({
   }, []);
 
   /**
-   * Perform image resize operation
+   * Perform image resize operation during mouse move
+   * @param {MouseEvent} event - The mousemove event
    */
   const handleResizeMove = useCallback((event) => {
-    if (!isResizingRef.current || !resizeImageRef.current || !resizeStartRef.current || !resizeHandlerRef.current) return;
+    if (!resizeStateRef.current.isResizing || !resizeStateRef.current.image || !resizeStateRef.current.start || !resizeStateRef.current.handler) return;
 
     event.preventDefault();
     event.stopPropagation();
 
-    const { x: startX, y: startY, width: startWidth, height: startHeight } = resizeStartRef.current;
-    const handler = resizeHandlerRef.current;
+    const { x: startX, y: startY, width: startWidth, height: startHeight } = resizeStateRef.current.start;
+    const handler = resizeStateRef.current.handler;
     const currentX = event.clientX;
     const currentY = event.clientY;
 
@@ -371,46 +399,47 @@ const ImageResizeHandlers = ({
     });
 
     // Apply new dimensions to the image
-    applyImageDimensions(resizeImageRef.current, newDimensions);
+    applyImageDimensions(resizeStateRef.current.image, newDimensions);
 
     // Update resize overlay
-    if (resizeOverlayRef.current) {
-      updateResizeOverlay(resizeOverlayRef.current, resizeImageRef.current);
+    if (resizeStateRef.current.overlay) {
+      updateResizeOverlay(resizeStateRef.current.overlay, resizeStateRef.current.image);
     }
   }, []);
 
   /**
-   * End image resize operation
+   * End image resize operation and record for undo/redo
+   * @param {MouseEvent} event - The mouseup event
    */
   const handleResizeEnd = useCallback((event) => {
-    if (!isResizingRef.current) return;
+    if (!resizeStateRef.current.isResizing) return;
 
     event.preventDefault();
     event.stopPropagation();
 
     // Record the resize operation for undo before clearing refs
-    if (resizeImageRef.current && resizeStartRef.current) {
+    if (resizeStateRef.current.image && resizeStateRef.current.start) {
       const beforeState = {
-        width: resizeStartRef.current.originalWidth,
-        height: resizeStartRef.current.originalHeight
+        width: resizeStateRef.current.start.originalWidth,
+        height: resizeStateRef.current.start.originalHeight
       };
       const afterState = {
-        width: resizeImageRef.current.offsetWidth,
-        height: resizeImageRef.current.offsetHeight
+        width: resizeStateRef.current.image.offsetWidth,
+        height: resizeStateRef.current.image.offsetHeight
       };
 
       // Only record if dimensions actually changed
       if (beforeState.width !== afterState.width || beforeState.height !== afterState.height) {
         actions.recordOperation(
-          { type: 'IMAGE_RESIZE', payload: { element: resizeImageRef.current, state: afterState } },
-          { type: 'IMAGE_RESIZE', payload: { element: resizeImageRef.current, state: beforeState } }
+          { type: 'IMAGE_RESIZE', payload: { element: resizeStateRef.current.image, state: afterState } },
+          { type: 'IMAGE_RESIZE', payload: { element: resizeStateRef.current.image, state: beforeState } }
         );
       }
     }
 
-    resizeStartRef.current = null;
-    resizeHandlerRef.current = null;
-    isResizingRef.current = false;
+    resizeStateRef.current.start = null;
+    resizeStateRef.current.handler = null;
+    resizeStateRef.current.isResizing = false;
 
     // Remove global event listeners
     document.removeEventListener('mousemove', handleResizeMove);
@@ -421,16 +450,16 @@ const ImageResizeHandlers = ({
     document.body.style.cursor = '';
 
     // Update content in document context
-    if (resizeImageRef.current) {
+    if (resizeStateRef.current.image) {
       // Trigger input event to update document state
       const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-      resizeImageRef.current.dispatchEvent(inputEvent);
+      resizeStateRef.current.image.dispatchEvent(inputEvent);
 
       // Notify parent about resize
       if (onImageResize) {
-        onImageResize(resizeImageRef.current, {
-          width: resizeImageRef.current.offsetWidth,
-          height: resizeImageRef.current.offsetHeight
+        onImageResize(resizeStateRef.current.image, {
+          width: resizeStateRef.current.image.offsetWidth,
+          height: resizeStateRef.current.image.offsetHeight
         });
       }
     }
@@ -442,7 +471,7 @@ const ImageResizeHandlers = ({
   const handleEditorClick = useCallback((event) => {
     
     // Clear selection if clicking outside an image
-    if (resizeOverlayRef.current && !resizeOverlayRef.current.contains(event.target)) {
+    if (resizeStateRef.current.overlay && !resizeStateRef.current.overlay.contains(event.target)) {
       clearImageSelection();
     }
 
@@ -450,7 +479,7 @@ const ImageResizeHandlers = ({
     const target = event.target;
     if (isResizableImage(target)) {
       // If already selected, don't reselect
-      if (target === resizeImageRef.current) {
+      if (target === resizeStateRef.current.image) {
         return;
       }
       
@@ -465,14 +494,14 @@ const ImageResizeHandlers = ({
   const handleKeyDown = useCallback((event) => {
     // Delete selected image with Delete or Backspace key
     if ((event.key === 'Delete' || event.key === 'Backspace') && 
-        resizeImageRef.current && 
-        !isResizingRef.current) {
+        resizeStateRef.current.image && 
+        !resizeStateRef.current.isResizing) {
       
       // Prevent default behavior
       event.preventDefault();
       
       // Remove the image
-      const imageToRemove = resizeImageRef.current;
+      const imageToRemove = resizeStateRef.current.image;
       if (imageToRemove.parentNode) {
         imageToRemove.parentNode.removeChild(imageToRemove);
         
@@ -486,13 +515,13 @@ const ImageResizeHandlers = ({
     }
     
     // Escape key to clear selection
-    if (event.key === 'Escape' && resizeImageRef.current) {
+    if (event.key === 'Escape' && resizeStateRef.current.image) {
       clearImageSelection();
     }
     
     // Add keyboard shortcuts for image operations
-    if (resizeImageRef.current && !isResizingRef.current) {
-      handleImageKeyboardShortcut(event, editorRef, resizeImageRef.current, resizeOptionsRef.current);
+    if (resizeStateRef.current.image && !resizeStateRef.current.isResizing) {
+      handleImageKeyboardShortcut(event, editorRef, resizeStateRef.current.image, resizeOptionsRef.current);
     }
   }, [editorRef, clearImageSelection]);
 
@@ -500,8 +529,8 @@ const ImageResizeHandlers = ({
    * Handle scroll events to update overlay position
    */
   const handleScroll = useCallback(() => {
-    if (resizeOverlayRef.current && resizeImageRef.current) {
-      updateResizeOverlay(resizeOverlayRef.current, resizeImageRef.current);
+    if (resizeStateRef.current.overlay && resizeStateRef.current.image) {
+      updateResizeOverlay(resizeStateRef.current.overlay, resizeStateRef.current.image);
     }
   }, []);
 
@@ -550,7 +579,7 @@ const ImageResizeHandlers = ({
       window.removeEventListener('resize', handleScroll);
       
       // Clean up any active resize operations
-      if (isResizingRef.current) {
+      if (resizeStateRef.current.isResizing) {
         document.removeEventListener('mousemove', handleResizeMove);
         document.removeEventListener('mouseup', handleResizeEnd);
         document.body.classList.remove('resize-in-progress');
@@ -558,8 +587,8 @@ const ImageResizeHandlers = ({
       }
       
       // Remove overlay
-      if (resizeOverlayRef.current) {
-        removeResizeOverlay(resizeOverlayRef.current);
+      if (resizeStateRef.current.overlay) {
+        removeResizeOverlay(resizeStateRef.current.overlay);
       }
     };
   }, [editorRef, handleEditorClick, handleKeyDown, handleScroll, handleResizeMove, handleResizeEnd]);
@@ -574,25 +603,8 @@ const ImageResizeHandlers = ({
 
         // Handle removed images
         mutation.removedNodes.forEach(node => {
-          if (node.nodeType === Node.ELEMENT_NODE && isResizableImage(node) && node === resizeImageRef.current) {
+          if (node.nodeType === Node.ELEMENT_NODE && isResizableImage(node) && node === resizeStateRef.current.image) {
             clearImageSelection();
-          }
-        });
-
-        // Handle added images - auto-select the first one
-        mutation.addedNodes.forEach(node => {
-          if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-          // Check if node itself is an image
-          if (isResizableImage(node)) {
-            setTimeout(() => handleImageSelection(node), 50);
-            return;
-          }
-
-          // Check if node contains images
-          const images = node.querySelectorAll?.('img') || [];
-          if (images.length > 0) {
-            setTimeout(() => handleImageSelection(images[0]), 50);
           }
         });
       });

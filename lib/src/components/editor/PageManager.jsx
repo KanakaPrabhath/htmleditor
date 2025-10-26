@@ -47,20 +47,6 @@ export const PageManager = ({
   // Ensure we always have at least one page
   const totalPages = Math.max(pageBoundaries?.length || 0, 1);
 
-  const handleNavigate = (pageIndex) => {
-    // Delegate to parent callback
-    if (onNavigate) {
-      onNavigate(pageIndex);
-    }
-  };
-
-  const handleAddPage = () => {
-    // Delegate to parent callback
-    if (onAddPage) {
-      onAddPage();
-    }
-  };
-
   const handleDeletePage = (pageIndex) => {
     if (totalPages <= 1) {
       console.warn('[PageManager] Cannot delete the only page');
@@ -68,23 +54,7 @@ export const PageManager = ({
     }
     
     // Delegate to parent callback
-    if (onDeletePage) {
-      onDeletePage(pageIndex);
-    }
-  };
-
-  const handlePageSizeChange = (newSize) => {
-    // Delegate to parent callback
-    if (onPageSizeChange) {
-      onPageSizeChange(newSize);
-    }
-  };
-
-  const handlePageMarginsChange = (newMargins) => {
-    // Delegate to parent callback
-    if (onPageMarginsChange) {
-      onPageMarginsChange(newMargins);
-    }
+    onDeletePage?.(pageIndex);
   };
 
   return (
@@ -103,7 +73,7 @@ export const PageManager = ({
               role="combobox"
               aria-label="Page size selector"
               value={pageSize}
-              onChange={(e) => handlePageSizeChange(e.target.value)}
+              onChange={(e) => onPageSizeChange?.(e.target.value)}
             >
               <option value="A4">A4</option>
               <option value="Letter">Letter</option>
@@ -117,7 +87,7 @@ export const PageManager = ({
               role="combobox"
               aria-label="Page margins selector"
               value={pageMargins}
-              onChange={(e) => handlePageMarginsChange(e.target.value)}
+              onChange={(e) => onPageMarginsChange?.(e.target.value)}
             >
               {getMarginPresetNames().map((presetName) => (
                 <option key={presetName} value={presetName}>
@@ -170,7 +140,7 @@ export const PageManager = ({
             <button
               type="button"
               className={`page-button ${index === activePage ? 'active' : ''}`}
-              onClick={() => handleNavigate(index)}
+              onClick={() => onNavigate?.(index)}
               aria-label={`Go to page ${index + 1}`}
               aria-current={index === activePage ? 'page' : undefined}
             >
@@ -200,7 +170,7 @@ export const PageManager = ({
       <button
         type="button"
         className="add-page-button"
-        onClick={handleAddPage}
+        onClick={() => onAddPage?.()}
         aria-label="Add new page"
         title="Add new page at end"
       >
@@ -234,24 +204,6 @@ PageManager.propTypes = {
   onZoomIn: PropTypes.func,
   onZoomOut: PropTypes.func,
   onZoomReset: PropTypes.func
-};
-
-PageManager.defaultProps = {
-  pageBoundaries: [{ id: 'page-0', pageNumber: 1 }],
-  activePage: 0,
-  pageSize: 'A4',
-  pageMargins: DEFAULT_MARGIN_PRESET,
-  zoomLevel: 100,
-  canZoomIn: true,
-  canZoomOut: true,
-  onNavigate: undefined,
-  onAddPage: undefined,
-  onDeletePage: undefined,
-  onPageSizeChange: undefined,
-  onPageMarginsChange: undefined,
-  onZoomIn: undefined,
-  onZoomOut: undefined,
-  onZoomReset: undefined
 };
 
 export default React.memo(PageManager);

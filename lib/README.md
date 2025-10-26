@@ -14,20 +14,25 @@ A React-based WYSIWYG HTML editor with automatic page reflow, rich text formatti
 - **WYSIWYG Editing**: Real-time HTML content editing with rich text formatting
 - **Automatic Page Reflow**: Content automatically flows across pages with intelligent page break insertion
 - **Multi-Page Management**: Navigate, add, delete, and manage pages seamlessly
-- **Rich Text Formatting**: Bold, italic, underline, strikethrough, alignment, fonts, and more
+- **Rich Text Formatting**: Bold, italic, underline, strikethrough, alignment, fonts, and font sizes
 - **Page Size Support**: A4, Letter, and Legal page formats with programmatic configuration
 - **Page Margin Control**: Customizable page margins with preset and custom options
 - **Advanced Content Selection**: Retrieve selected HTML content for advanced editing workflows
-- **Cursor Position Tracking**: Get current cursor position with page, line, and character information
+- **Zoom Controls**: 50%-200% zoom with keyboard shortcuts and programmatic control
+- **Table Support**: Advanced table creation, resizing, and manipulation with column/row resizing
+- **Image Manipulation**: Image upload, insertion, and resize controls with aspect ratio preservation
+- **Indentation System**: Tab-based paragraph indentation with toolbar buttons and keyboard shortcuts
+- **Keyboard Shortcuts**: Comprehensive keyboard shortcuts for formatting, navigation, and operations
+- **Content Normalization**: Automatic HTML content normalization for tables, lists, images, headings, and complex structures
+- **Page Break Management**: Visual page break removal with automatic content reflow
 - **Customizable UI**: Show/hide sidebar, toolbar, and page manager components
 - **Performance Optimized**: Efficient reflow algorithms and debounced operations
 - **TypeScript Ready**: Full type definitions included
 - **Responsive Design**: Works across desktop and mobile devices
-- **Advanced Content Support**: Comprehensive HTML content normalization for tables, lists, images, headings, and complex structures
-- **Page Break Management**: Visual page break removal with automatic content reflow
-- **Enhanced Table Support**: Optimized table resizing and manipulation with improved performance
-- **Image Manipulation**: Advanced image resize controls with aspect ratio preservation
-- **Keyboard Shortcuts**: Comprehensive keyboard shortcuts for common operations
+- **Accessibility**: Keyboard navigation, focus indicators, and ARIA attributes
+- **Image Storage**: IndexedDB-based image storage for offline functionality
+- **Undo/Redo Support**: Browser-native undo/redo functionality
+- **Content Export**: HTML and plain text content extraction methods
 
 ## 📦 Installation
 
@@ -57,63 +62,57 @@ function App() {
 export default App;
 ```
 
-## 🎯 Basic Usage
+## 🎯 Advanced Usage
 
-### With Ref Access
+### Zoom Controls
 
 ```jsx
-import React, { useRef } from 'react';
+import { useDocumentState, useDocumentActions } from '@kanaka-prabhath/html-editor';
 
-function App() {
+function ZoomControls() {
+  const { zoomLevel } = useDocumentState();
+  const { setZoomLevel, zoomIn, zoomOut, resetZoom } = useDocumentActions();
+
+  return (
+    <div>
+      <p>Current Zoom: {zoomLevel}%</p>
+      <button onClick={() => setZoomLevel(125)}>Set 125%</button>
+      <button onClick={zoomIn}>Zoom In</button>
+      <button onClick={zoomOut}>Zoom Out</button>
+      <button onClick={resetZoom}>Reset Zoom</button>
+    </div>
+  );
+}
+```
+
+### Table Manipulation
+
+```jsx
+import { createTableResizeOverlay, applyTableDimensions } from '@kanaka-prabhath/html-editor';
+
+function TableEditor() {
+  const handleTableResize = (tableElement, newDimensions) => {
+    applyTableDimensions(tableElement, newDimensions);
+  };
+
+  return (
+    <div>
+      {/* Tables in the editor automatically get resize handles */}
+      {/* Use the utilities for programmatic table manipulation */}
+    </div>
+  );
+}
+```
+
+### Indentation System
+
+```jsx
+function IndentationExample() {
   const editorRef = useRef(null);
 
-  // Get the current HTML content from the editor
-  const handleSave = () => {
-    const htmlContent = editorRef.current.getHTMLContent();
-    const plainText = editorRef.current.getPlainText();
-    console.log('HTML:', htmlContent);
-    console.log('Text:', plainText);
-  };
-
-  // Insert content at cursor position without replacing existing content
-  const handleInsertContent = () => {
-    editorRef.current.insertContent('<p><strong>New content inserted!</strong></p>');
-  };
-
-  // Set editor content programmatically
-  const handleSetContent = () => {
-    const sampleContent = '<h1>Sample Document</h1><p>This is sample content.</p>';
-    editorRef.current.setContent(sampleContent);
-  };
-
-  // Get selected HTML content (supports images and tables)
-  const handleGetSelectedContent = () => {
-    const selectedHtml = editorRef.current.getSelectedHTMLContent();
-    console.log('Selected HTML:', selectedHtml);
-  };
-
-  // Get current cursor position in the editor
-  const handleGetCursorPosition = () => {
-    const cursorPos = editorRef.current.getCursorPosition();
-    if (cursorPos) {
-      console.log('Cursor at page:', cursorPos.pageNumber, 'line:', cursorPos.lineNumber);
-    }
-  };
-
-  // Cycle through available page sizes
-  const handleChangePageSize = () => {
-    const sizes = ['A4', 'Letter', 'Legal'];
-    const currentSize = 'A4'; // In a real app, you'd track this in state
-    const nextSize = sizes[(sizes.indexOf(currentSize) + 1) % sizes.length];
-    editorRef.current.setPageSize(nextSize);
-    console.log('Page size changed to:', nextSize);
-  };
-
-  // Set custom margins (in inches)
-  const handleSetCustomMargins = () => {
-    const customMargins = { top: 0.6, bottom: 0.6, left: 0.6, right: 0.6 };
-    editorRef.current.setPageMargins(customMargins);
-    console.log('Page margins set to:', customMargins);
+  const insertIndentedContent = () => {
+    // Insert content with indentation
+    editorRef.current.insertContent('<p data-indent-level="2">Indented paragraph</p>');
   };
 
   return (
@@ -121,51 +120,54 @@ function App() {
       <DocumentProvider>
         <HtmlEditor ref={editorRef} />
       </DocumentProvider>
-      <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-        <button onClick={handleSave}>Save Content</button>
-        <button onClick={handleInsertContent}>Insert Content</button>
-        <button onClick={handleSetContent}>Set Sample Content</button>
-        <button onClick={handleGetSelectedContent}>Get Selected Content</button>
-        <button onClick={handleGetCursorPosition}>Get Cursor Position</button>
-        <button onClick={handleChangePageSize}>Change Page Size</button>
-        <button onClick={handleSetCustomMargins}>Set Custom Margins</button>
-      </div>
+      <button onClick={insertIndentedContent}>Insert Indented Content</button>
     </div>
   );
 }
 ```
 
-### Custom Configuration
+### Keyboard Shortcuts
+
+The editor supports comprehensive keyboard shortcuts:
+
+**Formatting:**
+- `Ctrl+B` - Bold
+- `Ctrl+I` - Italic
+- `Ctrl+U` - Underline
+- `Ctrl+A` then formatting - Apply to selection
+
+**Navigation:**
+- `Tab` - Increase indent (at cursor or selection)
+- `Shift+Tab` - Decrease indent (selection only)
+- `Ctrl+A` - Select all
+
+**Zoom:**
+- `Ctrl++` - Zoom in
+- `Ctrl+-` - Zoom out
+- `Ctrl+0` - Reset zoom
+
+### Image Management
 
 ```jsx
-function App() {
-  // Handle page navigation callback
-  const handlePageNavigation = (pageIndex) => {
-    console.log('Navigated to page:', pageIndex);
+import { saveImage, getImage, deleteImage } from '@kanaka-prabhath/html-editor';
+
+function ImageManager() {
+  const handleImageUpload = async (file) => {
+    try {
+      const imageKey = await saveImage(file);
+      const imageDataUrl = await getImage(imageKey);
+      // Use imageDataUrl in your content
+      return imageDataUrl;
+    } catch (error) {
+      console.error('Image upload failed:', error);
+    }
   };
 
-  // Handle page addition callback
-  const handlePageAddition = () => {
-    console.log('New page added');
+  const handleImageDelete = async (imageKey) => {
+    await deleteImage(imageKey);
   };
 
-  // Handle content change callback
-  const handleContentChange = (html) => {
-    console.log('Content changed, length:', html.length);
-  };
-
-  return (
-    <DocumentProvider initialState={{ title: "My Document", pageSize: "A4" }}>
-      <HtmlEditor 
-        showSidebar={true}           // Show document sidebar (default: true)
-        showToolbar={true}           // Show formatting toolbar (default: true)
-        showPageManager={true}       // Show page navigation controls (default: true)
-        onNavigatePage={handlePageNavigation}  // Callback when navigating pages
-        onAddPage={handlePageAddition}         // Callback when adding pages
-        onChange={handleContentChange}         // Callback when content changes
-      />
-    </DocumentProvider>
-  );
+  return <div>{/* Your image management UI */}</div>;
 }
 ```
 
@@ -188,10 +190,9 @@ The main editor component with ref access to content methods.
 - `showPageManager?: boolean` - Show/hide page manager (default: true)
 
 **Ref Methods:**
-- `getHTMLContent(): string` - Returns current HTML content with page breaks
+- `getHTMLContent(): string` - Returns current HTML content
 - `getSelectedHTMLContent(): string` - Returns selected HTML content (supports images and tables)
-- `getPlainText(): string` - Returns plain text content (HTML stripped)
-- `getCursorPosition(): Object|null` - Returns cursor position object with page number, line number, and character offset, or null if no selection
+- `getPlainText(): string` - Returns plain text content
 - `setContent(html: string): void` - Set editor content programmatically
 - `setPageSize(size: 'A4' | 'Letter' | 'Legal'): void` - Set page size programmatically
 - `setPageMargins(margins: PageMarginPreset | CustomMargins): void` - Set page margins programmatically
@@ -201,154 +202,90 @@ The main editor component with ref access to content methods.
 
 Context provider for document state management.
 
-**Props:**
-- `initialState?: Object` - Initial document state configuration
-
-**Initial State Options:**
 ```jsx
-<DocumentProvider initialState={{
-  title: "My Document",           // Document title (default: "Untitled Document")
-  pageSize: "A4",                 // Page size: 'A4', 'Letter', 'Legal' (default: 'A4')
-  pageMargins: "NORMAL",          // Margin preset or custom object (default: 'NORMAL')
-  continuousContent: "<p>Initial content</p>",  // Initial HTML content (default: empty paragraph)
-  activePage: 0,                  // Active page index (default: 0)
-  zoomLevel: 1.0                  // Zoom level (default: 1.0)
-}}>
+<DocumentProvider initialState={{ title: "Document", pageSize: "A4" }}>
   <HtmlEditor />
 </DocumentProvider>
 ```
 
-### Exported Utilities
+### Context Hooks
 
-The library exports various utilities for advanced usage:
+**useDocumentState()** - Access current document state
+- Returns: `{ id, title, createdAt, updatedAt, pages, activePage, pageSize, zoomLevel, continuousContent, pageBoundaries, ... }`
 
-#### Document Context Hooks
-```jsx
-import { useDocumentState, useDocumentActions } from '@kanaka-prabhath/html-editor';
+**useDocumentActions()** - Access document state actions
+- `updateContinuousContent(html: string)` - Update continuous content
+- `setActivePage(index: number)` - Set active page
+- `addPage()` - Add new page
+- `deletePage(index: number)` - Delete page at index
+- `setPageSize(size: string)` - Set page size
+- `setZoomLevel(level: number)` - Set zoom level (50-200)
+- `zoomIn()` - Increase zoom by 5%
+- `zoomOut()` - Decrease zoom by 5%
+- `resetZoom()` - Reset zoom to 100%
 
-// Access document state
-const { pages, activePage, pageSize, pageMargins, continuousContent } = useDocumentState();
+### Formatting Hooks
 
-// Access document actions
-const actions = useDocumentActions();
-actions.updateContinuousContent('<p>New content</p>');
-actions.setActivePage(1);
-```
+**useFormatting()** - Text formatting state and commands
+- Returns: `{ currentFormat, formatText, applyFormatting }`
 
-#### Custom Hooks
-```jsx
-import { useFormatting, useContinuousReflow } from '@kanaka-prabhath/html-editor';
+**useContinuousReflow(pageSize, editorRef, zoomLevel?)** - Automatic content reflow engine
+- Returns: `{ checkAndUpdateBoundaries, triggerAutoReflow, scrollToPage, getCurrentPage, positionCursorAtPage, removePageAndContent }`
 
-// Text formatting hook
-const { currentFormat, formatText } = useFormatting();
+### Image Storage Utilities
 
-// Continuous reflow hook for advanced page management
-const { 
-  checkAndUpdateBoundaries, 
-  getCurrentPage, 
-  scrollToPage,
-  triggerAutoReflow 
-} = useContinuousReflow(pageSize, editorRef);
-```
+- `saveImage(file: File): Promise<string>` - Save image to IndexedDB, returns storage key
+- `getImage(key: string): Promise<string>` - Retrieve image data URL by key
+- `deleteImage(key: string): Promise<void>` - Delete image by key
+- `clearImages(): Promise<void>` - Clear all stored images
+- `getAllImageKeys(): Promise<string[]>` - Get all stored image keys
 
-#### Page Size Utilities
-```jsx
-import { PAGE_SIZES, getPageDimensions, getAvailablePageSizes } from '@kanaka-prabhath/html-editor';
+### Page and Font Utilities
 
-// Get dimensions for A4 page
-const dimensions = getPageDimensions('A4'); // { width: 794, height: 1123 }
+- `PAGE_SIZES` - Object with A4, Letter, Legal dimensions
+- `getPageDimensions(size: string): {width: number, height: number}` - Get page dimensions in pixels
+- `isValidPageSize(size: string): boolean` - Validate page size
+- `getAvailablePageSizes(): string[]` - Get available page sizes
+- `FONT_SIZE_MAP` - Font size mappings
+- `pointsToPixels(points: number): number` - Convert points to pixels
+- `pixelsToPoints(pixels: number): number` - Convert pixels to points
+- `isValidFontSize(size: number): number` - Validate and return valid font size
 
-// Get all available page sizes
-const sizes = getAvailablePageSizes(); // ['A4', 'Letter', 'Legal']
-```
+### Table Manipulation Utilities
 
-#### Font Size Utilities
-```jsx
-import { FONT_SIZE_MAP, COMMON_FONT_SIZES, pointsToPixels } from '@kanaka-prabhath/html-editor';
+- `isResizableTable(element: HTMLElement): boolean` - Check if element is a resizable table
+- `getTableStructure(table: HTMLTableElement)` - Get table structure info
+- `calculateTableResizeDimensions(params): object` - Calculate resize dimensions
+- `applyTableDimensions(table: HTMLTableElement, dimensions, type?)` - Apply dimensions to table
+- `createTableResizeOverlay(table: HTMLTableElement)` - Create resize overlay
+- `updateTableResizeOverlay(overlay: HTMLElement, table: HTMLTableElement)` - Update overlay
 
-// Convert 12pt to pixels
-const pixels = pointsToPixels(12); // 16
+### Image Manipulation Utilities
 
-// Access font size mappings
-console.log(FONT_SIZE_MAP['12pt']); // { pt: 12, px: 16, label: '12' }
-```
+- `isResizableImage(element: HTMLElement): boolean` - Check if element is a resizable image
+- `getImageDimensions(img: HTMLImageElement)` - Get image dimensions
+- `applyImageDimensions(img: HTMLImageElement, dimensions)` - Apply dimensions to image
+- `createResizeOverlay(img: HTMLImageElement)` - Create image resize overlay
+- `updateResizeOverlay(overlay: HTMLElement, img: HTMLImageElement)` - Update overlay
+- `removeResizeOverlay()` - Remove resize overlay
 
-#### Image Resize Utilities
-```jsx
-import { 
-  calculateResizeDimensions, 
-  isResizableImage, 
-  getImageDimensions,
-  applyImageDimensions 
-} from '@kanaka-prabhath/html-editor';
+### Types
 
-// Check if an image element can be resized
-const canResize = isResizableImage(imageElement);
+**PageMarginPreset:**
+- `'NORMAL'` - 1" margins all sides
+- `'NARROW'` - 0.5" margins all sides
+- `'MODERATE'` - 1" top/bottom, 0.75" left/right
+- `'WIDE'` - 1" top/bottom, 2" left/right
+- `'OFFICE_2003'` - 1" top/bottom, 1.25" left/right
 
-// Calculate new dimensions maintaining aspect ratio
-const newDimensions = calculateResizeDimensions(originalWidth, originalHeight, newWidth, newHeight, preserveAspectRatio);
-
-// Apply dimensions to image element
-applyImageDimensions(imageElement, { width: 300, height: 200 });
-```
-
-#### Table Resize Utilities
-```jsx
-import { 
-  calculateTableResizeDimensions, 
-  isResizableTable, 
-  getTableStructure,
-  applyTableDimensions 
-} from '@kanaka-prabhath/html-editor';
-
-// Check if a table element can be resized
-const canResize = isResizableTable(tableElement);
-
-// Get table structure information
-const structure = getTableStructure(tableElement);
-
-// Calculate new table dimensions
-const newDimensions = calculateTableResizeDimensions(currentWidth, currentHeight, deltaX, deltaY);
-
-// Apply dimensions to table
-applyTableDimensions(tableElement, { width: 600, height: 400 });
-```
-
-#### Image Storage Utilities
-```jsx
-import { saveImage, getImage, deleteImage, clearImages, getAllImageKeys } from '@kanaka-prabhath/html-editor';
-
-// Save image to IndexedDB and get storage key
-const imageKey = await saveImage(file);
-
-// Retrieve image data URL by key
-const imageDataUrl = await getImage(imageKey);
-
-// Delete specific image
-await deleteImage(imageKey);
-
-// Clear all stored images
-await clearImages();
-
-// Get all stored image keys
-const keys = await getAllImageKeys();
-```
-
-#### Logger Utility
-```jsx
-import logger from '@kanaka-prabhath/html-editor';
-
-// Log debug information
-logger.debug('Debug message', { data: 'value' });
-
-// Log info messages
-logger.info('Info message');
-
-// Log warnings
-logger.warn('Warning message');
-
-// Log errors
-logger.error('Error message', error);
+**CustomMargins:**
+```typescript
+{
+  top: number,    // Top margin in inches
+  bottom: number, // Bottom margin in inches
+  left: number,   // Left margin in inches
+  right: number   // Right margin in inches
+}
 ```
 
 ## 📖 Documentation
@@ -391,23 +328,17 @@ Or use your own CSS:
 import { useDocumentActions, useDocumentState } from '@kanaka-prabhath/html-editor';
 
 function CustomPageManager() {
-  // Access current document state
   const { pages, activePage } = useDocumentState();
-  
-  // Access document actions for navigation and page management
   const { setActivePage, addPage } = useDocumentActions();
 
   return (
     <div className="custom-pager">
-      {/* Button to add a new page */}
       <button onClick={addPage}>+ Add Page</button>
-      
-      {/* Render page navigation buttons */}
       {pages.map((_, index) => (
-        <button 
+        <button
           key={index}
-          onClick={() => setActivePage(index)}  // Navigate to specific page
-          className={index === activePage ? 'active' : ''}  // Highlight active page
+          onClick={() => setActivePage(index)}
+          className={index === activePage ? 'active' : ''}
         >
           Page {index + 1}
         </button>
@@ -416,7 +347,7 @@ function CustomPageManager() {
   );
 }
 
-// Usage with custom page manager component
+// Usage
 <HtmlEditor pageManagerComponent={<CustomPageManager />} />
 ```
 
@@ -426,12 +357,10 @@ function CustomPageManager() {
 function TemplateLoader() {
   const editorRef = useRef(null);
 
-  // Load a predefined template into the editor
   const loadTemplate = (template) => {
     editorRef.current.setContent(template);
   };
 
-  // Insert signature at current cursor position
   const insertSignature = () => {
     editorRef.current.insertContent('<p><em>-- Document Signature</em></p>');
   };
@@ -441,16 +370,9 @@ function TemplateLoader() {
       <DocumentProvider>
         <HtmlEditor ref={editorRef} />
       </DocumentProvider>
-      
-      {/* Template loading buttons */}
-      <button onClick={() => loadTemplate('<h1>Meeting Notes</h1><p>Agenda:</p><ul><li>Item 1</li></ul>')}>
-        Load Meeting Template
+      <button onClick={() => loadTemplate('<h1>Template</h1><p>Content</p>')}>
+        Load Template
       </button>
-      <button onClick={() => loadTemplate('<h1>Report</h1><p>Executive Summary:</p><p>Details:</p>')}>
-        Load Report Template
-      </button>
-      
-      {/* Insert signature button */}
       <button onClick={insertSignature}>
         Insert Signature
       </button>
@@ -461,22 +383,71 @@ function TemplateLoader() {
 
 ## 🧪 Testing
 
-The library includes comprehensive tests:
+The library includes a comprehensive test suite covering unit tests, integration tests, and end-to-end tests:
+
+### Test Categories
+
+**Unit Tests** (`tests/unit/`):
+- Component exports and library structure
+- Document context contract and state management
+- Hook functionality (useContinuousReflow, useFormatting)
+- Utility functions (table resize, image handling, font utilities)
+- Page size and margin calculations
+- Content normalization and validation
+
+**Integration Tests** (`tests/integration/`):
+- Page size dimensions and boundaries
+- Zoom controls and keyboard shortcuts
+- Cross-component interactions
+
+**End-to-End Tests** (`tests/e2e/`):
+- Core text editing workflows
+- Image upload and manipulation
+- Page content management
+- Table creation and resizing
+- Indentation system (Tab/Shift+Tab)
+- UI specifications and responsive design
+- Keyboard shortcuts and accessibility
+
+### Running Tests
 
 ```bash
-# Run unit tests
+# Run all tests (unit + integration)
 npm test
 
 # Run end-to-end tests
 npm run test:e2e
 
+# Run E2E tests with UI
+npm run test:e2e:ui
+
+# Run E2E tests in debug mode
+npm run test:e2e:debug
+
 # Run tests with coverage
 npm run test:coverage
 ```
 
+### Test Coverage
+
+The test suite covers:
+- ✅ WYSIWYG editing functionality
+- ✅ Automatic page reflow and boundary calculations
+- ✅ Multi-page document management
+- ✅ Rich text formatting (bold, italic, underline, etc.)
+- ✅ Page size and margin controls
+- ✅ Zoom functionality (50%-200%)
+- ✅ Table creation, resizing, and manipulation
+- ✅ Image upload, storage, and resizing
+- ✅ Indentation system with Tab/Shift+Tab
+- ✅ Keyboard shortcuts
+- ✅ Content selection and manipulation
+- ✅ Responsive design and accessibility
+- ✅ Performance and edge cases
+
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](https://github.com/KanakaPrabhath/htmleditor/blob/main/CONTRIBUTING.md) for details.
 
 1. Fork the repository
 2. Create a feature branch
@@ -502,7 +473,7 @@ Have an idea for improvement? [Suggest a feature](https://github.com/KanakaPrabh
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](https://github.com/KanakaPrabhath/htmleditor/blob/main/LICENSE) file for details.
 
 ## 🔗 Links
 
@@ -513,7 +484,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📋 Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes.
+See [CHANGELOG.md](https://github.com/KanakaPrabhath/htmleditor/blob/main/CHANGELOG.md) for a detailed list of changes.
 
 ---
 

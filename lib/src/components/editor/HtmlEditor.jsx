@@ -30,6 +30,7 @@ const NAVIGATION_LOCK_TIMEOUT = 300;
  * 
  * Exposed methods via ref:
  * - getHTMLContent() - Returns the current HTML content as a string
+ * - getSelectedHTMLContent() - Returns the selected HTML content as a string (supports images and tables)
  * - getPlainText() - Returns the plain text content (HTML stripped)
  * - setContent(html) - Sets the editor content programmatically
  * - setPageSize(size) - Sets the page size ('A4', 'Letter', 'Legal')
@@ -212,6 +213,50 @@ const HtmlEditor = forwardRef(({
       }
       // Fallback to state if DOM not available
       return continuousContent;
+    },
+    /**
+     * Get the selected HTML content from the editor
+     * Returns the HTML content of the selected element or the common ancestor of the selection
+     * Supports images and table content
+     * @returns {string} The selected HTML content
+     */
+    getSelectedHTMLContent: () => {
+      if (!editorRef.current) return '';
+
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return '';
+
+      const range = selection.getRangeAt(0);
+      if (!editorRef.current.contains(range.commonAncestorContainer)) return '';
+
+      // If selection is collapsed (just cursor), get the element at cursor
+      if (range.collapsed) {
+        const element = range.commonAncestorContainer;
+        if (element.nodeType === Node.TEXT_NODE) {
+          // If it's a text node, get its parent element
+          return element.parentElement ? element.parentElement.outerHTML : '';
+        } else {
+          // If it's an element, return its HTML
+          return element.outerHTML || '';
+        }
+      }
+
+      // For non-collapsed selections, get the common ancestor element
+      let commonAncestor = range.commonAncestorContainer;
+      if (commonAncestor.nodeType === Node.TEXT_NODE) {
+        commonAncestor = commonAncestor.parentElement;
+      }
+
+      // If the common ancestor is the editor itself, clone the contents
+      if (commonAncestor === editorRef.current) {
+        const clonedContents = range.cloneContents();
+        const tempDiv = document.createElement('div');
+        tempDiv.appendChild(clonedContents);
+        return tempDiv.innerHTML;
+      }
+
+      // Otherwise, return the HTML of the common ancestor
+      return commonAncestor ? commonAncestor.outerHTML : '';
     },
     /**
      * Get the plain text content (HTML stripped)

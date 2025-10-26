@@ -41,6 +41,13 @@ function App() {
     }
   };
 
+  const handlePrintSelectedHTML = () => {
+    if (editorRef.current) {
+      const selectedHtmlContent = editorRef.current.getSelectedHTMLContent();
+      console.log('Selected HTML Content:', selectedHtmlContent);
+    }
+  };
+
   const handleResetDocument = () => {
     if (editorRef.current) {
       editorRef.current.setContent(sampleContent);
@@ -98,6 +105,9 @@ function App() {
          <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '10px' }}>
            <button onClick={handlePrintHTML} style={{ padding: '5px 10px', fontSize: '12px' }}>
              HTML Content to Console
+           </button>
+           <button onClick={handlePrintSelectedHTML} style={{ padding: '5px 10px', fontSize: '12px' }}>
+             Selected HTML to Console
            </button>
            <button onClick={handleResetDocument} style={{ padding: '5px 10px', fontSize: '12px' }}>
              Load Sample Content

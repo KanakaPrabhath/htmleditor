@@ -68,6 +68,27 @@ const EditorToolbar = ({
   canRedo = false
 }) => {
   /**
+   * Render a button with optional active state
+   */
+  const renderButton = (onClick, Icon, title, formatKey = null, disabled = false) => (
+    <button 
+      key={title}
+      onClick={onClick} 
+      className={formatKey && currentFormat[formatKey] ? 'active' : ''} 
+      disabled={disabled}
+      title={title}
+      style={{ opacity: disabled ? 0.5 : 1 }}
+    >
+      <Icon size={16} />
+    </button>
+  );
+
+  /**
+   * Render a separator
+   */
+  const renderSeparator = () => <div className="toolbar-separator" />;
+
+  /**
    * Handle image upload
    */
   const handleImageUpload = async (file) => {
@@ -83,92 +104,81 @@ const EditorToolbar = ({
         return;
       }
 
-      logger.info('Starting image upload', { fileName: file.name, fileSize: file.size });
-      
       const key = await saveImage(file);
-      logger.info('Image saved to IndexedDB', { key });
-      
       const imageUrl = await getImage(key);
-      logger.info('Image retrieved from IndexedDB', { key, hasUrl: !!imageUrl });
       
       if (imageUrl && onInsertImage) {
-        // Insert image with data-key attribute to enable deletion from IndexedDB
         const imageHtml = `<img src="${imageUrl}" data-key="${key}" alt="Inserted image" />`;
-        logger.info('Calling onInsertImage with HTML', { imageHtml: imageHtml.substring(0, 100) });
         onInsertImage(imageHtml);
-        logger.info('Image inserted', { key });
       } else {
-        logger.warn('Image not inserted: missing imageUrl or onInsertImage callback', { 
-          hasUrl: !!imageUrl, 
-          hasCallback: !!onInsertImage 
-        });
+        logger.warn('Failed to insert image: missing URL or callback');
       }
       
-      // Reset the file input to allow uploading the same file again
-      const fileInput = document.getElementById('image-upload');
-      if (fileInput) {
-        fileInput.value = '';
-      }
+      // Reset file input to allow re-uploading the same file
+      document.getElementById('image-upload').value = '';
     } catch (error) {
       logger.error('Error uploading image', error);
     }
   };
 
   /**
-   * Render a formatting button with active state
+   * Handle indent button click
    */
-  const renderFormatButton = (command, formatKey, Icon, title) => (
-    <button 
-      key={command}
-      onClick={() => onFormatText(command)} 
-      className={currentFormat[formatKey] ? 'active' : ''} 
-      title={title}
-    >
-      <Icon size={16} />
-    </button>
-  );
+  const handleIndent = () => {
+    const success = indentSelectedBlocks(false);
+    if (!success) {
+      // If no blocks selected, insert indentation at cursor
+      document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+    }
+  };
 
   /**
-   * Render an action button
+   * Handle outdent button click
    */
-  const renderActionButton = (onClick, Icon, title, disabled = false) => (
-    <button 
-      key={title}
-      onClick={onClick} 
-      disabled={disabled}
-      title={title}
-      style={{ opacity: disabled ? 0.5 : 1 }}
-    >
-      <Icon size={16} />
-    </button>
-  );
+  const handleOutdent = () => {
+    indentSelectedBlocks(true);
+  };
 
   /**
-   * Render a separator
+   * Handle link insertion
    */
-  const renderSeparator = () => <div className="toolbar-separator" />;
+  const handleInsertLink = () => {
+    const url = prompt('Enter URL:');
+    if (url) onFormatText('createLink', url);
+  };
+
+  /**
+   * Handle image button click
+   */
+  const handleImageButtonClick = () => {
+    document.getElementById('image-upload').click();
+  };
 
   return (
     <div className="editor-toolbar">
-      {renderActionButton(() => onFormatText('undo'), Undo, 'Undo', !canUndo)}
-      {renderActionButton(() => onFormatText('redo'), Redo, 'Redo', !canRedo)}
+      {/* Undo/Redo */}
+      {renderButton(() => onFormatText('undo'), Undo, 'Undo', null, !canUndo)}
+      {renderButton(() => onFormatText('redo'), Redo, 'Redo', null, !canRedo)}
       
       {renderSeparator()}
       
-      {renderFormatButton('bold', 'bold', Bold, 'Bold')}
-      {renderFormatButton('italic', 'italic', Italic, 'Italic')}
-      {renderFormatButton('underline', 'underline', Underline, 'Underline')}
-      {renderFormatButton('strikethrough', 'strikethrough', Strikethrough, 'Strikethrough')}
+      {/* Text Formatting */}
+      {renderButton(() => onFormatText('bold'), Bold, 'Bold', 'bold')}
+      {renderButton(() => onFormatText('italic'), Italic, 'Italic', 'italic')}
+      {renderButton(() => onFormatText('underline'), Underline, 'Underline', 'underline')}
+      {renderButton(() => onFormatText('strikethrough'), Strikethrough, 'Strikethrough', 'strikethrough')}
       
       {renderSeparator()}
       
-      {renderFormatButton('justifyLeft', 'alignLeft', AlignLeft, 'Align Left')}
-      {renderFormatButton('justifyCenter', 'alignCenter', AlignCenter, 'Align Center')}
-      {renderFormatButton('justifyRight', 'alignRight', AlignRight, 'Align Right')}
-      {renderFormatButton('justifyFull', 'alignJustify', AlignJustify, 'Justify')}
+      {/* Alignment */}
+      {renderButton(() => onFormatText('justifyLeft'), AlignLeft, 'Align Left', 'alignLeft')}
+      {renderButton(() => onFormatText('justifyCenter'), AlignCenter, 'Align Center', 'alignCenter')}
+      {renderButton(() => onFormatText('justifyRight'), AlignRight, 'Align Right', 'alignRight')}
+      {renderButton(() => onFormatText('justifyFull'), AlignJustify, 'Justify', 'alignJustify')}
       
       {renderSeparator()}
       
+      {/* Font Controls */}
       <select 
         onChange={(e) => onFormatText('fontName', e.target.value)}
         value={currentFormat.fontFamily || 'Segoe UI'}
@@ -213,27 +223,21 @@ const EditorToolbar = ({
       
       {renderSeparator()}
       
-      {renderActionButton(() => onFormatText('insertUnorderedList'), List, 'Bullet List')}
-      {renderActionButton(() => onFormatText('insertOrderedList'), ListOrdered, 'Numbered List')}
+      {/* Lists */}
+      {renderButton(() => onFormatText('insertUnorderedList'), List, 'Bullet List')}
+      {renderButton(() => onFormatText('insertOrderedList'), ListOrdered, 'Numbered List')}
       
       {renderSeparator()}
       
+      {/* Indentation */}
       <button 
-        onClick={() => {
-          const success = indentSelectedBlocks(false);
-          if (!success) {
-            // If no blocks selected, insert indentation at cursor
-            document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
-          }
-        }} 
+        onClick={handleIndent} 
         title="Increase Indent (Tab)"
       >
         <Indent size={16} />
       </button>
       <button 
-        onClick={() => {
-          indentSelectedBlocks(true);
-        }} 
+        onClick={handleOutdent} 
         title="Decrease Indent (Shift+Tab)"
       >
         <Outdent size={16} />
@@ -241,21 +245,20 @@ const EditorToolbar = ({
       
       {renderSeparator()}
       
+      {/* Links and Tables */}
       <button 
-        onClick={() => {
-          const url = prompt('Enter URL:');
-          if (url) onFormatText('createLink', url);
-        }} 
+        onClick={handleInsertLink} 
         title="Insert Link"
       >
         <Link size={16} />
       </button>
-      {renderActionButton(() => onFormatText('insertHTML', DEFAULT_TABLE_HTML), Table, 'Insert Table')}
+      {renderButton(() => onFormatText('insertHTML', DEFAULT_TABLE_HTML), Table, 'Insert Table')}
       
-      {onAddPageBreak && renderActionButton(onAddPageBreak, FileText, 'Insert Page Break')}
+      {onAddPageBreak && renderButton(onAddPageBreak, FileText, 'Insert Page Break')}
       
       {renderSeparator()}
       
+      {/* Images */}
       <input 
         type="file" 
         accept="image/*" 
@@ -264,12 +267,12 @@ const EditorToolbar = ({
         id="image-upload"
       />
       <button 
-        onClick={() => document.getElementById('image-upload').click()} 
+        onClick={handleImageButtonClick} 
         title="Insert Image"
       >
         <ImageIcon size={16} />
       </button>
-      </div>
+    </div>
   );
 };
 

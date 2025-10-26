@@ -18,7 +18,7 @@ import {
   Image as ImageIcon,
   Indent,
   Outdent
-} from 'lucide-react';
+} from './icons.jsx';
 import { deleteImage, saveImage, getImage } from '../../lib/storage/index-db';
 import { logger } from '../../lib/editor/utils/logger';
 import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';

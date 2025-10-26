@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useDocumentActions } from '../../context/DocumentContext';
+import { clearClasses, clearTextSelection, suppressEvent, isWithin } from '../../lib/editor/dom-utils';
 
 /**
  * TableCellSelection - Component for handling table cell selection with automatic row/column expansion
@@ -10,38 +10,66 @@ import { useDocumentActions } from '../../context/DocumentContext';
  * - Auto-select entire column when 2 cells selected vertically
  * - Visual feedback for selections
  */
+
+// Selection class constants
+const SELECTION_CLASSES = '.table-cell-selected, .table-row-selected, .table-col-selected';
+
+/**
+ * Clear visual selection from all cells
+ * Extracted as a helper to avoid duplicate code
+ */
+const clearVisualSelection = () => {
+  clearClasses(SELECTION_CLASSES, ['table-cell-selected', 'table-row-selected', 'table-col-selected']);
+};
+
 const TableCellSelection = ({
   editorRef,
   onCellSelectionChange
 }) => {
-  const [selectedCells, setSelectedCells] = useState(new Set());
-  const [selectionMode, setSelectionMode] = useState(null); // 'cells', 'row', 'column'
-  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
-  const [selectedColIndex, setSelectedColIndex] = useState(null);
+  // Selection state - consolidated into a ref since this is a headless component (renders null)
+  // and these values don't affect rendering, only internal logic
+  const selectionStateRef = useRef({
+    selectedCells: new Set(),
+    selectionMode: null,
+    selectedRowIndex: null,
+    selectedColIndex: null,
+    currentTable: null,
+    isSelecting: false,
+    hasDragged: false,
+    startCell: null
+  });
+
   const [isSelecting, setIsSelecting] = useState(false);
   const [hasDragged, setHasDragged] = useState(false);
   const [startCell, setStartCell] = useState(null);
   const [currentTable, setCurrentTable] = useState(null);
 
-  const actions = useDocumentActions();
-  const selectionRef = useRef(null);
   const lastSelectionRef = useRef(null); // Track last selection to avoid unnecessary callbacks
+
+  /**
+   * Reset all selection state
+   */
+  const resetSelectionState = useCallback(() => {
+    selectionStateRef.current = {
+      selectedCells: new Set(),
+      selectionMode: null,
+      selectedRowIndex: null,
+      selectedColIndex: null,
+      currentTable: null,
+      isSelecting: false,
+      hasDragged: false,
+      startCell: null
+    };
+    setIsSelecting(false);
+    setHasDragged(false);
+    setStartCell(null);
+    setCurrentTable(null);
+  }, []);
 
   // Clear all selections
   const clearSelection = useCallback(() => {
-    setSelectedCells(new Set());
-    setSelectionMode(null);
-    setSelectedRowIndex(null);
-    setSelectedColIndex(null);
-    setStartCell(null);
-    setCurrentTable(null);
-    setIsSelecting(false);
-    setHasDragged(false);
-
-    // Remove visual selection classes
-    document.querySelectorAll('.table-cell-selected, .table-row-selected, .table-col-selected').forEach(cell => {
-      cell.classList.remove('table-cell-selected', 'table-row-selected', 'table-col-selected');
-    });
+    resetSelectionState();
+    clearVisualSelection();
 
     // Only call callback if selection actually changed
     if (lastSelectionRef.current !== null) {
@@ -50,7 +78,7 @@ const TableCellSelection = ({
         onCellSelectionChange(null);
       }
     }
-  }, [onCellSelectionChange]);
+  }, [onCellSelectionChange, resetSelectionState]);
 
   // Get cell coordinates within table
   const getCellCoordinates = useCallback((cell) => {
@@ -103,12 +131,11 @@ const TableCellSelection = ({
     return { mode: null, rowIndex: null, colIndex: null };
   }, [getCellCoordinates]);
 
-  // Apply visual selection feedback
+  /**
+   * Apply visual selection based on selection mode
+   */
   const applyVisualSelection = useCallback((mode, rowIndex, colIndex, cells, table) => {
-    // Clear previous selections
-    document.querySelectorAll('.table-cell-selected, .table-row-selected, .table-col-selected').forEach(cell => {
-      cell.classList.remove('table-cell-selected', 'table-row-selected', 'table-col-selected');
-    });
+    clearVisualSelection();
 
     if (!table || !mode) return;
 
@@ -136,19 +163,21 @@ const TableCellSelection = ({
     }
 
     // Clear any text selection when applying visual selection
-    if (window.getSelection) {
-      window.getSelection().removeAllRanges();
-    }
+    clearTextSelection();
   }, []);
 
   // Update selection based on current state
   const updateSelection = useCallback((newCells, table) => {
     const expansion = checkSelectionExpansion(newCells);
 
-    setSelectedCells(newCells);
-    setSelectionMode(expansion.mode);
-    setSelectedRowIndex(expansion.rowIndex);
-    setSelectedColIndex(expansion.colIndex);
+    // Update ref cache
+    selectionStateRef.current.selectedCells = newCells;
+    selectionStateRef.current.selectionMode = expansion.mode;
+    selectionStateRef.current.selectedRowIndex = expansion.rowIndex;
+    selectionStateRef.current.selectedColIndex = expansion.colIndex;
+    selectionStateRef.current.currentTable = table;
+
+    // Only update component state if needed for event listeners
     setCurrentTable(table);
 
     applyVisualSelection(expansion.mode, expansion.rowIndex, expansion.colIndex, newCells, table);
@@ -176,9 +205,6 @@ const TableCellSelection = ({
     const cell = event.target.closest('td, th');
     if (!cell) return;
 
-    // Don't prevent default immediately - let single clicks work for editing
-    // Only prevent default if we detect dragging
-
     const coords = getCellCoordinates(cell);
     if (!coords) return;
 
@@ -186,8 +212,6 @@ const TableCellSelection = ({
     setStartCell(cell);
     setCurrentTable(coords.table);
     setHasDragged(false);
-
-    // Don't apply selection immediately - wait to see if user drags
   }, [getCellCoordinates]);
 
   // Handle mouse enter on table cell (for drag selection)
@@ -195,13 +219,13 @@ const TableCellSelection = ({
     if (!isSelecting || !startCell) return;
 
     const cell = event.target.closest('td, th');
-    if (!cell || !currentTable || !currentTable.contains(cell)) return;
+    if (!cell || !currentTable || !isWithin(currentTable, cell)) return;
 
     // Mark that we've started dragging
     setHasDragged(true);
 
     // Prevent default to avoid text selection during drag
-    event.preventDefault();
+    suppressEvent(event);
 
     const startCoords = getCellCoordinates(startCell);
     const currentCoords = getCellCoordinates(cell);
@@ -229,7 +253,7 @@ const TableCellSelection = ({
     }
 
     updateSelection(newCells, currentTable);
-  }, [isSelecting, getCellCoordinates]);
+  }, [isSelecting, startCell, currentTable, getCellCoordinates, updateSelection]);
 
   // Handle mouse up
   const handleMouseUp = useCallback(() => {
@@ -249,7 +273,7 @@ const TableCellSelection = ({
     const table = event.target.closest('table');
 
     // If clicking on a cell in the same table, don't clear
-    if (cell && currentTable && currentTable.contains(cell)) return;
+    if (cell && currentTable && isWithin(currentTable, cell)) return;
 
     // If clicking on a different table, clear selection
     if (table && table !== currentTable) {
@@ -318,7 +342,7 @@ const TableCellSelection = ({
     });
 
     return () => observer.disconnect();
-  }, [editorRef, clearSelection]);
+  }, [editorRef, clearSelection, currentTable]);
 
   // This component doesn't render anything visible - it just manages cell selection
   return null;

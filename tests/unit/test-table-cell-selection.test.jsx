@@ -18,7 +18,9 @@ describe('TableCellSelection Component', () => {
 
   afterEach(() => {
     cleanup();
-    document.body.removeChild(container);
+    if (container && document.body.contains(container)) {
+      document.body.removeChild(container);
+    }
   });
 
   it('should render without crashing', () => {

@@ -18,6 +18,7 @@ A React-based WYSIWYG HTML editor with automatic page reflow, rich text formatti
 - **Page Size Support**: A4, Letter, and Legal page formats with programmatic configuration
 - **Page Margin Control**: Customizable page margins with preset and custom options
 - **Advanced Content Selection**: Retrieve selected HTML content for advanced editing workflows
+- **Cursor Position Tracking**: Get current cursor position with page, line, and character information
 - **Customizable UI**: Show/hide sidebar, toolbar, and page manager components
 - **Performance Optimized**: Efficient reflow algorithms and debounced operations
 - **TypeScript Ready**: Full type definitions included
@@ -66,6 +67,7 @@ import React, { useRef } from 'react';
 function App() {
   const editorRef = useRef(null);
 
+  // Get the current HTML content from the editor
   const handleSave = () => {
     const htmlContent = editorRef.current.getHTMLContent();
     const plainText = editorRef.current.getPlainText();
@@ -73,23 +75,33 @@ function App() {
     console.log('Text:', plainText);
   };
 
+  // Insert content at cursor position without replacing existing content
   const handleInsertContent = () => {
-    // Insert content at cursor position without replacing existing content
     editorRef.current.insertContent('<p><strong>New content inserted!</strong></p>');
   };
 
+  // Set editor content programmatically
   const handleSetContent = () => {
     const sampleContent = '<h1>Sample Document</h1><p>This is sample content.</p>';
     editorRef.current.setContent(sampleContent);
   };
 
+  // Get selected HTML content (supports images and tables)
   const handleGetSelectedContent = () => {
     const selectedHtml = editorRef.current.getSelectedHTMLContent();
     console.log('Selected HTML:', selectedHtml);
   };
 
+  // Get current cursor position in the editor
+  const handleGetCursorPosition = () => {
+    const cursorPos = editorRef.current.getCursorPosition();
+    if (cursorPos) {
+      console.log('Cursor at page:', cursorPos.pageNumber, 'line:', cursorPos.lineNumber);
+    }
+  };
+
+  // Cycle through available page sizes
   const handleChangePageSize = () => {
-    // Cycle through available page sizes
     const sizes = ['A4', 'Letter', 'Legal'];
     const currentSize = 'A4'; // In a real app, you'd track this in state
     const nextSize = sizes[(sizes.indexOf(currentSize) + 1) % sizes.length];
@@ -97,8 +109,8 @@ function App() {
     console.log('Page size changed to:', nextSize);
   };
 
+  // Set custom margins (in inches)
   const handleSetCustomMargins = () => {
-    // Set custom margins (in inches)
     const customMargins = { top: 0.6, bottom: 0.6, left: 0.6, right: 0.6 };
     editorRef.current.setPageMargins(customMargins);
     console.log('Page margins set to:', customMargins);
@@ -109,11 +121,12 @@ function App() {
       <DocumentProvider>
         <HtmlEditor ref={editorRef} />
       </DocumentProvider>
-      <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+      <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
         <button onClick={handleSave}>Save Content</button>
         <button onClick={handleInsertContent}>Insert Content</button>
         <button onClick={handleSetContent}>Set Sample Content</button>
         <button onClick={handleGetSelectedContent}>Get Selected Content</button>
+        <button onClick={handleGetCursorPosition}>Get Cursor Position</button>
         <button onClick={handleChangePageSize}>Change Page Size</button>
         <button onClick={handleSetCustomMargins}>Set Custom Margins</button>
       </div>
@@ -126,15 +139,30 @@ function App() {
 
 ```jsx
 function App() {
+  // Handle page navigation callback
+  const handlePageNavigation = (pageIndex) => {
+    console.log('Navigated to page:', pageIndex);
+  };
+
+  // Handle page addition callback
+  const handlePageAddition = () => {
+    console.log('New page added');
+  };
+
+  // Handle content change callback
+  const handleContentChange = (html) => {
+    console.log('Content changed, length:', html.length);
+  };
+
   return (
     <DocumentProvider initialState={{ title: "My Document", pageSize: "A4" }}>
       <HtmlEditor 
-        showSidebar={true}
-        showToolbar={true}
-        showPageManager={true}
-        onNavigatePage={(pageIndex) => console.log('Page:', pageIndex)}
-        onAddPage={() => console.log('Page added')}
-        onChange={(html) => console.log('Content changed')}
+        showSidebar={true}           // Show document sidebar (default: true)
+        showToolbar={true}           // Show formatting toolbar (default: true)
+        showPageManager={true}       // Show page navigation controls (default: true)
+        onNavigatePage={handlePageNavigation}  // Callback when navigating pages
+        onAddPage={handlePageAddition}         // Callback when adding pages
+        onChange={handleContentChange}         // Callback when content changes
       />
     </DocumentProvider>
   );
@@ -160,9 +188,10 @@ The main editor component with ref access to content methods.
 - `showPageManager?: boolean` - Show/hide page manager (default: true)
 
 **Ref Methods:**
-- `getHTMLContent(): string` - Returns current HTML content
+- `getHTMLContent(): string` - Returns current HTML content with page breaks
 - `getSelectedHTMLContent(): string` - Returns selected HTML content (supports images and tables)
-- `getPlainText(): string` - Returns plain text content
+- `getPlainText(): string` - Returns plain text content (HTML stripped)
+- `getCursorPosition(): Object|null` - Returns cursor position object with page number, line number, and character offset, or null if no selection
 - `setContent(html: string): void` - Set editor content programmatically
 - `setPageSize(size: 'A4' | 'Letter' | 'Legal'): void` - Set page size programmatically
 - `setPageMargins(margins: PageMarginPreset | CustomMargins): void` - Set page margins programmatically
@@ -172,29 +201,154 @@ The main editor component with ref access to content methods.
 
 Context provider for document state management.
 
+**Props:**
+- `initialState?: Object` - Initial document state configuration
+
+**Initial State Options:**
 ```jsx
-<DocumentProvider initialState={{ title: "Document", pageSize: "A4" }}>
+<DocumentProvider initialState={{
+  title: "My Document",           // Document title (default: "Untitled Document")
+  pageSize: "A4",                 // Page size: 'A4', 'Letter', 'Legal' (default: 'A4')
+  pageMargins: "NORMAL",          // Margin preset or custom object (default: 'NORMAL')
+  continuousContent: "<p>Initial content</p>",  // Initial HTML content (default: empty paragraph)
+  activePage: 0,                  // Active page index (default: 0)
+  zoomLevel: 1.0                  // Zoom level (default: 1.0)
+}}>
   <HtmlEditor />
 </DocumentProvider>
 ```
 
-### Types
+### Exported Utilities
 
-**PageMarginPreset:**
-- `'NORMAL'` - 1" margins all sides
-- `'NARROW'` - 0.5" margins all sides  
-- `'MODERATE'` - 1" top/bottom, 0.75" left/right
-- `'WIDE'` - 1" top/bottom, 2" left/right
-- `'OFFICE_2003'` - 1" top/bottom, 1.25" left/right
+The library exports various utilities for advanced usage:
 
-**CustomMargins:**
-```typescript
-{
-  top: number,    // Top margin in inches
-  bottom: number, // Bottom margin in inches  
-  left: number,   // Left margin in inches
-  right: number   // Right margin in inches
-}
+#### Document Context Hooks
+```jsx
+import { useDocumentState, useDocumentActions } from '@kanaka-prabhath/html-editor';
+
+// Access document state
+const { pages, activePage, pageSize, pageMargins, continuousContent } = useDocumentState();
+
+// Access document actions
+const actions = useDocumentActions();
+actions.updateContinuousContent('<p>New content</p>');
+actions.setActivePage(1);
+```
+
+#### Custom Hooks
+```jsx
+import { useFormatting, useContinuousReflow } from '@kanaka-prabhath/html-editor';
+
+// Text formatting hook
+const { currentFormat, formatText } = useFormatting();
+
+// Continuous reflow hook for advanced page management
+const { 
+  checkAndUpdateBoundaries, 
+  getCurrentPage, 
+  scrollToPage,
+  triggerAutoReflow 
+} = useContinuousReflow(pageSize, editorRef);
+```
+
+#### Page Size Utilities
+```jsx
+import { PAGE_SIZES, getPageDimensions, getAvailablePageSizes } from '@kanaka-prabhath/html-editor';
+
+// Get dimensions for A4 page
+const dimensions = getPageDimensions('A4'); // { width: 794, height: 1123 }
+
+// Get all available page sizes
+const sizes = getAvailablePageSizes(); // ['A4', 'Letter', 'Legal']
+```
+
+#### Font Size Utilities
+```jsx
+import { FONT_SIZE_MAP, COMMON_FONT_SIZES, pointsToPixels } from '@kanaka-prabhath/html-editor';
+
+// Convert 12pt to pixels
+const pixels = pointsToPixels(12); // 16
+
+// Access font size mappings
+console.log(FONT_SIZE_MAP['12pt']); // { pt: 12, px: 16, label: '12' }
+```
+
+#### Image Resize Utilities
+```jsx
+import { 
+  calculateResizeDimensions, 
+  isResizableImage, 
+  getImageDimensions,
+  applyImageDimensions 
+} from '@kanaka-prabhath/html-editor';
+
+// Check if an image element can be resized
+const canResize = isResizableImage(imageElement);
+
+// Calculate new dimensions maintaining aspect ratio
+const newDimensions = calculateResizeDimensions(originalWidth, originalHeight, newWidth, newHeight, preserveAspectRatio);
+
+// Apply dimensions to image element
+applyImageDimensions(imageElement, { width: 300, height: 200 });
+```
+
+#### Table Resize Utilities
+```jsx
+import { 
+  calculateTableResizeDimensions, 
+  isResizableTable, 
+  getTableStructure,
+  applyTableDimensions 
+} from '@kanaka-prabhath/html-editor';
+
+// Check if a table element can be resized
+const canResize = isResizableTable(tableElement);
+
+// Get table structure information
+const structure = getTableStructure(tableElement);
+
+// Calculate new table dimensions
+const newDimensions = calculateTableResizeDimensions(currentWidth, currentHeight, deltaX, deltaY);
+
+// Apply dimensions to table
+applyTableDimensions(tableElement, { width: 600, height: 400 });
+```
+
+#### Image Storage Utilities
+```jsx
+import { saveImage, getImage, deleteImage, clearImages, getAllImageKeys } from '@kanaka-prabhath/html-editor';
+
+// Save image to IndexedDB and get storage key
+const imageKey = await saveImage(file);
+
+// Retrieve image data URL by key
+const imageDataUrl = await getImage(imageKey);
+
+// Delete specific image
+await deleteImage(imageKey);
+
+// Clear all stored images
+await clearImages();
+
+// Get all stored image keys
+const keys = await getAllImageKeys();
+```
+
+#### Logger Utility
+```jsx
+import logger from '@kanaka-prabhath/html-editor';
+
+// Log debug information
+logger.debug('Debug message', { data: 'value' });
+
+// Log info messages
+logger.info('Info message');
+
+// Log warnings
+logger.warn('Warning message');
+
+// Log errors
+logger.error('Error message', error);
 ```
 
 ## 📖 Documentation
@@ -237,17 +391,23 @@ Or use your own CSS:
 import { useDocumentActions, useDocumentState } from '@kanaka-prabhath/html-editor';
 
 function CustomPageManager() {
+  // Access current document state
   const { pages, activePage } = useDocumentState();
+  
+  // Access document actions for navigation and page management
   const { setActivePage, addPage } = useDocumentActions();
 
   return (
     <div className="custom-pager">
+      {/* Button to add a new page */}
       <button onClick={addPage}>+ Add Page</button>
+      
+      {/* Render page navigation buttons */}
       {pages.map((_, index) => (
         <button 
           key={index}
-          onClick={() => setActivePage(index)}
-          className={index === activePage ? 'active' : ''}
+          onClick={() => setActivePage(index)}  // Navigate to specific page
+          className={index === activePage ? 'active' : ''}  // Highlight active page
         >
           Page {index + 1}
         </button>
@@ -256,7 +416,7 @@ function CustomPageManager() {
   );
 }
 
-// Usage
+// Usage with custom page manager component
 <HtmlEditor pageManagerComponent={<CustomPageManager />} />
 ```
 
@@ -266,10 +426,12 @@ function CustomPageManager() {
 function TemplateLoader() {
   const editorRef = useRef(null);
 
+  // Load a predefined template into the editor
   const loadTemplate = (template) => {
     editorRef.current.setContent(template);
   };
 
+  // Insert signature at current cursor position
   const insertSignature = () => {
     editorRef.current.insertContent('<p><em>-- Document Signature</em></p>');
   };
@@ -279,9 +441,16 @@ function TemplateLoader() {
       <DocumentProvider>
         <HtmlEditor ref={editorRef} />
       </DocumentProvider>
-      <button onClick={() => loadTemplate('<h1>Template</h1><p>Content</p>')}>
-        Load Template
+      
+      {/* Template loading buttons */}
+      <button onClick={() => loadTemplate('<h1>Meeting Notes</h1><p>Agenda:</p><ul><li>Item 1</li></ul>')}>
+        Load Meeting Template
       </button>
+      <button onClick={() => loadTemplate('<h1>Report</h1><p>Executive Summary:</p><p>Details:</p>')}>
+        Load Report Template
+      </button>
+      
+      {/* Insert signature button */}
       <button onClick={insertSignature}>
         Insert Signature
       </button>

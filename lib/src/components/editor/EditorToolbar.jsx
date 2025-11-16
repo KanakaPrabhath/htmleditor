@@ -89,7 +89,7 @@ const EditorToolbar = ({
   const renderSeparator = () => <div className="toolbar-separator" />;
 
   /**
-   * Handle image upload
+   * Handle image upload with async processing to prevent UI blocking
    */
   const handleImageUpload = async (file) => {
     try {
@@ -99,12 +99,15 @@ const EditorToolbar = ({
         return;
       }
 
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Image exceeds maximum size of 5MB');
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Image exceeds maximum size of 10MB');
         return;
       }
 
+      // Save image and get key (non-blocking, uses Blob storage)
       const key = await saveImage(file);
+      
+      // Get blob URL immediately (instant, no conversion needed)
       const imageUrl = await getImage(key);
       
       if (imageUrl && onInsertImage) {
@@ -118,6 +121,7 @@ const EditorToolbar = ({
       document.getElementById('image-upload').value = '';
     } catch (error) {
       logger.error('Error uploading image', error);
+      alert(`Failed to upload image: ${error.message}`);
     }
   };
 

@@ -479,7 +479,13 @@ const HtmlEditor = forwardRef(({
 
   const handleInsertImage = useCallback((imageHtml) => {
     insertHtmlWithCursorRestore(imageHtml);
-  }, [insertHtmlWithCursorRestore]);
+    
+    // Defer reflow after image insertion to prevent blocking
+    // Increased delay allows image to render before reflow calculation
+    setTimeout(() => {
+      triggerAutoReflow(800); // Longer delay for image rendering
+    }, 100);
+  }, [insertHtmlWithCursorRestore, triggerAutoReflow]);
 
   const handleRemovePageBreak = useCallback((pageBreakElement) => {
     if (!pageBreakElement) return;

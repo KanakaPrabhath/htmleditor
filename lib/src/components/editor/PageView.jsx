@@ -199,6 +199,44 @@ const PageView = ({
       return false;
     }
 
+    // Handle Enter key in headings - create a new paragraph after the heading
+    if (event.key === 'Enter' && !event.shiftKey) {
+      // Find the heading element that contains the cursor
+      let headingElement = startContainer;
+      if (headingElement.nodeType === Node.TEXT_NODE) {
+        headingElement = headingElement.parentElement;
+      }
+      
+      // Check if we're in a heading
+      while (headingElement && headingElement !== editorRef.current) {
+        if (/^H[1-6]$/.test(headingElement.tagName)) {
+          event.preventDefault();
+          
+          // Create a new paragraph after the heading
+          const newParagraph = document.createElement('p');
+          newParagraph.innerHTML = '<br>';
+          
+          // Insert the new paragraph after the heading
+          if (headingElement.nextSibling) {
+            headingElement.parentNode.insertBefore(newParagraph, headingElement.nextSibling);
+          } else {
+            headingElement.parentNode.appendChild(newParagraph);
+          }
+          
+          // Move cursor to the new paragraph
+          setCursorAtElement(newParagraph, true);
+          
+          // Trigger content update
+          if (onContentChange) {
+            onContentChange();
+          }
+          
+          return false;
+        }
+        headingElement = headingElement.parentElement;
+      }
+    }
+
     // Handle Tab key for indentation (multi-line or single line)
     if (handleTabIndentation(event)) {
       // Update content after indentation
@@ -217,7 +255,7 @@ const PageView = ({
     if (onKeyDown) {
       onKeyDown(event);
     }
-  }, [onKeyDown, onContentChange]);
+  }, [onKeyDown, onContentChange, editorRef]);
 
   // Handle click events to prevent cursor placement in padding areas
   const handleClick = useCallback((event) => {

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to Semantic Versioning (https://semver.org/spec/v2.0.0.html).
 
+## [1.1.12] - 2025-11-16
+- **Image Optimization**: Implemented comprehensive image optimization with automatic resizing, format conversion, and quality adjustments for better performance
+- **IndexedDB Migration**: Added migration helper for IndexedDB storage to handle schema updates and data integrity
+- **Blob URL Storage**: Enhanced image storage using blob URLs for improved memory management and performance
+- **Image Performance Fixes**: Optimized image handling, loading, and rendering to reduce memory usage and improve responsiveness
+- **Component Updates**: Updated EditorToolbar, HtmlEditor, ImageTooltipMenu, and PageView components for better image integration
+- **Test Coverage**: Added unit tests for blob URL storage and image optimizer functionality
+
 ## [1.1.9] - 2025-10-26
 - **New API Methods**: Added `getSelectedHTMLContent()` method to retrieve selected HTML content from the editor
 - **Page Configuration API**: Added `setPageSize()` and `setPageMargins()` methods for programmatic page configuration

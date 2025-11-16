@@ -20,6 +20,7 @@ import {
   Outdent
 } from './icons.jsx';
 import { deleteImage, saveImage, getImage } from '../../lib/storage/index-db';
+import { optimizeImage, getOptimizationMessage } from '../../lib/storage/image-optimizer';
 import { logger } from '../../lib/editor/utils/logger';
 import { COMMON_FONT_SIZES, DEFAULT_FONT_SIZE } from '../../lib/editor/font-sizes';
 import { indentSelectedBlocks } from '../../lib/editor/indentation-utils';
@@ -89,7 +90,8 @@ const EditorToolbar = ({
   const renderSeparator = () => <div className="toolbar-separator" />;
 
   /**
-   * Handle image upload with async processing to prevent UI blocking
+   * Handle image upload with automatic optimization
+   * Automatically resizes images to max 1200px width and compresses to 2MB
    */
   const handleImageUpload = async (file) => {
     try {
@@ -99,19 +101,39 @@ const EditorToolbar = ({
         return;
       }
 
-      if (file.size > 10 * 1024 * 1024) {
-        alert('Image exceeds maximum size of 10MB');
+      // Show processing indicator for large files
+      const isLargeFile = file.size > 1 * 1024 * 1024; // > 1MB
+      if (isLargeFile) {
+        logger.info('Optimizing large image...');
+      }
+
+      // Optimize image (resize to 1200px max, compress to 2MB max)
+      const optimizationResult = await optimizeImage(file);
+      const optimizedFile = optimizationResult.file;
+
+      // Log optimization results
+      if (optimizationResult.wasOptimized) {
+        const message = getOptimizationMessage(optimizationResult);
+        logger.info(message);
+        console.log('Image optimization:', {
+          original: `${optimizationResult.originalWidth}×${optimizationResult.originalHeight} (${(optimizationResult.originalSize / 1024 / 1024).toFixed(2)}MB)`,
+          optimized: `${optimizationResult.width}×${optimizationResult.height} (${(optimizationResult.optimizedSize / 1024 / 1024).toFixed(2)}MB)`
+        });
+      }
+
+      // Verify optimized file meets constraints
+      if (optimizedFile.size > 2 * 1024 * 1024) {
+        alert('Unable to compress image to under 2MB. Please use a smaller or simpler image.');
+        logger.warn('Image still exceeds 2MB after optimization');
         return;
       }
 
-      // Save image and get key (non-blocking, uses Blob storage)
-      const key = await saveImage(file);
-      
-      // Get blob URL immediately (instant, no conversion needed)
+      // Save optimized image and get blob URL (instant, no conversion needed)
+      const key = await saveImage(optimizedFile);
       const imageUrl = await getImage(key);
       
       if (imageUrl && onInsertImage) {
-        const imageHtml = `<img src="${imageUrl}" data-key="${key}" alt="Inserted image" />`;
+        const imageHtml = `<img src="${imageUrl}" data-key="${key}" alt="Inserted image" style="max-width: 100%;" />`;
         onInsertImage(imageHtml);
       } else {
         logger.warn('Failed to insert image: missing URL or callback');

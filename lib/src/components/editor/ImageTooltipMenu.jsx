@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { AlignLeft, AlignCenter, AlignRight, Trash2, Scaling, ImageUpscale } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, Trash2, Scaling, ImageUpscale, Download } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
 import { updateResizeOverlay } from '../../lib/editor/image-resize-utils';
@@ -246,6 +246,41 @@ const ImageTooltipMenu = ({
     }
   };
 
+  const handleDownload = () => {
+    if (!imageElement) return;
+
+    // Get the full quality image source
+    const imageSrc = imageElement.src;
+    
+    // Extract filename from src or use a default name
+    let filename = 'image.png';
+    try {
+      // Try to get filename from URL or blob URL
+      if (imageSrc.startsWith('blob:')) {
+        filename = 'image.png';
+      } else {
+        const url = new URL(imageSrc);
+        const pathParts = url.pathname.split('/');
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart && lastPart.includes('.')) {
+          filename = lastPart;
+        }
+      }
+    } catch (e) {
+      // If URL parsing fails, use default
+      filename = 'image.png';
+    }
+
+    // Create a temporary anchor element to trigger download
+    const link = document.createElement('a');
+    link.href = imageSrc;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (!imageElement) return null;
 
   if (typeof document === 'undefined') {
@@ -286,6 +321,16 @@ const ImageTooltipMenu = ({
         title={`Toggle aspect ratio preservation (currently ${preserveAspectRatio ? 'ON' : 'OFF'})`}
       >
         {preserveAspectRatio ? <Scaling size={14} /> : <ImageUpscale size={14} />}
+      </button>
+
+      {/* Download button */}
+      <button
+        className="tooltip-button download-button"
+        onClick={handleDownload}
+        title="Download Image"
+        style={buttonBaseStyle}
+      >
+        <Download size={14} />
       </button>
 
       {/* Alignment buttons */}

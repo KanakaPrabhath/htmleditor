@@ -33,6 +33,7 @@ A React-based WYSIWYG HTML editor with automatic page reflow, rich text formatti
 - **Image Storage**: IndexedDB-based image storage for offline functionality
 - **Undo/Redo Support**: Browser-native undo/redo functionality
 - **Content Export**: HTML and plain text content extraction methods
+- **Async Content Methods**: `getHTMLContent()`, `setContent()`, and `insertContent()` are async for automatic image conversion
 
 ## 📦 Installation
 
@@ -171,6 +172,60 @@ function ImageManager() {
 }
 ```
 
+**Async Content Methods:**
+
+The `getHTMLContent()`, `setContent()`, and `insertContent()` methods are now asynchronous to handle automatic image conversion between blob URLs and base64 data URLs. This ensures optimal performance by storing images as blob URLs during editing while providing base64-encoded images for export.
+
+**Key Benefits:**
+- **Automatic Conversion**: Images are automatically converted between formats
+- **Performance Optimized**: Blob URLs for fast editing, base64 for export
+- **IndexedDB Storage**: Images stored in IndexedDB for persistence
+- **Error Handling**: Graceful handling of conversion failures
+
+**Usage Examples:**
+
+```jsx
+// Export content with base64 images
+const exportContent = async () => {
+  const htmlWithBase64 = await editorRef.current.getHTMLContent();
+  // htmlWithBase64 contains base64-encoded images ready for export
+  return htmlWithBase64;
+};
+
+// Import content with base64 images
+const importContent = async (htmlWithBase64) => {
+  await editorRef.current.setContent(htmlWithBase64);
+  // Images are automatically converted to blob URLs and stored in IndexedDB
+};
+
+// Insert content at cursor with base64 images
+const insertAtCursor = async (htmlWithBase64) => {
+  await editorRef.current.insertContent(htmlWithBase64);
+  // Images are automatically converted and stored
+};
+```
+
+**Manual Image Conversion:**
+
+```jsx
+import { 
+  convertBlobUrlsToBase64, 
+  convertBase64ToBlobUrls 
+} from '@kanaka-prabhath/html-editor';
+
+// Convert HTML with blob URLs to base64 for export
+const exportHtml = async (html) => {
+  const htmlWithBase64 = await convertBlobUrlsToBase64(html);
+  return htmlWithBase64;
+};
+
+// Convert HTML with base64 to blob URLs for editing
+const importHtml = async (html) => {
+  const htmlWithBlobs = await convertBase64ToBlobUrls(html);
+  return htmlWithBlobs;
+};
+```
+
 ## 🔧 API Reference
 
 ### HtmlEditor
@@ -190,13 +245,13 @@ The main editor component with ref access to content methods.
 - `showPageManager?: boolean` - Show/hide page manager (default: true)
 
 **Ref Methods:**
-- `getHTMLContent(): string` - Returns current HTML content
+- `getHTMLContent(): Promise<string>` - Returns current HTML content with blob URLs converted to base64
 - `getSelectedHTMLContent(): string` - Returns selected HTML content (supports images and tables)
 - `getPlainText(): string` - Returns plain text content
-- `setContent(html: string): void` - Set editor content programmatically
+- `setContent(html: string): Promise<void>` - Set editor content programmatically, converting base64 images to blobs
 - `setPageSize(size: 'A4' | 'Letter' | 'Legal'): void` - Set page size programmatically
 - `setPageMargins(margins: PageMarginPreset | CustomMargins): void` - Set page margins programmatically
-- `insertContent(html: string): void` - Insert content at cursor position without replacing existing content
+- `insertContent(html: string): Promise<void>` - Insert content at cursor position, converting base64 images to blobs
 
 ### DocumentProvider
 
@@ -357,12 +412,12 @@ function CustomPageManager() {
 function TemplateLoader() {
   const editorRef = useRef(null);
 
-  const loadTemplate = (template) => {
-    editorRef.current.setContent(template);
+  const loadTemplate = async (template) => {
+    await editorRef.current.setContent(template);
   };
 
-  const insertSignature = () => {
-    editorRef.current.insertContent('<p><em>-- Document Signature</em></p>');
+  const insertSignature = async () => {
+    await editorRef.current.insertContent('<p><em>-- Document Signature</em></p>');
   };
 
   return (

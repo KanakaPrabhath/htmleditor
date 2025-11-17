@@ -34,9 +34,9 @@ function App() {
   // const htmlContent = editorRef.current.getHTMLContent();
   // const plainText = editorRef.current.getPlainText();
 
-  const handlePrintHTML = () => {
+  const handlePrintHTML = async () => {
     if (editorRef.current) {
-      const htmlContent = editorRef.current.getHTMLContent();
+      const htmlContent = await editorRef.current.getHTMLContent();
       console.log('Current HTML Content:', htmlContent);
     }
   };
@@ -48,13 +48,13 @@ function App() {
     }
   };
 
-  const handleResetDocument = () => {
+  const handleResetDocument = async () => {
     if (editorRef.current) {
-      editorRef.current.setContent(sampleContent);
+      await editorRef.current.setContent(sampleContent);
     }
   };
 
-  const handleInsertSampleContent = () => {
+  const handleInsertSampleContent = async () => {
     if (editorRef.current) {
       // Insert a smaller sample content at cursor position
       const insertContent = `
@@ -62,7 +62,7 @@ function App() {
         <p>This content was inserted at the cursor position using the insertContent method.</p>
         <p>You can continue typing after this inserted content.</p>
       `.trim();
-      editorRef.current.insertContent(insertContent);
+      await editorRef.current.insertContent(insertContent);
     }
   };
 
@@ -95,6 +95,20 @@ function App() {
     }
   };
 
+  const handleInsertBase64Image = async () => {
+    if (editorRef.current) {
+      // Sample base64 image (small red square - 10x10 PNG)
+      const base64Image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8z8BQz0AEYBxVSF+FABJADveWkH6oAAAAAElFTkSuQmCC';
+      const imageHtml = `
+        <p>Here's an inserted base64 image:</p>
+        <img src="${base64Image}" alt="Sample red square" style="max-width: 100px;" />
+        <p>The image above was inserted as base64 and converted to blob storage.</p>
+      `.trim();
+      await editorRef.current.insertContent(imageHtml);
+      console.log('Inserted base64 image - it should be converted to blob URL and stored in IndexedDB');
+    }
+  };
+
   return (
       <div id="app-wrapper">
         <div id="editor-container">
@@ -102,7 +116,7 @@ function App() {
               <HtmlEditor ref={editorRef} />
             </DocumentProvider>
         </div>
-         <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '10px' }}>
+         <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '90%' }}>
            <button onClick={handlePrintHTML} style={{ padding: '5px 10px', fontSize: '12px' }}>
              HTML Content to Console
            </button>
@@ -114,6 +128,9 @@ function App() {
            </button>
            <button onClick={handleInsertSampleContent} style={{ padding: '5px 10px', fontSize: '12px' }}>
              Insert Sample Content
+           </button>
+           <button onClick={handleInsertBase64Image} style={{ padding: '5px 10px', fontSize: '12px' }}>
+             Insert Base64 Image
            </button>
            <button onClick={handleSetPageSize} style={{ padding: '5px 10px', fontSize: '12px' }}>
              Change Page Size

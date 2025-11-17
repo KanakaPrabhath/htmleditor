@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to Semantic Versioning (https://semver.org/spec/v2.0.0.html).
 
+## [1.1.13] - 2025-11-17
+- **Async Content Methods**: Made `getHTMLContent()`, `setContent()`, and `insertContent()` methods asynchronous for automatic image conversion
+- **Automatic Image Conversion**: Added automatic conversion between blob URLs (for editing performance) and base64 data URLs (for export)
+- **IndexedDB Integration**: Images are automatically stored in IndexedDB for optimal performance during editing
+- **Documentation Updates**: Updated README files with async method signatures, usage examples, and comprehensive API documentation
+- **Performance Optimization**: Blob URLs provide faster editing experience while base64 ensures export compatibility
+- **Error Handling**: Graceful handling of image conversion failures and storage operations
+
 ## [1.1.12] - 2025-11-16
 - **Image Optimization**: Implemented comprehensive image optimization with automatic resizing, format conversion, and quality adjustments for better performance
 - **IndexedDB Migration**: Added migration helper for IndexedDB storage to handle schema updates and data integrity

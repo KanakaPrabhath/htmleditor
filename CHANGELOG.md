@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to Semantic Versioning (https://semver.org/spec/v2.0.0.html).
 
+## [1.1.14] - 2025-11-18
+- **Content Finalized Callback**: Added `onContentFinalized` prop for debounced base64-converted content callbacks
+- **Performance Optimization**: Separated real-time content changes (`onChange`) from finalized content (`onContentFinalized`) to prevent performance issues with large documents containing many images
+- **Smart Debouncing**: `onContentFinalized` triggers after 2 seconds of user inactivity, converting blob URLs to base64 only when needed
+- **Backward Compatibility**: Existing `onChange` callback continues to work with raw HTML content for real-time updates
+- **Documentation Updates**: Updated README files and API documentation to include the new callback prop and usage examples
+
 ## [1.1.13] - 2025-11-17
 - **Async Content Methods**: Made `getHTMLContent()`, `setContent()`, and `insertContent()` methods asynchronous for automatic image conversion
 - **Automatic Image Conversion**: Added automatic conversion between blob URLs (for editing performance) and base64 data URLs (for export)

@@ -109,11 +109,27 @@ function App() {
     }
   };
 
+  // Content change callbacks
+  const handleContentChange = (html) => {
+    // Real-time updates with blob URLs (called on every keystroke)
+    console.log('Content changed (real-time):', html.substring(0, 100) + '...');
+  };
+
+  const handleContentFinalized = (html) => {
+    // Finalized content with base64 images (called after 2 seconds of inactivity)
+    console.log('Content finalized (with base64 images):', html.substring(0, 100) + '...');
+    // This is where you would typically save to server/database
+  };
+
   return (
       <div id="app-wrapper">
         <div id="editor-container">
             <DocumentProvider>
-              <HtmlEditor ref={editorRef} />
+              <HtmlEditor 
+                ref={editorRef} 
+                onChange={handleContentChange}
+                onContentFinalized={handleContentFinalized}
+              />
             </DocumentProvider>
         </div>
          <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '90%' }}>

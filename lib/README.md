@@ -153,6 +153,34 @@ The editor supports comprehensive keyboard shortcuts:
 
 The `getHTMLContent()`, `setContent()`, and `insertContent()` methods are now asynchronous to handle automatic image conversion between blob URLs and base64 data URLs. This ensures optimal performance by storing images as blob URLs during editing while providing base64-encoded images for export.
 
+**Content Change Callbacks:**
+
+The editor provides two content change callbacks with different performance characteristics:
+
+- **`onChange`**: Called on every content change with raw HTML (blob URLs). Use for real-time updates.
+- **`onContentFinalized`**: Called after 2 seconds of inactivity with base64-converted HTML. Use for saving/exporting.
+
+```jsx
+function AutoSaveEditor() {
+  const handleContentChange = (html) => {
+    // Real-time updates with blob URLs (fast)
+    console.log('Content changed:', html.length, 'characters');
+  };
+  
+  const handleContentFinalized = (html) => {
+    // Finalized content with base64 images (for saving)
+    localStorage.setItem('draft', html);
+  };
+  
+  return (
+    <HtmlEditor 
+      onChange={handleContentChange}
+      onContentFinalized={handleContentFinalized}
+    />
+  );
+}
+```
+
 **Key Benefits:**
 - **Automatic Conversion**: Images are automatically converted between formats
 - **Performance Optimized**: Blob URLs for fast editing, base64 for export
@@ -195,7 +223,8 @@ The main editor component with ref access to content methods.
 - `onDeletePage?: (pageIndex: number) => void` - Page deletion callback
 - `onPageSizeChange?: (size: 'A4' | 'Letter' | 'Legal') => void` - Page size change callback
 - `onPageMarginsChange?: (margins: PageMarginPreset | CustomMargins) => void` - Page margins change callback
-- `onChange?: (htmlContent: string) => void` - Content change callback
+- `onChange?: (htmlContent: string) => void` - Content change callback (real-time with blob URLs)
+- `onContentFinalized?: (htmlContent: string) => void` - Finalized content callback (debounced with base64 images)
 - `showSidebar?: boolean` - Show/hide sidebar (default: true)
 - `showToolbar?: boolean` - Show/hide toolbar (default: true)
 - `showPageManager?: boolean` - Show/hide page manager (default: true)

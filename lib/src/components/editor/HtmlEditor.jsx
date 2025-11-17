@@ -25,6 +25,7 @@ const BOUNDARY_UPDATE_DELAY = 50;
 const NAVIGATION_DELAY = 50;
 const SCROLL_DEBOUNCE = 100;
 const NAVIGATION_LOCK_TIMEOUT = 300;
+const CONTENT_FINALIZE_DEBOUNCE = 2000; // 2 seconds after user stops typing
 
 /**
  * HtmlEditor - Main WYSIWYG HTML Editor Component
@@ -45,7 +46,8 @@ const NAVIGATION_LOCK_TIMEOUT = 300;
  * @param {Function} props.onDeletePage - Optional callback when deleting a page (pageIndex)
  * @param {Function} props.onPageSizeChange - Optional callback when page size changes (newSize)
  * @param {Function} props.onPageMarginsChange - Optional callback when page margins change (newMargins)
- * @param {Function} props.onChange - Optional callback when content changes (htmlContent)
+ * @param {Function} props.onChange - Optional callback when content changes (htmlContent with blob URLs)
+ * @param {Function} props.onContentFinalized - Optional callback when content is finalized after debounce (htmlContent with base64 images)
  * @param {boolean} props.showSidebar - Whether to show the sidebar (default: true)
  * @param {boolean} props.showToolbar - Whether to show the toolbar (default: true)
  * @param {boolean} props.showPageManager - Whether to show the PageManager component (default: true)
@@ -59,6 +61,7 @@ const HtmlEditor = forwardRef(({
   onPageSizeChange: onPageSizeChangeCallback,
   onPageMarginsChange: onPageMarginsChangeCallback,
   onChange,
+  onContentFinalized,
   showSidebar = true,
   showToolbar = true,
   showPageManager = true
@@ -94,6 +97,7 @@ const HtmlEditor = forwardRef(({
   const scrollTimeoutRef = useRef(null);
   const addingPageRef = useRef(false);
   const isNavigatingRef = useRef(false);
+  const contentFinalizeTimeoutRef = useRef(null);
 
   // Initialize editor content and sync programmatic updates
   const contentSetRef = useRef(false);
@@ -151,6 +155,36 @@ const HtmlEditor = forwardRef(({
       onChange(continuousContent);
     }
   }, [continuousContent, onChange]);
+
+  // Debounced callback for finalized content with base64 conversion
+  useEffect(() => {
+    if (!onContentFinalized || !contentSetRef.current) return;
+
+    // Clear existing timeout
+    if (contentFinalizeTimeoutRef.current) {
+      clearTimeout(contentFinalizeTimeoutRef.current);
+    }
+
+    // Set new timeout to convert and call callback
+    contentFinalizeTimeoutRef.current = setTimeout(async () => {
+      try {
+        const htmlContent = editorRef.current ? editorRef.current.innerHTML : continuousContent;
+        const base64Content = await convertBlobUrlsToBase64(htmlContent);
+        onContentFinalized(base64Content);
+      } catch (error) {
+        console.error('Error converting images to base64 for onContentFinalized:', error);
+        // Fallback to raw content if conversion fails
+        onContentFinalized(continuousContent);
+      }
+    }, CONTENT_FINALIZE_DEBOUNCE);
+
+    // Cleanup function to clear timeout
+    return () => {
+      if (contentFinalizeTimeoutRef.current) {
+        clearTimeout(contentFinalizeTimeoutRef.current);
+      }
+    };
+  }, [continuousContent, onContentFinalized]);
 
   const { restoreCursorPosition, hasActiveCursorSelection } = useSelectionHandling({
     updateCurrentFormatFromSelection,
@@ -668,6 +702,9 @@ const HtmlEditor = forwardRef(({
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
+      if (contentFinalizeTimeoutRef.current) {
+        clearTimeout(contentFinalizeTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -840,6 +877,7 @@ HtmlEditor.propTypes = {
   onPageSizeChange: PropTypes.func,
   onPageMarginsChange: PropTypes.func,
   onChange: PropTypes.func,
+  onContentFinalized: PropTypes.func,
   showSidebar: PropTypes.bool,
   showToolbar: PropTypes.bool,
   showPageManager: PropTypes.bool
@@ -853,6 +891,7 @@ HtmlEditor.defaultProps = {
   onPageSizeChange: undefined,
   onPageMarginsChange: undefined,
   onChange: undefined,
+  onContentFinalized: undefined,
   showSidebar: true,
   showToolbar: true,
   showPageManager: true

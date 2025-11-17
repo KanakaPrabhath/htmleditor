@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { AlignLeft, AlignCenter, AlignRight, Trash2, Scaling, ImageUpscale, Download } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, Trash2, Scaling, ImageUpscale, Download } from './icons';
 import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
 import { updateResizeOverlay } from '../../lib/editor/image-resize-utils';

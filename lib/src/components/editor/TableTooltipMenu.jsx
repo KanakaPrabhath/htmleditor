@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { AlignLeft, AlignCenter, AlignRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Trash2 } from './icons';
 import PropTypes from 'prop-types';
 import { useDocumentActions } from '../../context/DocumentContext';
 import { 

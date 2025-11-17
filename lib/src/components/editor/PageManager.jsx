@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FileText, Plus, X, Settings, ZoomIn, ZoomOut } from 'lucide-react';
+import { FileText, Plus, X, Settings, ZoomIn, ZoomOut } from './icons';
 import { MARGIN_PRESETS, getMarginPresetNames, getMarginPresetLabel, DEFAULT_MARGIN_PRESET } from '../../lib/editor/margin-utils';
 
 /**

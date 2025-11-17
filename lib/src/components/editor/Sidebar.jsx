@@ -10,7 +10,7 @@ import {
   Heading2,
   Heading3,
   List
-} from 'lucide-react';
+} from './icons';
 import './Sidebar.css';
 
 /**

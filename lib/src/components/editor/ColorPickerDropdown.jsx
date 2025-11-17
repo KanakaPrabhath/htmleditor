@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Palette } from 'lucide-react';
+import { Palette } from './icons';
 
 /**
  * ColorPickerDropdown - A dropdown component for selecting font colors

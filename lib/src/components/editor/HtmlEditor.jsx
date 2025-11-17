@@ -6,6 +6,7 @@ import { canZoomIn, canZoomOut } from '../../lib/editor/zoom-utils';
 import { getPageDimensions } from '../../lib/editor/page-sizes';
 import { DEFAULT_IMAGE_RESIZE_OPTIONS } from '../../lib/editor/image-resize-utils';
 import { deleteImage } from '../../lib/storage/index-db';
+import { convertBlobUrlsToBase64, convertBase64ToBlobUrls } from '../../lib/storage/image-conversion-utils';
 import { normalizeContent } from '../../lib/editor/content-normalize-utils';
 import { getCursorPosition } from '../../lib/editor/cursor-scroll-utils';
 import Sidebar from './Sidebar';
@@ -29,13 +30,13 @@ const NAVIGATION_LOCK_TIMEOUT = 300;
  * HtmlEditor - Main WYSIWYG HTML Editor Component
  * 
  * Exposed methods via ref:
- * - getHTMLContent() - Returns the current HTML content as a string
+ * - getHTMLContent() - Returns a Promise resolving to the current HTML content with blob URLs converted to base64
  * - getSelectedHTMLContent() - Returns the selected HTML content as a string (supports images and tables)
  * - getPlainText() - Returns the plain text content (HTML stripped)
- * - setContent(html) - Sets the editor content programmatically
+ * - setContent(html) - Sets the editor content programmatically, converting base64 images to blobs (returns Promise)
  * - setPageSize(size) - Sets the page size ('A4', 'Letter', 'Legal')
  * - setPageMargins(margins) - Sets the page margins ('NORMAL', 'NARROW', 'MODERATE', 'WIDE', 'OFFICE_2003') or custom {top, bottom, left, right} in inches
- * - insertContent(html) - Inserts content at the current cursor position without replacing existing content
+ * - insertContent(html) - Inserts content at the current cursor position, converting base64 images to blobs (returns Promise)
  * 
  * @param {Object} props
  * @param {React.ReactNode} props.pageManagerComponent - Optional custom PageManager component from parent app
@@ -202,17 +203,23 @@ const HtmlEditor = forwardRef(({
   // Exposed methods for parent component via ref
   const exposedMethods = useMemo(() => ({
     /**
-     * Get the current HTML content from the editor
+     * Get the current HTML content from the editor with blob URLs converted to base64
      * Returns the actual DOM content to ensure latest changes (like indentation) are captured
-     * @returns {string} The HTML content with page breaks
+     * All blob:// image URLs are converted to base64 data URLs for portability
+     * @returns {Promise<string>} Promise resolving to HTML content with base64 images
      */
-    getHTMLContent: () => {
-      // Return current DOM content if available (ensures we get the latest changes)
-      if (editorRef.current) {
-        return editorRef.current.innerHTML;
+    getHTMLContent: async () => {
+      // Get current DOM content if available (ensures we get the latest changes)
+      const htmlContent = editorRef.current ? editorRef.current.innerHTML : continuousContent;
+      
+      // Convert all blob URLs to base64 for export
+      try {
+        return await convertBlobUrlsToBase64(htmlContent);
+      } catch (error) {
+        console.error('Error converting images to base64:', error);
+        // Return original content if conversion fails
+        return htmlContent;
       }
-      // Fallback to state if DOM not available
-      return continuousContent;
     },
     /**
      * Get the selected HTML content from the editor
@@ -288,10 +295,22 @@ const HtmlEditor = forwardRef(({
     },
     /**
      * Set the editor content programmatically
-     * @param {string} html - HTML content to set
+     * Converts base64 image data URLs to blob URLs and stores them in IndexedDB
+     * @param {string} html - HTML content to set (base64 images will be converted to blobs)
+     * @returns {Promise<void>}
      */
-    setContent: (html) => {
-      const normalizedHtml = normalizeContent(html);
+    setContent: async (html) => {
+      // Convert base64 images to blob URLs and store in IndexedDB
+      let processedHtml;
+      try {
+        processedHtml = await convertBase64ToBlobUrls(html);
+      } catch (error) {
+        console.error('Error converting base64 images to blobs:', error);
+        // Use original HTML if conversion fails
+        processedHtml = html;
+      }
+      
+      const normalizedHtml = normalizeContent(processedHtml);
       updateContentAndBoundaries(normalizedHtml);
     },
     /**
@@ -315,10 +334,22 @@ const HtmlEditor = forwardRef(({
     /**
      * Insert content at the current cursor position without replacing existing content
      * Falls back to the last cursor position if no active selection in the editor
-     * @param {string} html - HTML content to insert
+     * Converts base64 image data URLs to blob URLs and stores them in IndexedDB
+     * @param {string} html - HTML content to insert (base64 images will be converted to blobs)
+     * @returns {Promise<void>}
      */
-    insertContent: (html) => {
-      const normalizedHtml = normalizeContent(html);
+    insertContent: async (html) => {
+      // Convert base64 images to blob URLs and store in IndexedDB
+      let processedHtml;
+      try {
+        processedHtml = await convertBase64ToBlobUrls(html);
+      } catch (error) {
+        console.error('Error converting base64 images to blobs:', error);
+        // Use original HTML if conversion fails
+        processedHtml = html;
+      }
+      
+      const normalizedHtml = normalizeContent(processedHtml);
       insertHtmlWithCursorRestore(normalizedHtml);
     }
   }), [continuousContent, actions, updateBoundaries, triggerAutoReflow, hasActiveCursorSelection, restoreCursorPosition]);
